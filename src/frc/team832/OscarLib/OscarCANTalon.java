@@ -2,7 +2,7 @@ package frc.team832.OscarLib;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class OscarCANTalon implements IOscarSimpleMotor {
+public class OscarCANTalon implements IOscarSmartMotor {
 
     private TalonSRX _talon;
 
@@ -12,6 +12,6 @@ public class OscarCANTalon implements IOscarSimpleMotor {
 
     @Override
     public void set(double power) {
-
+        _talon.set();
     }
 }
