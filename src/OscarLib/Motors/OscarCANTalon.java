@@ -1,14 +1,21 @@
-package frc.team832.OscarLib;
+package OscarLib.Motors;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import sun.security.pkcs11.wrapper.CK_TLS_PRF_PARAMS;
 
+/**
+ * Implementation of IOscarSmartMotor that is specific to a CTRE Talon SRX
+ */
 public class OscarCANTalon implements IOscarSmartMotor {
 
     private TalonSRX _talon;
     private ControlMode _ctrlMode;
+    private int _curPidIdx = 0;
 
+    /***
+     * Create an OscarCANTalon at the specified CAN ID.
+     * @param canId CAN ID of controller to attach.
+     */
     public OscarCANTalon(int canId) {
         _talon = new TalonSRX(canId);
         _ctrlMode = ControlMode.Disabled;
@@ -26,8 +33,8 @@ public class OscarCANTalon implements IOscarSmartMotor {
     }
 
     @Override
-    public double getPosition(){
-        return _talon.getSelectedSensorPosition();
+    public int getPosition(){
+        return _talon.getSelectedSensorPosition(_curPidIdx);
     }
 
     @Override

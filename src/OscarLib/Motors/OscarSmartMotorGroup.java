@@ -1,4 +1,4 @@
-package frc.team832.OscarLib;
+package OscarLib.Motors;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -26,11 +26,9 @@ public class OscarSmartMotorGroup implements IOscarSmartMotor {
         return m_masterMotor.get();
     }
 
-
-    //this needs to be implemented
     @Override
-    public double getPosition(){
-        return 0;
+    public int getPosition(){
+        return m_masterMotor.getPosition();
     }
 
     @Override
@@ -76,11 +74,21 @@ public class OscarSmartMotorGroup implements IOscarSmartMotor {
 
     @Override
     public double getOutputVoltage() {
-        return 0;
+        double curTotal = 0.0;
+        curTotal += m_masterMotor.getOutputVoltage();
+        for(IOscarSmartMotor slaveMotor : m_slaveMotors ) {
+            curTotal += slaveMotor.getOutputVoltage();
+        }
+        return curTotal / (m_slaveMotors.length + 1);
     }
 
     @Override
     public double getOutputCurrent() {
-        return 0;
+        double curTotal = 0.0;
+        curTotal += m_masterMotor.getOutputCurrent();
+        for(IOscarSmartMotor slaveMotor : m_slaveMotors ) {
+            curTotal += slaveMotor.getOutputCurrent();
+        }
+        return curTotal;
     }
 }

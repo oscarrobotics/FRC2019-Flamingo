@@ -1,8 +1,8 @@
 package frc.team832;
 
-import frc.team832.OscarLib.OscarCANTalon;
-import frc.team832.OscarLib.OscarDiffDrive;
-import frc.team832.OscarLib.OscarSmartMotorGroup;
+import OscarLib.Motors.OscarCANTalon;
+import OscarLib.Motion.OscarDiffDrive;
+import OscarLib.Motors.OscarSmartMotorGroup;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into

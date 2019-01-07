@@ -1,4 +1,4 @@
-package frc.team832.OscarLib;
+package OscarLib.Motion;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 

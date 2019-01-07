@@ -1,4 +1,6 @@
-package frc.team832.OscarLib;
+package OscarLib.Motion;
+
+import OscarLib.Motors.IOscarSimpleMotor;
 
 public class OscarDiffDrive extends OscarDriveBase {
     public static final double kDefaultQuickStopThreshold = 0.2;

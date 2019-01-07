@@ -1,6 +1,6 @@
-package frc.team832.OscarLib;
+package OscarLib.Motors;
 
-public class OscarSimpleMotorGroup implements IOscarSimpleMotor{
+public class OscarSimpleMotorGroup implements IOscarSimpleMotor {
 
     private boolean m_isInverted = false;
     private final IOscarSimpleMotor[] m_simpleMotors;

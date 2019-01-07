@@ -1,4 +1,4 @@
-package frc.team832.OscarLib;
+package OscarLib.Sensors;
 
 public interface IOscarIMU extends IOscarGyro {
 

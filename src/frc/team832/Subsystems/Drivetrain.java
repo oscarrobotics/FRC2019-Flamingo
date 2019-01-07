@@ -2,8 +2,8 @@ package frc.team832.Subsystems;
 
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.OscarLib.IOscarSimpleMotor;
-import frc.team832.OscarLib.OscarDiffDrive;
+import OscarLib.Motors.IOscarSimpleMotor;
+import OscarLib.Motion.OscarDiffDrive;
 
 public class Drivetrain extends Subsystem {
 

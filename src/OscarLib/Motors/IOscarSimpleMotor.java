@@ -1,4 +1,4 @@
-package frc.team832.OscarLib;
+package OscarLib.Motors;
 
 public interface IOscarSimpleMotor {
 
