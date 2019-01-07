@@ -6,4 +6,10 @@ public interface IOscarSmartMotor extends IOscarSimpleMotor {
 
     void setMode(ControlMode mode);
 
+    void follow(int masterMotorID);
+
+    double getInputVoltage();
+    double getOutputVoltage();
+
+    double getOutputCurrent();
 }

@@ -7,9 +7,10 @@
 
 package frc.team832;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team832.Subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,13 +20,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 // If you rename or move this class, update the build.properties file in the project root
-public class Robot extends TimedRobot
+public class Robot extends IterativeRobot
 {
 
     private static final String DEFAULT_AUTO = "Default";
     private static final String CUSTOM_AUTO = "My Auto";
     private String autoSelected;
     private SendableChooser<String> chooser = new SendableChooser<>();
+
+    public static Drivetrain drivetrain;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -34,6 +37,8 @@ public class Robot extends TimedRobot
     @Override
     public void robotInit() 
     {
+        RobotMap.init();
+        drivetrain = new Drivetrain(RobotMap.diffDrive, null);
 
         SmartDashboard.putData("Auto choices", chooser);
     }
@@ -82,7 +87,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
-        
+
     }
 
     /**
