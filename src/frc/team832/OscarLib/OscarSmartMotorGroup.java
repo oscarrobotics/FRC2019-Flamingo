@@ -17,13 +17,20 @@ public class OscarSmartMotorGroup implements IOscarSmartMotor {
     }
 
     @Override
-    public void set(double speed) {
-        m_masterMotor.set( m_isInverted ? -speed : speed);
+    public void set(double value) {
+        m_masterMotor.set( m_isInverted ? -value : value);
     }
 
     @Override
     public double get() {
         return m_masterMotor.get();
+    }
+
+
+    //this needs to be implemented
+    @Override
+    public double getPosition(){
+        return 0;
     }
 
     @Override

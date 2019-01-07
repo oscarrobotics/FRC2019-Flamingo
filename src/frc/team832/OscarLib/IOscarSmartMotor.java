@@ -8,6 +8,8 @@ public interface IOscarSmartMotor extends IOscarSimpleMotor {
 
     void follow(int masterMotorID);
 
+    double getPosition();
+
     double getInputVoltage();
     double getOutputVoltage();
 

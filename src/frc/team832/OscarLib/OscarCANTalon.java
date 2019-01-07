@@ -2,6 +2,7 @@ package frc.team832.OscarLib;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import sun.security.pkcs11.wrapper.CK_TLS_PRF_PARAMS;
 
 public class OscarCANTalon implements IOscarSmartMotor {
 
@@ -22,6 +23,11 @@ public class OscarCANTalon implements IOscarSmartMotor {
     @Override
     public double get() {
         return _talon.getMotorOutputPercent();
+    }
+
+    @Override
+    public double getPosition(){
+        return _talon.getSelectedSensorPosition();
     }
 
     @Override
