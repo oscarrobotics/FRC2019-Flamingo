@@ -17,7 +17,7 @@ public class OscarLinearBoi {
 
     public void getPosition(){
         m_linearMotors.getPosition();
-        
+
     }
 
 }
