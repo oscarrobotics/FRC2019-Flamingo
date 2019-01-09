@@ -7,8 +7,8 @@ public class OscarLinearMechanism {
 
     private IOscarSmartMotor m_linearMotor;
 
-    public OscarLinearMechanism(IOscarSmartMotor linearMotors){
-        m_linearMotor = linearMotors;
+    public OscarLinearMechanism(IOscarSmartMotor linearMotor){
+        m_linearMotor = linearMotor;
     }
 
     public void setPosition(double position){
@@ -16,7 +16,11 @@ public class OscarLinearMechanism {
         m_linearMotor.set(position);
     }
 
-    public void getPosition(){
-        m_linearMotor.getPosition();
+    public double getPosition(){
+        return m_linearMotor.getPosition();
+    }
+
+    public void stop(){
+        m_linearMotor.stopMotor();
     }
 }

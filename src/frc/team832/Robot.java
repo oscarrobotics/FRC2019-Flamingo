@@ -29,6 +29,7 @@ public class Robot extends IterativeRobot
     private SendableChooser<String> chooser = new SendableChooser<>();
 
     public static Drivetrain drivetrain;
+    public static Elevator elevator;
 
     /**
      * This function is run when the robot is first started up and should be
