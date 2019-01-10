@@ -13,6 +13,7 @@ public class OscarSmartMotorGroup implements IOscarSmartMotor {
         m_slaveMotors = new IOscarSmartMotor[slaveMotors.length];
         for (int i = 0; i < slaveMotors.length; i++) {
             m_slaveMotors[i + 1] = slaveMotors[i];
+            //m_slaveMotors[i + 1].follow(m_masterMotor);
         }
     }
 
@@ -62,6 +63,7 @@ public class OscarSmartMotorGroup implements IOscarSmartMotor {
         }
     }
 
+
     @Override
     public double getInputVoltage() {
         double curTotal = 0.0;
@@ -90,5 +92,17 @@ public class OscarSmartMotorGroup implements IOscarSmartMotor {
             curTotal += slaveMotor.getOutputCurrent();
         }
         return curTotal;
+    }
+
+    @Override
+    public void follow(IOscarSmartMotor masterMotor) {
+        for(IOscarSmartMotor slaveMotor : m_slaveMotors) {
+            follow(masterMotor);
+        }
+    }
+
+    @Override
+    public int getDeviceID() {
+        return 0;
     }
 }

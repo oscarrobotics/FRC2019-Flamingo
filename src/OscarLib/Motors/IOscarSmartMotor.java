@@ -39,4 +39,8 @@ public interface IOscarSmartMotor extends IOscarSimpleMotor {
      * @return Output in Amps.
      */
     double getOutputCurrent();
+
+    void follow(IOscarSmartMotor masterMotor);
+
+    int getDeviceID();
 }
