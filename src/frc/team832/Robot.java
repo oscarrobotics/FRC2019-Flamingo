@@ -30,6 +30,7 @@ public class Robot extends IterativeRobot
 
     public static Drivetrain drivetrain;
     public static Elevator elevator;
+    public static OI oi;
 
     /**
      * This function is run when the robot is first started up and should be

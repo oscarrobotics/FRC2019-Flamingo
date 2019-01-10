@@ -2,6 +2,7 @@ package frc.team832.Commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+import frc.team832.OI;
 import frc.team832.Robot;
 
 
@@ -18,7 +19,7 @@ public class ElevatorTeleopControl extends Command {
     @Override
     protected void execute() {
         //TODO: add buttons and positions
-        if(true){
+        if(Robot.oi.operaterControl.getRawButton(0)){
             Robot.elevator.setPosition(0);
         }else
             Robot.elevator.setPosition(0);
