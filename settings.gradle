@@ -23,3 +23,6 @@ pluginManagement {
         }
     }
 }
+
+rootProject.name='FRC2018-Giraffe'
+include 'GrouchLib'
