@@ -19,10 +19,10 @@ public class ElevatorTeleopControl extends Command {
     protected void execute() {
         //TODO: add buttons and positions
         if(Robot.oi.operaterControl.getRawButton(0)){
-            Robot.elevator.setPosition(0);
-        }else
-            Robot.elevator.setPosition(0);
-
+//            Robot.elevator.setPosition(0);
+        } else {
+//            Robot.elevator.setPosition(0);
+        }
     }
 
     /**

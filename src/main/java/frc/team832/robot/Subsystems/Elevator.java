@@ -1,7 +1,7 @@
 package frc.team832.robot.Subsystems;
 
 
-import frc.team832.GrouchLib.Motion.OscarLinearMechanism;
+import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Elevator extends Subsystem {
@@ -11,11 +11,6 @@ public class Elevator extends Subsystem {
 
     public Elevator(OscarLinearMechanism elevator){
         m_elevator = elevator;
-    }
-
-    public void setPosition(double position){
-        m_elevator.setPosition(position);
-        targetPosition = position;
     }
 
     public double getTargetPosition(){

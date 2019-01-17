@@ -2,8 +2,8 @@ package frc.team832.robot.Subsystems;
 
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Motors.IOscarSimpleMotor;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
+import frc.team832.GrouchLib.Motors.IOscarSimpleMotor;
 
 public class Drivetrain extends Subsystem {
 
