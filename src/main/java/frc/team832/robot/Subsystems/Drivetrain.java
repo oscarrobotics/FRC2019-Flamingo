@@ -7,9 +7,6 @@ import frc.team832.GrouchLib.Motors.IOscarSimpleMotor;
 
 public class Drivetrain extends Subsystem {
 
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
-
     private OscarDiffDrive m_driveSystem;
     private IOscarSimpleMotor m_hWheel;
     private ControlMode m_ctrlMode;
@@ -35,13 +32,14 @@ public class Drivetrain extends Subsystem {
 
     /**
      *
-     * @param mode The {@link DriveMode} to run inputs through
+     * @param pathMode The {@link DriveMode} to run inputs through
+     * @param loopMode The {@Link ControlMode} to use on the drivetraim
      * @param stick1 X-Axis translation for Arcade and Curvature, left side for Tank
      * @param stick2 Z-Axis rotation for Arcade and Curvature, right side for Tank
      * @param stick3 Y-Axis translation
      */
-    public void teleopControl(DriveMode mode, double stick1, double stick2, double stick3) {
-        switch(mode) {
+    public void teleopControl(DriveMode pathMode, ControlMode loopMode, double stick1, double stick2, double stick3) {
+        switch(pathMode) {
             case ARCADE:
                 m_driveSystem.arcadeDrive(stick1, stick2, false);
                 break;

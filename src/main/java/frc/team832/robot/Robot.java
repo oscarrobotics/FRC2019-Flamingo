@@ -7,7 +7,7 @@
 
 package frc.team832.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.robot.Subsystems.*;
@@ -20,7 +20,7 @@ import frc.team832.robot.Subsystems.*;
  * project.
  */
 // If you rename or move this class, update the build.properties file in the project root
-public class Robot extends IterativeRobot
+public class Robot extends TimedRobot
 {
 
     private static final String DEFAULT_AUTO = "Default";
@@ -30,6 +30,8 @@ public class Robot extends IterativeRobot
 
     public static Drivetrain drivetrain;
     public static Elevator elevator;
+    public static Fourbar fourbar;
+    public static ComplexLift complexLift;
     public static OI oi;
 
     /**
@@ -40,7 +42,11 @@ public class Robot extends IterativeRobot
     public void robotInit() 
     {
         RobotMap.init();
+
         drivetrain = new Drivetrain(RobotMap.diffDrive, null);
+        elevator = new Elevator(RobotMap.elevatorMech);
+        fourbar = new Fourbar(RobotMap.fourbarMech);
+        complexLift = new ComplexLift(RobotMap.complexLiftMech);
 
         SmartDashboard.putData("Auto choices", chooser);
     }

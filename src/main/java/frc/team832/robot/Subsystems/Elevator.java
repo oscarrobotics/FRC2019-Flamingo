@@ -31,20 +31,14 @@ public class Elevator extends Subsystem {
         //    setDefaultCommand(new MySpecialCommand());
     }
 
-
-
     public static class Constants {
-
         public static final int POT_MIN_VAL = 60;
         public static final int POT_MAX_VAL = 963;
         public static final int POT_RANGE = (POT_MAX_VAL - 1023) + 1023 - POT_MIN_VAL;
         public static final double POT_TO_INCHES = 44.0/(double)POT_RANGE;
         public static final double INCHES_TO_POT = 1/POT_TO_INCHES;
 
-
-
-
-        public static OscarMechanismPosition[] ElevatorPositions = new OscarMechanismPosition[]{
+        public static final OscarMechanismPosition[] ElevatorPositions = new OscarMechanismPosition[]{
                 new OscarMechanismPosition("BOTTOM", (int)(0*INCHES_TO_POT)),
                 new OscarMechanismPosition("HATCH_BOTTOM", (int)(4*INCHES_TO_POT)),
                 new OscarMechanismPosition("CARGO_BOTTOM", (int)(0*INCHES_TO_POT)),
