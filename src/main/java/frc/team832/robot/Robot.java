@@ -7,6 +7,7 @@
 
 package frc.team832.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,10 +44,10 @@ public class Robot extends TimedRobot
     {
         RobotMap.init();
 
-        drivetrain = new Drivetrain(RobotMap.diffDrive, null);
-        elevator = new Elevator(RobotMap.elevatorMech);
-        fourbar = new Fourbar(RobotMap.fourbarMech);
-        complexLift = new ComplexLift(RobotMap.complexLiftMech);
+        drivetrain = new Drivetrain(RobotMap.diffDrive);
+//        elevator = new Elevator(RobotMap.elevatorMech);
+//        fourbar = new Fourbar(RobotMap.fourbarMech);
+//        complexLift = new ComplexLift(RobotMap.complexLiftMech);
 
         SmartDashboard.putData("Auto choices", chooser);
     }
@@ -95,7 +96,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
-
+       // drivetrain.teleopControl(Drivetrain.DriveMode.ARCADE, Drivetrain.ControlMode.PERCENTAGE, oi.driveController.getRawAxis(1), oi.driveController.getRawAxis(4), 0.0);
     }
 
     /**

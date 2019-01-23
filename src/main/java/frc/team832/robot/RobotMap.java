@@ -40,6 +40,7 @@ class RobotMap {
         OscarSmartMotorGroup rightDrive = new OscarSmartMotorGroup(rightMaster, rightSlave);
 
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
+/*
 
         OscarCANTalon elevatorMotor = new OscarCANTalon(6);
         elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.ElevatorPositions);
@@ -51,5 +52,6 @@ class RobotMap {
         fourbarMech = new OscarRotaryMechanism(fourbarGroup, Fourbar.Constants.FourBarPositions);
 
         complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.LiftPositions);
+*/
     }
 }

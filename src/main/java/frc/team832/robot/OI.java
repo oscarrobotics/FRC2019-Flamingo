@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class OI {
 
-    public Joystick operaterControl;
+    public Joystick operatorControl;
     public Joystick driveController;
 
 
     public OI() {
-        operaterControl = new Joystick(1);
+        operatorControl = new Joystick(1);
         driveController = new Joystick(0);
 
     }

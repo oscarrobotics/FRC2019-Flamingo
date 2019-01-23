@@ -40,6 +40,8 @@ public class Elevator extends Subsystem {
 
         public static final OscarMechanismPosition[] ElevatorPositions = new OscarMechanismPosition[]{
                 new OscarMechanismPosition("BOTTOM", (int)(0*INCHES_TO_POT)),
+                new OscarMechanismPosition("MIDDLE", (int)(22*INCHES_TO_POT)),
+                new OscarMechanismPosition("TOP", (int)(44*INCHES_TO_POT)),
                 new OscarMechanismPosition("HATCH_BOTTOM", (int)(4*INCHES_TO_POT)),
                 new OscarMechanismPosition("CARGO_BOTTOM", (int)(0*INCHES_TO_POT)),
                 new OscarMechanismPosition("CARGO_SHIP", (int)(6*INCHES_TO_POT)),
