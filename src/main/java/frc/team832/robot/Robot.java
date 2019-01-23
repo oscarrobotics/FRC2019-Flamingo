@@ -33,6 +33,7 @@ public class Robot extends TimedRobot
     public static Elevator elevator;
     public static Fourbar fourbar;
     public static ComplexLift complexLift;
+    public static SnowBlower snowBlower;
     public static OI oi;
 
     /**
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot
     {
         RobotMap.init();
 
+        snowBlower = new SnowBlower()
         drivetrain = new Drivetrain(RobotMap.diffDrive);
 //        elevator = new Elevator(RobotMap.elevatorMech);
 //        fourbar = new Fourbar(RobotMap.fourbarMech);
