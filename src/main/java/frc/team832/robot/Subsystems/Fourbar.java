@@ -5,7 +5,7 @@ import frc.team832.GrouchLib.Mechanisms.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
 
 public class Fourbar {
-    private OscarLinearMechanism m_fourbar;
+    private OscarRotaryMechanism m_fourbar;
     private static double targetPosition;
 
     public Fourbar(OscarRotaryMechanism fourbar){

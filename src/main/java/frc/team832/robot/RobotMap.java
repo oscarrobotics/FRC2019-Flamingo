@@ -1,9 +1,12 @@
 package frc.team832.robot;
 
 import com.revrobotics.CANSparkMaxLowLevel;
+import frc.team832.GrouchLib.Control.OscarPCM;
+import frc.team832.GrouchLib.Control.OscarPDP;
 import frc.team832.GrouchLib.Mechanisms.OscarComplexMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
+import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Motors.OscarCANSparkMax;
 import frc.team832.GrouchLib.Motors.OscarCANTalon;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
@@ -21,35 +24,51 @@ import frc.team832.robot.Subsystems.Fourbar;
  */
 class RobotMap {
 
+    static class IDs {
+        public static final int pdp = 0;
+        public static final int pcm = 1;
+        public static final int leftMaster = 2;
+        public static final int leftSlave = 3;
+        public static final int rightMaster = 4;
+        public static final int rightSlave = 5;
+        public static final int elevator = 6;
+        public static final int fourbarMaster = 7;
+        public static final int fourbarSlave = 8;
+
+    }
+
+    static OscarPDP pdp;
+    static OscarPCM pcm;
     static OscarDiffDrive diffDrive;
     static OscarLinearMechanism elevatorMech;
     static OscarRotaryMechanism fourbarMech;
     static OscarComplexMechanism complexLiftMech;
+    static OscarSimpleMechanism cargoIntake;
+    static OscarRotaryMechanism hatchHolder;
+    static OscarRotaryMechanism hatchGrabbor;
     /**
      * Initializes robot hardware
      */
     static void init() {
+        pdp = new OscarPDP(IDs.pdp);
+        pcm = new OscarPCM(IDs.pcm);
+
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
 
-        OscarCANSparkMax leftMaster = new OscarCANSparkMax(2, driveMotorType);
-        OscarCANSparkMax leftSlave = new OscarCANSparkMax(3, driveMotorType);
-        OscarCANSparkMax rightMaster = new OscarCANSparkMax(4, driveMotorType);
-        OscarCANSparkMax rightSlave = new OscarCANSparkMax(5, driveMotorType);
-
+        OscarCANSparkMax leftMaster = new OscarCANSparkMax(IDs.leftMaster, driveMotorType);
+        OscarCANSparkMax leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
+        OscarCANSparkMax rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
+        OscarCANSparkMax rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
         OscarSmartMotorGroup leftDrive = new OscarSmartMotorGroup(leftMaster, leftSlave);
         OscarSmartMotorGroup rightDrive = new OscarSmartMotorGroup(rightMaster, rightSlave);
-
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
 
-        OscarCANTalon elevatorMotor = new OscarCANTalon(6);
-        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.ElevatorPositions);
-
-        OscarCANTalon fourbarMaster = new OscarCANTalon(7);
-        OscarCANVictor fourbarSlave = new OscarCANVictor(8);
-
-        OscarSmartMotorGroup fourbarGroup = new OscarSmartMotorGroup(fourbarMaster, fourbarSlave);
-        fourbarMech = new OscarRotaryMechanism(fourbarGroup, Fourbar.Constants.FourBarPositions);
-
-        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.LiftPositions);
+//        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
+//        OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);
+//        OscarCANVictor fourbarSlave = new OscarCANVictor(IDs.fourbarSlave);
+//        OscarSmartMotorGroup fourbarGroup = new OscarSmartMotorGroup(fourbarMaster, fourbarSlave);
+//        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.ElevatorPositions);
+//        fourbarMech = new OscarRotaryMechanism(fourbarGroup, Fourbar.Constants.FourBarPositions);
+//        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.LiftPositions);
     }
 }
