@@ -1,13 +1,14 @@
 package frc.team832.robot.Subsystems;
 
 import com.ctre.phoenix.CANifier;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
-public class SnowBlower {
+public class SnowBlower extends Subsystem {
 
     private OscarSimpleMechanism _intake;
     private OscarSmartMechanism _hatchHoldor;
@@ -22,6 +23,17 @@ public class SnowBlower {
         _hatchGrabbor = hatchGrabber;
 
         _heightUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
+    }
+
+    @Override
+    protected void initDefaultCommand() { }
+
+    /**
+     * This is run automatically by the scheduler. Put loop code here.
+     */
+    @Override
+    public void periodic() {
+
     }
 
     public enum CargoPosition {

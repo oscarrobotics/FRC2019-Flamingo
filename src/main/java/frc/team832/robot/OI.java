@@ -18,9 +18,11 @@ public class OI {
 
 	// Operator
 	public static Joystick operatorBox;
-	public static JoystickButton op1, op2, op3, op4, op5, op6;
-	public static JoystickButton incr, decr;
-	public static JoystickButton modeButton1, modeButton2, modeButton3;
+	private static JoystickButton op1, op2, op3, op4, op5, op6;
+	private static JoystickButton incr, decr;
+	private static JoystickButton modeButton1, modeButton2, modeButton3;
+
+	public OperatorMode operatorMode;
 
     public OI() {
 	    driverPad = new XboxController(0);
@@ -45,6 +47,8 @@ public class OI {
 	    }
     }
 
+
+
     public enum OperatorMode {
     	Intake,
 	    CargoShip,
@@ -65,7 +69,7 @@ public class OI {
 	public void handleControls() {
     	Command[] opCommands = new Command[6];
 
-    	switch (getOperatorMode()) {
+    	switch (operatorMode = getOperatorMode()) {
 		    case Intake:
 				opCommands[0] = new DoNothing(); // button 1 command
 			    opCommands[1] = new DoNothing(); // button 2 command

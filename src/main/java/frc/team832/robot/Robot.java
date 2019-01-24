@@ -100,6 +100,7 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
+        oi.handleControls();
         drivetrain.teleopControl(Drivetrain.DriveMode.CURVATURE, Drivetrain.ControlMode.PERCENTAGE, oi.driverPad.getY(GenericHID.Hand.kLeft), oi.driverPad.getX(GenericHID.Hand.kLeft));
         complexLift.mainLoop();
 
