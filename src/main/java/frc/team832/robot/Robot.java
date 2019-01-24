@@ -45,8 +45,8 @@ public class Robot extends TimedRobot
     {
         RobotMap.init();
 
-        snowBlower = new SnowBlower()
         drivetrain = new Drivetrain(RobotMap.diffDrive);
+//        snowBlower = new SnowBlower(Robot);
 //        elevator = new Elevator(RobotMap.elevatorMech);
 //        fourbar = new Fourbar(RobotMap.fourbarMech);
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
@@ -100,7 +100,9 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
-        drivetrain.teleopControl(Drivetrain.DriveMode.CURVATURE, Drivetrain.ControlMode.PERCENTAGE, oi.driveController.getY(GenericHID.Hand.kLeft), oi.driveController.getX(GenericHID.Hand.kLeft));
+        drivetrain.teleopControl(Drivetrain.DriveMode.CURVATURE, Drivetrain.ControlMode.PERCENTAGE, oi.driverPad.getY(GenericHID.Hand.kLeft), oi.driverPad.getX(GenericHID.Hand.kLeft));
+        complexLift.mainLoop();
+
     }
 
     /**

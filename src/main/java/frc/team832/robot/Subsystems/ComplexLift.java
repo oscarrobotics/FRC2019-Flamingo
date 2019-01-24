@@ -15,6 +15,11 @@ public class ComplexLift extends Subsystem {
     @Override
     protected void initDefaultCommand() { }
 
+    // the looping logic for this mechanism
+    public void mainLoop() {
+
+    }
+
     public static class Constants {
         // TODO: flesh out ALL POSSIBLE DESIRED POSITIONS across the Elevator and Fourbar. Actual tick count isn't necessary, just the endpoints.
         public static OscarMechanismComplexPosition[] LiftPositions = new OscarMechanismComplexPosition[]{
