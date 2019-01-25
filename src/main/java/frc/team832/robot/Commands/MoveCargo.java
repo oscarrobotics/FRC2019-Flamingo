@@ -5,8 +5,8 @@ import frc.team832.robot.Robot;
 
 public class MoveCargo extends Command {
 
-    public MoveCargo(){
-        requires(Robot.snowblower);
+    public MoveCargo() {
+        requires(Robot.snowBlower);
     }
 
 

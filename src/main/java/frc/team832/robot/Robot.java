@@ -7,10 +7,12 @@
 
 package frc.team832.robot;
 
+import com.ctre.phoenix.CANifier;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.robot.Subsystems.*;
 
 /**
@@ -34,7 +36,8 @@ public class Robot extends TimedRobot
     public static Fourbar fourbar;
     public static ComplexLift complexLift;
     public static SnowBlower snowBlower;
-    public static OI oi;
+
+    private static OscarCANifier.Ultrasonic ultrasonic;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -46,12 +49,15 @@ public class Robot extends TimedRobot
         RobotMap.init();
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
-//        snowBlower = new SnowBlower(Robot);
+//        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 //        elevator = new Elevator(RobotMap.elevatorMech);
 //        fourbar = new Fourbar(RobotMap.fourbarMech);
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
 
-        oi = new OI();
+        OI.init();
+
+        ultrasonic = RobotMap.canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
+        ultrasonic.start();
 
         SmartDashboard.putData("Auto choices", chooser);
     }
@@ -100,9 +106,11 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
-        drivetrain.teleopControl(Drivetrain.DriveMode.CURVATURE, Drivetrain.ControlMode.PERCENTAGE, oi.driverPad.getY(GenericHID.Hand.kLeft), oi.driverPad.getX(GenericHID.Hand.kLeft));
-        complexLift.mainLoop();
-
+        ultrasonic.update();
+        drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.PERCENTAGE);
+        double dist = ultrasonic.getRangeInches();
+        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));
+//        complexLift.mainLoop();
     }
 
     /**

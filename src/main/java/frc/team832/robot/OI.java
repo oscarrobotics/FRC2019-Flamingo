@@ -22,7 +22,7 @@ public class OI {
 	public static JoystickButton incr, decr;
 	public static JoystickButton modeButton1, modeButton2, modeButton3;
 
-    public OI() {
+    public static void init() {
 	    driverPad = new XboxController(0);
 
 	    leftStickPress = new JoystickButton(driverPad, 9);
@@ -52,7 +52,7 @@ public class OI {
 	    Rocket_Cargo
     }
 
-    private OperatorMode getOperatorMode() {
+    private static OperatorMode getOperatorMode() {
     	if (modeButton1.get()) return OperatorMode.CargoShip;
     	else if (modeButton2.get()) return OperatorMode.Rocket_Hatch;
     	else if (modeButton3.get()) return OperatorMode.Rocket_Cargo;
@@ -62,7 +62,7 @@ public class OI {
 	/**
 	 * Manages which commands get run based on different modifier buttons.
 	 */
-	public void handleControls() {
+	public static void handleControls() {
     	Command[] opCommands = new Command[6];
 
     	switch (getOperatorMode()) {

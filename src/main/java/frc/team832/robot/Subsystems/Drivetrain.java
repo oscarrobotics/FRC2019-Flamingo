@@ -3,14 +3,12 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
-import frc.team832.GrouchLib.Motors.IOscarSimpleMotor;
 
 public class Drivetrain extends Subsystem {
 
-    private OscarDiffDrive m_driveSystem;
-    private ControlMode m_ctrlMode;
+    private OscarDiffDrive _driveSystem;
 
-    public enum ControlMode {
+    public enum LoopMode {
         SPEED,
         PERCENTAGE
     }
@@ -25,37 +23,31 @@ public class Drivetrain extends Subsystem {
     }
 
     public Drivetrain(OscarDiffDrive driveSystem) {
-        m_driveSystem = driveSystem;
+        _driveSystem = driveSystem;
     }
 
     /**
      *
-     * @param pathMode The {@link DriveMode} to run inputs through
-     * @param loopMode The {@Link ControlMode} to use on the drivetraim
-     * @param stick1 X-Axis translation for Arcade and Curvature, left side for Tank
-     * @param stick2 Z-Axis rotation for Arcade and Curvature, right side for Tank
+     * @param pathMode The {@link DriveMode} to run inputs through.
+     * @param loopMode The {@link LoopMode} to run the motors in.
+     * @param stick1 X-Axis translation for Arcade and Curvature, left side for Tank.
+     * @param stick2 Z-Axis rotation for Arcade and Curvature, right side for Tank.
      */
-    public void teleopControl(DriveMode pathMode, ControlMode loopMode, double stick1, double stick2) {
+    public void teleopControl(double stick1, double stick2, DriveMode pathMode, LoopMode loopMode) {
         switch(pathMode) {
             case ARCADE:
-                m_driveSystem.arcadeDrive(stick1, stick2, false);
+                _driveSystem.arcadeDrive(stick1, stick2, false);
                 break;
             case CURVATURE:
-                m_driveSystem.curvatureDrive(stick1, stick2, true);
+                _driveSystem.curvatureDrive(stick1, stick2, true);
                 break;
             case TANK:
-                m_driveSystem.tankDrive(stick1, stick2, false);
+                _driveSystem.tankDrive(stick1, stick2, false);
                 break;
         }
     }
 
-    public void setControlMode(ControlMode mode) {
-        m_ctrlMode = mode;
-    }
-
-    public void initDefaultCommand() {
-        // TODO: Set the default command, if any, for a subsystem here. Example:
-        //    setDefaultCommand(new MySpecialCommand());
-    }
+    @Override
+    public void initDefaultCommand() { }
 }
 

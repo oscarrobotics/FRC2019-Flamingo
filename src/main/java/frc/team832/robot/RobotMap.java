@@ -1,5 +1,7 @@
 package frc.team832.robot;
 
+import com.ctre.phoenix.CANifier;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import frc.team832.GrouchLib.Control.OscarPCM;
 import frc.team832.GrouchLib.Control.OscarPDP;
@@ -12,9 +14,12 @@ import frc.team832.GrouchLib.Motors.OscarCANTalon;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
 import frc.team832.GrouchLib.Motors.OscarCANVictor;
 import frc.team832.GrouchLib.Motors.OscarSmartMotorGroup;
+import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.robot.Subsystems.ComplexLift;
 import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
+
+import java.awt.*;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -46,12 +51,13 @@ class RobotMap {
     static OscarSimpleMechanism cargoIntake;
     static OscarRotaryMechanism hatchHolder;
     static OscarRotaryMechanism hatchGrabbor;
+    static OscarCANifier canifier;
     /**
      * Initializes robot hardware
      */
     static void init() {
-        pdp = new OscarPDP(IDs.pdp);
-        pcm = new OscarPCM(IDs.pcm);
+//        pdp = new OscarPDP(IDs.pdp);
+//        pcm = new OscarPCM(IDs.pcm);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
 
@@ -59,9 +65,22 @@ class RobotMap {
         OscarCANSparkMax leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
         OscarCANSparkMax rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
         OscarCANSparkMax rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
+
+        leftSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
+        rightSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
+        leftSlave.follow(leftMaster);
+        rightSlave.follow(rightMaster);
+
         OscarSmartMotorGroup leftDrive = new OscarSmartMotorGroup(leftMaster, leftSlave);
         OscarSmartMotorGroup rightDrive = new OscarSmartMotorGroup(rightMaster, rightSlave);
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
+
+        canifier = new OscarCANifier(0);
+        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
+        canifier.setLedVoltage(5);
+        canifier.setLedMaxOutput(1);
+        canifier.setLedColor(Color.MAGENTA);
+//        canifier.setLedRGB(1, 0, 1);
 
 //        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
 //        OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);

@@ -1,13 +1,14 @@
 package frc.team832.robot.Subsystems;
 
 import com.ctre.phoenix.CANifier;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
-public class SnowBlower {
+public class SnowBlower extends Subsystem {
 
     private OscarSimpleMechanism _intake;
     private OscarSmartMechanism _hatchHoldor;
@@ -24,6 +25,27 @@ public class SnowBlower {
         _heightUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
     }
 
+    @Override
+    public void periodic() {
+        boolean gettingCargo = true;
+        if (gettingCargo) {
+            switch (getCargoPosition()) {
+                case UNKNOWN:
+                    // do nothing
+                    break;
+                case BOTTOM:
+
+                    break;
+                case BOTTOM_CENTERED:
+                    break;
+                case MIDDLE:
+                    break;
+                case TOP:
+                    break;
+            }
+        }
+    }
+
     public enum CargoPosition {
         UNKNOWN,
         BOTTOM,
@@ -31,7 +53,6 @@ public class SnowBlower {
         MIDDLE,
         TOP
     }
-
     public boolean getHatchCoverStatus() {
         // do fancy limit switch checking here
         return false;
@@ -81,6 +102,7 @@ public class SnowBlower {
     }
 
     public static class Constants {
+
         public static final double CargoBottomMinInches = 32.1;
         public static final double CargoBottomMaxInches = 28;
         public static final double CargoMiddleMinInches = 28.1;
@@ -88,4 +110,7 @@ public class SnowBlower {
         public static final double CargoTopMinInches = 24.1;
         public static final double CargoTopMaxInches = 20;
     }
+
+    @Override
+    protected void initDefaultCommand() { }
 }
