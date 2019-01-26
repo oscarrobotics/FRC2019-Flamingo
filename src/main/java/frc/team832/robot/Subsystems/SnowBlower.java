@@ -2,6 +2,7 @@ package frc.team832.robot.Subsystems;
 
 import com.ctre.phoenix.CANifier;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.team832.GrouchLib.Mechanisms.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
@@ -15,6 +16,7 @@ public class SnowBlower extends Subsystem {
     private OscarSmartMechanism _hatchGrabbor;
     private OscarCANifier _canifier;
     private OscarCANifier.Ultrasonic _heightUltrasonic;
+    public HatchGrabFloorState _currentHatchState = HatchGrabFloorState.INITIAL;
 
     public SnowBlower(OscarSimpleMechanism intake, OscarSmartMechanism hatchHolder, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
         _intake = intake;
@@ -25,25 +27,85 @@ public class SnowBlower extends Subsystem {
         _heightUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
     }
 
+    public enum HatchGrabFloorState {
+        INITIAL,
+        LOWER_ARMS,
+        RAISE_ARMS,
+        OPEN_HOLDER,
+        RETRACT_ARMS
+    }
+
     @Override
     public void periodic() {
         boolean gettingCargo = true;
+        boolean gettingHatch = true;
+        boolean getHatchFloor = true;
+
         if (gettingCargo) {
             switch (getCargoPosition()) {
                 case UNKNOWN:
                     // do nothing
                     break;
                 case BOTTOM:
-
+                    intakeSet(0.5);
                     break;
                 case BOTTOM_CENTERED:
+                    intakeSet(0.5);
                     break;
                 case MIDDLE:
+                    intakeSet(0.0);
+                    gettingCargo = false;
                     break;
                 case TOP:
+                    intakeSet(-0.5);
                     break;
             }
         }
+
+        if(gettingHatch){
+            if(getHatchCoverStatus()){
+                setHatchHolderOpen(false);
+                gettingHatch = false;
+            }
+            else{
+                setHatchHolderOpen(true);
+            }
+        }
+
+        if(getHatchFloor){
+            switch (_currentHatchState){
+                case INITIAL:
+                    _hatchGrabbor.setPosition("Initial");
+                    _hatchHoldor.setPosition("Closed");
+                    if(Math.abs(_hatchGrabbor.getPosition() - Constants.grabberPositions[0].getTarget())<= 20) {
+                        _hatchGrabbor.setPosition("Floor");
+                        newHatchState(HatchGrabFloorState.LOWER_ARMS);
+                    }
+                    break;
+                case LOWER_ARMS:
+                    if(Math.abs(_hatchGrabbor.getPosition() - Constants.grabberPositions[2].getTarget())<= 20) {
+                        _hatchGrabbor.setPosition("Release");
+                        newHatchState(HatchGrabFloorState.RAISE_ARMS);
+                    }
+                    break;
+                case RAISE_ARMS:
+                    if(Math.abs(_hatchGrabbor.getPosition() - Constants.grabberPositions[1].getTarget())<= 20) {
+                        _hatchHoldor.setPosition("Open");
+                        newHatchState(HatchGrabFloorState.OPEN_HOLDER);
+                    }
+                    break;
+                case OPEN_HOLDER:
+                    if(Math.abs(_hatchHoldor.getPosition() - Constants.holderPositions[1].getTarget())<= 20) {
+                        _hatchGrabbor.setPosition("Initial");
+                        newHatchState(HatchGrabFloorState.LOWER_ARMS);
+                    }
+                    break;
+                case RETRACT_ARMS:
+                    getHatchFloor = false;
+                    break;
+            }
+        }
+
     }
 
     public enum CargoPosition {
@@ -56,6 +118,10 @@ public class SnowBlower extends Subsystem {
     public boolean getHatchCoverStatus() {
         // do fancy limit switch checking here
         return false;
+    }
+
+    public void newHatchState(HatchGrabFloorState newState){
+        _currentHatchState = newState;
     }
 
     public CargoPosition getCargoPosition() {
@@ -89,6 +155,15 @@ public class SnowBlower extends Subsystem {
         _intake.set(power);
     }
 
+    public void setHatchHolderOpen(boolean open){
+        if(open)
+            _hatchHoldor.setPosition("Open");
+        else {
+            _hatchHoldor.setPosition("Closed");
+        }
+    }
+
+
     private boolean cargoAtBottom(double cargoDistInches) {
         return inRange(cargoDistInches, Constants.CargoBottomMinInches, Constants.CargoBottomMaxInches);
     }
@@ -104,11 +179,24 @@ public class SnowBlower extends Subsystem {
     public static class Constants {
 
         public static final double CargoBottomMinInches = 32.1;
-        public static final double CargoBottomMaxInches = 28;
-        public static final double CargoMiddleMinInches = 28.1;
-        public static final double CargoMiddleMaxInches = 24;
-        public static final double CargoTopMinInches = 24.1;
-        public static final double CargoTopMaxInches = 20;
+        public static final double CargoBottomMaxInches = 24;
+        public static final double CargoMiddleMinInches = 24.1;
+        public static final double CargoMiddleMaxInches = 16;
+        public static final double CargoTopMinInches = 16.1;
+        public static final double CargoTopMaxInches = 8;
+
+        public static final OscarMechanismPosition[] holderPositions = new OscarMechanismPosition[]{
+                //TODO: put actual numbers here
+                new OscarMechanismPosition("Open", 100),
+                new OscarMechanismPosition("Closed", 200)
+        };
+
+        public static final OscarMechanismPosition[] grabberPositions = new OscarMechanismPosition[]{
+                //TODO: put actual numbers here
+                new OscarMechanismPosition("Initial", 100),
+                new OscarMechanismPosition("Release", 200),
+                new OscarMechanismPosition("Floor", 700)
+        };
     }
 
     @Override
