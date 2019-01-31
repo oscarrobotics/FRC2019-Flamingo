@@ -4,6 +4,9 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2019.2.1"
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 repositories{
     mavenCentral()
     mavenLocal()
@@ -11,9 +14,8 @@ repositories{
 
 def ROBOT_MAIN_CLASS = "frc.team832.robot.Main"
 
-configurations {
-    snobotSimCompile
-}
+// Set this to true to enable desktop support.
+def includeDesktopSupport = true
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -43,6 +45,7 @@ deploy {
 // Also defines JUnit 4.
 dependencies {
     compile wpi.deps.wpilib()
+    wpi.deps.vendor.loadFrom(project(':GrouchLib'))
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)

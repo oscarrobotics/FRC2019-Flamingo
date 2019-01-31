@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.DoNothing;
+import frc.team832.robot.Commands.IntakeControl;
+import frc.team832.robot.Subsystems.SnowBlower;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -22,7 +24,7 @@ public class OI {
 	private static JoystickButton incr, decr;
 	private static JoystickButton modeButton1, modeButton2, modeButton3;
 
-	public OperatorMode operatorMode;
+	public static OperatorMode operatorMode;
 
     public static void init() {
 	    driverPad = new XboxController(0);
@@ -71,7 +73,7 @@ public class OI {
 
     	switch (operatorMode = getOperatorMode()) {
 		    case Intake:
-				opCommands[0] = new DoNothing(); // button 1 command
+				opCommands[0] = new IntakeControl(SnowBlower.Action.INTAKE_FLOOR_CARGO); // button 1 command
 			    opCommands[1] = new DoNothing(); // button 2 command
 			    opCommands[2] = new DoNothing(); // button 3 command
 			    opCommands[3] = new DoNothing(); // button 4 command
@@ -102,6 +104,23 @@ public class OI {
 			    opCommands[4] = new DoNothing(); // button 5 command
 			    opCommands[5] = new DoNothing(); // button 6 command
 			    break;
+	    }
+
+	    // modifier on OP1
+	    if (op1.get()) {
+	    	if(op4.get()) {
+
+		    } else {
+
+		    }
+	    }
+	    // modifier on OP2
+	    if (op2.get() && op5.get()) {
+
+	    }
+	    // modifier on OP3
+	    if (op3.get() && op6.get()) {
+
 	    }
 
 	    op1.whenPressed(opCommands[0]);

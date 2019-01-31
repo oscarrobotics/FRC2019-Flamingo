@@ -86,7 +86,7 @@ class RobotMap {
 //        OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);
 //        OscarCANVictor fourbarSlave = new OscarCANVictor(IDs.fourbarSlave);
 //        OscarSmartMotorGroup fourbarGroup = new OscarSmartMotorGroup(fourbarMaster, fourbarSlave);
-//        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.ElevatorPositions);
+//        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
 //        fourbarMech = new OscarRotaryMechanism(fourbarGroup, Fourbar.Constants.FourBarPositions);
 //        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.LiftPositions);
     }

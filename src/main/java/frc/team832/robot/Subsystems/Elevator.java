@@ -3,27 +3,28 @@ package frc.team832.robot.Subsystems;
 
 import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.OscarMechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 
 public class Elevator extends Subsystem {
 
-    private OscarLinearMechanism m_elevator;
+    private OscarLinearMechanism _elevator;
     private static double targetPosition;
 
     public Elevator(OscarLinearMechanism elevator){
-        m_elevator = elevator;
+        _elevator = elevator;
     }
 
     public double getTargetPosition(){
-        return targetPosition;
+        return _elevator.getTargetPosition();
     }
 
     public double getCurrentPosition(){
-        return m_elevator.getPosition();
+        return _elevator.getCurrentPosition();
     }
 
     public void stop(){
-        m_elevator.stop();
+        _elevator.stop();
     }
 
     public void initDefaultCommand() {
@@ -38,20 +39,20 @@ public class Elevator extends Subsystem {
         public static final double POT_TO_INCHES = 44.0/(double)POT_RANGE;
         public static final double INCHES_TO_POT = 1/POT_TO_INCHES;
 
-        public static final OscarMechanismPosition[] ElevatorPositions = new OscarMechanismPosition[]{
-                new OscarMechanismPosition("BOTTOM", (int)(0*INCHES_TO_POT)),
-                new OscarMechanismPosition("MIDDLE", (int)(22*INCHES_TO_POT)),
-                new OscarMechanismPosition("TOP", (int)(44*INCHES_TO_POT)),
-                new OscarMechanismPosition("HATCH_BOTTOM", (int)(4*INCHES_TO_POT)),
-                new OscarMechanismPosition("CARGO_BOTTOM", (int)(0*INCHES_TO_POT)),
-                new OscarMechanismPosition("CARGO_SHIP", (int)(6*INCHES_TO_POT)),
-                new OscarMechanismPosition("HATCH_MIDDLE", (int)(15*INCHES_TO_POT)),
-                new OscarMechanismPosition("CARGO_MIDDLE", (int)(19*INCHES_TO_POT)),
-                new OscarMechanismPosition("HATCH_HIGH", (int)(30*INCHES_TO_POT)),
-                new OscarMechanismPosition("CARGO_HIGH", (int)(34*INCHES_TO_POT)),
+        private static final OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
+                new OscarMechanismPosition("BOTTOM", 0.0*INCHES_TO_POT),
+                new OscarMechanismPosition("MIDDLE", 22.0*INCHES_TO_POT),
+                new OscarMechanismPosition("TOP", 44*INCHES_TO_POT),
+                new OscarMechanismPosition("HATCH_BOTTOM", 4*INCHES_TO_POT),
+                new OscarMechanismPosition("CARGO_BOTTOM", 0*INCHES_TO_POT),
+                new OscarMechanismPosition("CARGO_SHIP", 6*INCHES_TO_POT),
+                new OscarMechanismPosition("HATCH_MIDDLE", 15*INCHES_TO_POT),
+                new OscarMechanismPosition("CARGO_MIDDLE", 19*INCHES_TO_POT),
+                new OscarMechanismPosition("HATCH_HIGH", 30*INCHES_TO_POT),
+                new OscarMechanismPosition("CARGO_HIGH", 34*INCHES_TO_POT)
         };
+
+        public static final OscarMechanismPositionList Positions = new OscarMechanismPositionList(_positions);
     }
-
-
 }
 

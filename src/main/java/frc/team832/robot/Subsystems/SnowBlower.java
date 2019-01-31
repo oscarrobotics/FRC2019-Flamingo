@@ -2,10 +2,12 @@ package frc.team832.robot.Subsystems;
 
 import com.ctre.phoenix.CANifier;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.OscarMechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.robot.Robot;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
@@ -15,8 +17,11 @@ public class SnowBlower extends Subsystem {
     private OscarSmartMechanism _hatchHoldor;
     private OscarSmartMechanism _hatchGrabbor;
     private OscarCANifier _canifier;
-    private OscarCANifier.Ultrasonic _heightUltrasonic;
+    private OscarCANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
     public HatchGrabFloorState _currentHatchState = HatchGrabFloorState.INITIAL;
+
+    public Action currentAction;
+    private boolean newAction = false;
 
     public SnowBlower(OscarSimpleMechanism intake, OscarSmartMechanism hatchHolder, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
         _intake = intake;
@@ -25,6 +30,12 @@ public class SnowBlower extends Subsystem {
         _hatchGrabbor = hatchGrabber;
 
         _heightUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
+        _centeringUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel2);
+    }
+
+    public void setAction(Action action) {
+        newAction = true;
+        currentAction = action;
     }
 
     public enum HatchGrabFloorState {
@@ -41,25 +52,73 @@ public class SnowBlower extends Subsystem {
         boolean gettingHatch = true;
         boolean getHatchFloor = true;
 
+        switch(currentAction) {
+            case INTAKE_HP_HATCH:
+                break;
+            case INTAKE_FLOOR_HATCH:
+                switch (_currentHatchState){
+                    case INITIAL:
+                        _hatchGrabbor.setPosition("Initial");
+                        _hatchHoldor.setPosition("Closed");
+                        if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[0].getTarget())<= 20) {
+                            _hatchGrabbor.setPosition("Floor");
+                            newHatchState(HatchGrabFloorState.LOWER_ARMS);
+                        }
+                        break;
+                    case LOWER_ARMS:
+                        if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[2].getTarget())<= 20) {
+                            _hatchGrabbor.setPosition("Release");
+                            newHatchState(HatchGrabFloorState.RAISE_ARMS);
+                        }
+                        break;
+                    case RAISE_ARMS:
+                        if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[1].getTarget())<= 20) {
+                            _hatchHoldor.setPosition("Open");
+                            newHatchState(HatchGrabFloorState.OPEN_HOLDER);
+                        }
+                        break;
+                    case OPEN_HOLDER:
+                        if(Math.abs(_hatchHoldor.getPresetPosition("").getTarget() - Constants.holderPositions[1].getTarget())<= 20) {
+                            _hatchGrabbor.setPosition("Initial");
+                            newHatchState(HatchGrabFloorState.LOWER_ARMS);
+                        }
+                        break;
+                    case RETRACT_ARMS:
+                        getHatchFloor = false;
+                        break;
+                }
+                break;
+            case INTAKE_FLOOR_CARGO:
+            case INTAKE_LOW_FLOOR_CARGO:
+                // get desired position
+                OscarMechanismComplexPosition cargoPosition = Robot.complexLift.getComplexPosition(currentAction == Action.INTAKE_LOW_FLOOR_CARGO ? "" : "");
+
+                // set ComplexLift position
+                Robot.complexLift.setPosition(cargoPosition);
+
+                switch (getCargoPosition()) {
+                    case UNKNOWN:
+                        // do nothing
+                        break;
+                    case BOTTOM:
+                        intakeSet(0.5);
+                        break;
+                    case BOTTOM_CENTERED:
+                        intakeSet(0.5);
+                        break;
+                    case MIDDLE:
+                        intakeSet(0.0);
+                        gettingCargo = false;
+                        break;
+                    case TOP:
+                        intakeSet(-0.5);
+                        break;
+                }
+                break;
+        }
+
         if (gettingCargo) {
-            switch (getCargoPosition()) {
-                case UNKNOWN:
-                    // do nothing
-                    break;
-                case BOTTOM:
-                    intakeSet(0.5);
-                    break;
-                case BOTTOM_CENTERED:
-                    intakeSet(0.5);
-                    break;
-                case MIDDLE:
-                    intakeSet(0.0);
-                    gettingCargo = false;
-                    break;
-                case TOP:
-                    intakeSet(-0.5);
-                    break;
-            }
+
         }
 
         if(gettingHatch){
@@ -73,37 +132,7 @@ public class SnowBlower extends Subsystem {
         }
 
         if(getHatchFloor){
-            switch (_currentHatchState){
-                case INITIAL:
-                    _hatchGrabbor.setPosition("Initial");
-                    _hatchHoldor.setPosition("Closed");
-                    if(Math.abs(_hatchGrabbor.getPosition() - Constants.grabberPositions[0].getTarget())<= 20) {
-                        _hatchGrabbor.setPosition("Floor");
-                        newHatchState(HatchGrabFloorState.LOWER_ARMS);
-                    }
-                    break;
-                case LOWER_ARMS:
-                    if(Math.abs(_hatchGrabbor.getPosition() - Constants.grabberPositions[2].getTarget())<= 20) {
-                        _hatchGrabbor.setPosition("Release");
-                        newHatchState(HatchGrabFloorState.RAISE_ARMS);
-                    }
-                    break;
-                case RAISE_ARMS:
-                    if(Math.abs(_hatchGrabbor.getPosition() - Constants.grabberPositions[1].getTarget())<= 20) {
-                        _hatchHoldor.setPosition("Open");
-                        newHatchState(HatchGrabFloorState.OPEN_HOLDER);
-                    }
-                    break;
-                case OPEN_HOLDER:
-                    if(Math.abs(_hatchHoldor.getPosition() - Constants.holderPositions[1].getTarget())<= 20) {
-                        _hatchGrabbor.setPosition("Initial");
-                        newHatchState(HatchGrabFloorState.LOWER_ARMS);
-                    }
-                    break;
-                case RETRACT_ARMS:
-                    getHatchFloor = false;
-                    break;
-            }
+
         }
 
     }
@@ -164,6 +193,7 @@ public class SnowBlower extends Subsystem {
     }
 
 
+
     private boolean cargoAtBottom(double cargoDistInches) {
         return inRange(cargoDistInches, Constants.CargoBottomMinInches, Constants.CargoBottomMaxInches);
     }
@@ -176,7 +206,20 @@ public class SnowBlower extends Subsystem {
         return inRange(cargoDistInches, Constants.CargoTopMinInches, Constants.CargoTopMaxInches);
     }
 
+    private boolean cargoCentered(double cargoDistInches) {
+        return inRange(cargoDistInches, Constants.CargoCenterLeftInches, Constants.CargoCenterRightInches);
+    }
+
+    public enum Action {
+        INTAKE_HP_HATCH,
+        INTAKE_FLOOR_HATCH,
+        INTAKE_FLOOR_CARGO,
+        INTAKE_LOW_FLOOR_CARGO
+    }
+
     public static class Constants {
+
+        public static final double CargoNominalDiameterInches = 13;
 
         public static final double CargoBottomMinInches = 32.1;
         public static final double CargoBottomMaxInches = 24;
@@ -184,6 +227,9 @@ public class SnowBlower extends Subsystem {
         public static final double CargoMiddleMaxInches = 16;
         public static final double CargoTopMinInches = 16.1;
         public static final double CargoTopMaxInches = 8;
+
+        public static final double CargoCenterLeftInches = 8;
+        public static final double CargoCenterRightInches = 12;
 
         public static final OscarMechanismPosition[] holderPositions = new OscarMechanismPosition[]{
                 //TODO: put actual numbers here
