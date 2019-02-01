@@ -89,9 +89,9 @@ public class SnowBlower extends Subsystem {
                 }
                 break;
             case INTAKE_FLOOR_CARGO:
-            case INTAKE_LOW_FLOOR_CARGO:
+            case INTAKE_HP_CARGO:
                 // get desired position
-                OscarMechanismComplexPosition cargoPosition = Robot.complexLift.getComplexPosition(currentAction == Action.INTAKE_LOW_FLOOR_CARGO ? "" : "");
+                OscarMechanismComplexPosition cargoPosition = Robot.complexLift.getComplexPosition(currentAction == Action.INTAKE_HP_CARGO ? "" : "");
 
                 // set ComplexLift position
                 Robot.complexLift.setPosition(cargoPosition);
@@ -214,7 +214,7 @@ public class SnowBlower extends Subsystem {
         INTAKE_HP_HATCH,
         INTAKE_FLOOR_HATCH,
         INTAKE_FLOOR_CARGO,
-        INTAKE_LOW_FLOOR_CARGO
+        INTAKE_HP_CARGO
     }
 
     public static class Constants {
