@@ -36,6 +36,7 @@ public class Robot extends TimedRobot
     public static Fourbar fourbar;
     public static ComplexLift complexLift;
     public static SnowBlower snowBlower;
+    public static TheBigOne theBigOne;
 
     private static OscarCANifier.Ultrasonic ultrasonic;
 
@@ -53,7 +54,6 @@ public class Robot extends TimedRobot
 //        elevator = new Elevator(RobotMap.elevatorMech);
 //        fourbar = new Fourbar(RobotMap.fourbarMech);
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
-
         OI.init();
 
         ultrasonic = RobotMap.canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
@@ -91,7 +91,7 @@ public class Robot extends TimedRobot
         switch (autoSelected) 
         {
             case CUSTOM_AUTO:
-                // Put custom auto code here
+
                 break;
             case DEFAULT_AUTO:
             default:

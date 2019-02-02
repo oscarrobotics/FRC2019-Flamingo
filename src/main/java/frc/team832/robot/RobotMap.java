@@ -10,14 +10,9 @@ import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Motors.OscarCANSparkMax;
-import frc.team832.GrouchLib.Motors.OscarCANTalon;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
-import frc.team832.GrouchLib.Motors.OscarCANVictor;
 import frc.team832.GrouchLib.Motors.OscarSmartMotorGroup;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
-import frc.team832.robot.Subsystems.ComplexLift;
-import frc.team832.robot.Subsystems.Elevator;
-import frc.team832.robot.Subsystems.Fourbar;
 
 import java.awt.*;
 
@@ -39,7 +34,6 @@ class RobotMap {
         public static final int elevator = 6;
         public static final int fourbarMaster = 7;
         public static final int fourbarSlave = 8;
-
     }
 
     static OscarPDP pdp;
@@ -68,8 +62,6 @@ class RobotMap {
 
         leftSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
         rightSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
-        leftSlave.follow(leftMaster);
-        rightSlave.follow(rightMaster);
 
         OscarSmartMotorGroup leftDrive = new OscarSmartMotorGroup(leftMaster, leftSlave);
         OscarSmartMotorGroup rightDrive = new OscarSmartMotorGroup(rightMaster, rightSlave);
@@ -79,7 +71,8 @@ class RobotMap {
         canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
         canifier.setLedVoltage(5);
         canifier.setLedMaxOutput(1);
-        canifier.setLedColor(Color.MAGENTA);
+        canifier.setLedColor(Color.GREEN);
+
 //        canifier.setLedRGB(1, 0, 1);
 
 //        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);

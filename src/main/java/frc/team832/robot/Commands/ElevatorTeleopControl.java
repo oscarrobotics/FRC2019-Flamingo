@@ -11,6 +11,11 @@ public class ElevatorTeleopControl extends Command {
         requires(Robot.elevator);
     }
 
+    @Override
+    protected void initialize() {
+
+    }
+
     /**
      * The execute method is called repeatedly when this Command is
      * scheduled to run until this Command either finishes or is canceled.
@@ -39,10 +44,7 @@ public class ElevatorTeleopControl extends Command {
      */
     @Override
     protected boolean isFinished() {
-        if(Math.abs(Robot.elevator.getCurrentPosition() - Robot.elevator.getTargetPosition()) >= 20)
-            return true;
-        else
-            return false;
+        return Math.abs(Robot.elevator.getCurrentPosition() - Robot.elevator.getTargetPosition()) >= 20;
     }
 
 
