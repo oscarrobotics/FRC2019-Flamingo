@@ -23,6 +23,8 @@ public class SnowBlower extends Subsystem {
 
     private CargoPosition _cargoPosition;
 
+    private boolean _open;
+
     public SnowBlower(OscarSimpleMechanism intake, OscarSmartMechanism hatchHolder, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
         _intake = intake;
         _hatchHoldor = hatchHolder;
@@ -35,7 +37,25 @@ public class SnowBlower extends Subsystem {
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
     }
 
+    public void setGrabborPosition(String index){
+        _hatchGrabbor.setPosition(index);
+    }
 
+    public double getGrabborTargetPosition(String index){
+        return _hatchGrabbor.getPresetPosition(index).getTarget();
+    }
+
+    public double getGrabborCurrentPosition(){
+        return _hatchGrabbor.getCurrentPosition();
+    }
+
+    public double getHoldorTargetPosition(){
+        return _hatchHoldor.getPresetPosition(_open ? "Open" : "Closed").getTarget();
+    }
+
+    public double getHoldorCurrentPosition(){
+        return _hatchHoldor.getCurrentPosition();
+    }
 
     public enum HatchGrabFloorState {
         INITIAL,
@@ -104,6 +124,7 @@ public class SnowBlower extends Subsystem {
 
     public void setHatchHolderOpen(boolean open){
         _hatchHoldor.setPosition(open ? "Open" : "Closed");
+        _open = open;
     }
 
     private boolean cargoAtBottom(double cargoDistInches) {

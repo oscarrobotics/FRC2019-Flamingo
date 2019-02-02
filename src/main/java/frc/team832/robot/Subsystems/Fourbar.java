@@ -1,13 +1,13 @@
 package frc.team832.robot.Subsystems;
 
+import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
-import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 
 public class Fourbar {
-    private OscarRotaryMechanism _fourbar;
+    private OscarLinearMechanism _fourbar;
 
-    public Fourbar(OscarRotaryMechanism fourbar){
+    public Fourbar(OscarLinearMechanism fourbar){
         _fourbar = fourbar;
     }
 

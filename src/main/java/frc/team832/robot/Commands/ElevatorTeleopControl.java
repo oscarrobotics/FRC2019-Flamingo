@@ -7,9 +7,7 @@ import frc.team832.robot.Robot;
 
 public class ElevatorTeleopControl extends Command {
 
-    public ElevatorTeleopControl() {
-        requires(Robot.elevator);
-    }
+    public ElevatorTeleopControl() {requires(Robot.elevator);}
 
     @Override
     protected void initialize() {

@@ -1,7 +1,9 @@
 package frc.team832.robot.Subsystems;
 
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
+import frc.team832.robot.Commands.IntakePanelFloor;
 import frc.team832.robot.Robot;
 
 public class TheBigOne extends Subsystem {
@@ -29,7 +31,6 @@ public class TheBigOne extends Subsystem {
 	}
 
 	public void setIdle() {
-		toRunAction = Action.IDLE;
 		runningAction = Action.IDLE;
 	}
 
@@ -44,39 +45,15 @@ public class TheBigOne extends Subsystem {
 		switch(runningAction) {
 			case INTAKE_HP_HATCH:
 				_snowBlower.setHatchHolderOpen(!_snowBlower.getHatchCoverStatus());
+				if(_snowBlower.getHatchCoverStatus())
+					setIdle();
 				break;
 			case INTAKE_FLOOR_HATCH:
-//				switch (_snowBlower._currentHatchState){
-//					case INITIAL:
-//						_snowBlower._hatchGrabbor.setPosition("Initial");
-//						_snow_hatchHoldor.setPosition("Closed");
-//						if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[0].getTarget())<= 20) {
-//							_hatchGrabbor.setPosition("Floor");
-//							newHatchState(HatchGrabFloorState.LOWER_ARMS);
-//						}
-//						break;
-//					case LOWER_ARMS:
-//						if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[2].getTarget())<= 20) {
-//							_hatchGrabbor.setPosition("Release");
-//							newHatchState(HatchGrabFloorState.RAISE_ARMS);
-//						}
-//						break;
-//					case RAISE_ARMS:
-//						if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[1].getTarget())<= 20) {
-//							_hatchHoldor.setPosition("Open");
-//							newHatchState(HatchGrabFloorState.OPEN_HOLDER);
-//						}
-//						break;
-//					case OPEN_HOLDER:
-//						if(Math.abs(_hatchHoldor.getPresetPosition("").getTarget() - Constants.holderPositions[1].getTarget())<= 20) {
-//							_hatchGrabbor.setPosition("Initial");
-//							newHatchState(HatchGrabFloorState.LOWER_ARMS);
-//						}
-//						break;
-//					case RETRACT_ARMS:
-//						getHatchFloor = false;
-//						break;
-//				}
+				CommandGroup toRun = new IntakePanelFloor();
+				toRun.start();
+				if(toRun.isCompleted()) {
+					setIdle();
+				}
 				break;
 			case INTAKE_HP_CARGO:
 			case INTAKE_FLOOR_CARGO:
