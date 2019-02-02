@@ -2,13 +2,11 @@ package frc.team832.robot.Subsystems;
 
 import com.ctre.phoenix.CANifier;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
-import frc.team832.robot.Robot;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
@@ -23,7 +21,7 @@ public class SnowBlower extends Subsystem {
 
     public HatchGrabFloorState _currentHatchState = HatchGrabFloorState.INITIAL;
 
-    public Action toRunAction, runningAction;
+    private CargoPosition _cargoPosition;
 
     public SnowBlower(OscarSimpleMechanism intake, OscarSmartMechanism hatchHolder, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
         _intake = intake;
@@ -37,14 +35,7 @@ public class SnowBlower extends Subsystem {
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
     }
 
-    public void setAction(Action action) {
-        toRunAction = action;
-    }
 
-    public void setIdle() {
-        toRunAction = Action.IDLE;
-        runningAction = Action.IDLE;
-    }
 
     public enum HatchGrabFloorState {
         INITIAL,
@@ -56,104 +47,7 @@ public class SnowBlower extends Subsystem {
 
     @Override
     public void periodic() {
-        boolean gettingCargo = true;
-        boolean gettingHatch = true;
-        boolean getHatchFloor = true;
-
-        // action non-cancellation
-        if (toRunAction != Action.IDLE && runningAction == Action.IDLE) {
-            runningAction = toRunAction;
-        }
-
-        switch(runningAction) {
-            case INTAKE_HP_HATCH:
-                break;
-            case INTAKE_FLOOR_HATCH:
-                switch (_currentHatchState){
-                    case INITIAL:
-                        _hatchGrabbor.setPosition("Initial");
-                        _hatchHoldor.setPosition("Closed");
-                        if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[0].getTarget())<= 20) {
-                            _hatchGrabbor.setPosition("Floor");
-                            newHatchState(HatchGrabFloorState.LOWER_ARMS);
-                        }
-                        break;
-                    case LOWER_ARMS:
-                        if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[2].getTarget())<= 20) {
-                            _hatchGrabbor.setPosition("Release");
-                            newHatchState(HatchGrabFloorState.RAISE_ARMS);
-                        }
-                        break;
-                    case RAISE_ARMS:
-                        if(Math.abs(_hatchGrabbor.getPresetPosition("").getTarget() - Constants.grabberPositions[1].getTarget())<= 20) {
-                            _hatchHoldor.setPosition("Open");
-                            newHatchState(HatchGrabFloorState.OPEN_HOLDER);
-                        }
-                        break;
-                    case OPEN_HOLDER:
-                        if(Math.abs(_hatchHoldor.getPresetPosition("").getTarget() - Constants.holderPositions[1].getTarget())<= 20) {
-                            _hatchGrabbor.setPosition("Initial");
-                            newHatchState(HatchGrabFloorState.LOWER_ARMS);
-                        }
-                        break;
-                    case RETRACT_ARMS:
-                        getHatchFloor = false;
-                        break;
-                }
-                break;
-            case INTAKE_FLOOR_CARGO:
-            case INTAKE_LOW_FLOOR_CARGO:
-                // we case both together, and check the action later, as the code is 99% the same, just a different position
-
-                // get desired position
-                OscarMechanismComplexPosition cargoPosition = ComplexLift.Constants.Positions.getByIndex(
-                        toRunAction == Action.INTAKE_LOW_FLOOR_CARGO ? "" : "");
-
-                // set ComplexLift position
-                Robot.complexLift.setPosition(cargoPosition);
-
-                switch (getCargoPosition()) {
-                    case UNKNOWN:
-                        // do nothing
-                        break;
-                    case BOTTOM:
-                        intakeSet(0.5);
-                        break;
-                    case BOTTOM_CENTERED:
-                        intakeSet(0.5);
-                        break;
-                    case MIDDLE:
-                        intakeSet(0.0);
-                        gettingCargo = false;
-                        break;
-                    case TOP:
-                        intakeSet(-0.5);
-                        break;
-                }
-                break;
-            case IDLE:
-                // fancy LEDs?
-                break;
-        }
-
-        if (gettingCargo) {
-
-        }
-
-        if(gettingHatch){
-            if(getHatchCoverStatus()){
-                setHatchHolderOpen(false);
-                gettingHatch = false;
-            }
-            else{
-                setHatchHolderOpen(true);
-            }
-        }
-
-        if(getHatchFloor){
-
-        }
-
+        _cargoPosition = updateCargoPosition();
     }
 
     public enum CargoPosition {
@@ -163,6 +57,7 @@ public class SnowBlower extends Subsystem {
         MIDDLE,
         TOP
     }
+
     public boolean getHatchCoverStatus() {
         // do fancy limit switch checking here
         return false;
@@ -173,6 +68,10 @@ public class SnowBlower extends Subsystem {
     }
 
     public CargoPosition getCargoPosition() {
+        return _cargoPosition;
+    }
+
+    private CargoPosition updateCargoPosition() {
         // todo: determine how to differentiate the cargo being centered in the bottom, or being off-center in the bottom
         // is this even really necessary? we could just bring the ball to the middle and it'd be centered.
         // maybe some combination of reflectance/optical and a line break?
@@ -223,13 +122,7 @@ public class SnowBlower extends Subsystem {
         return inRange(cargoDistInches, Constants.CargoCenter_LeftInches, Constants.CargoCenter_RightInches);
     }
 
-    public enum Action {
-        INTAKE_HP_HATCH,
-        INTAKE_FLOOR_HATCH,
-        INTAKE_FLOOR_CARGO,
-        INTAKE_LOW_FLOOR_CARGO,
-        IDLE
-    }
+
 
     public static class Constants {
 

@@ -8,7 +8,6 @@ import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 public class Elevator extends Subsystem {
 
     private OscarLinearMechanism _elevator;
-    private static double targetPosition;
 
     public Elevator(OscarLinearMechanism elevator){
         _elevator = elevator;
@@ -49,11 +48,9 @@ public class Elevator extends Subsystem {
 
                 new OscarMechanismPosition("RocketCargo_Low", 30 * INCHES_TO_POT),
                 new OscarMechanismPosition("RocketCargo_Middle", 34 * INCHES_TO_POT),
-                new OscarMechanismPosition("RocketCargo_High", 34 * INCHES_TO_POT),
-
+                new OscarMechanismPosition("RocketCargo_High", 34 * INCHES_TO_POT)
         };
 
         public static final OscarMechanismPositionList Positions = new OscarMechanismPositionList(_positions);
     }
 }
-

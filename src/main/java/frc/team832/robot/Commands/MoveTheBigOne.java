@@ -2,13 +2,13 @@ package frc.team832.robot.Commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.team832.robot.Robot;
-import frc.team832.robot.Subsystems.SnowBlower;
+import frc.team832.robot.Subsystems.TheBigOne;
 
-public class IntakeControl extends InstantCommand {
+public class MoveTheBigOne extends InstantCommand {
 
-	SnowBlower.Action _action;
+	TheBigOne.Action _action;
 
-	public IntakeControl(SnowBlower.Action _action) {
+	public MoveTheBigOne(TheBigOne.Action _action) {
 		requires(Robot.snowBlower);
 	}
 
@@ -18,6 +18,6 @@ public class IntakeControl extends InstantCommand {
 	 */
 	@Override
 	protected void initialize() {
-		Robot.snowBlower.setAction(_action);
+		Robot.theBigOne.setAction(_action);
 	}
 }

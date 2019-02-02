@@ -5,8 +5,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.DoNothing;
-import frc.team832.robot.Commands.IntakeControl;
+import frc.team832.robot.Commands.MoveTheBigOne;
 import frc.team832.robot.Subsystems.SnowBlower;
+import frc.team832.robot.Subsystems.TheBigOne;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -73,7 +74,7 @@ public class OI {
 
     	switch (operatorMode = getOperatorMode()) {
 		    case Intake:
-				opCommands[0] = new IntakeControl(SnowBlower.Action.INTAKE_FLOOR_CARGO); // button 1 command
+				opCommands[0] = new MoveTheBigOne(TheBigOne.Action.INTAKE_FLOOR_CARGO); // button 1 command
 			    opCommands[1] = new DoNothing(); // button 2 command
 			    opCommands[2] = new DoNothing(); // button 3 command
 			    opCommands[3] = new DoNothing(); // button 4 command
