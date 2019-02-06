@@ -11,7 +11,7 @@ import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Motors.OscarCANSparkMax;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
-import frc.team832.GrouchLib.Motors.OscarSmartMotorGroup;
+import frc.team832.GrouchLib.Motors.OscarCANSmartMotorGroup;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 
 import java.awt.*;
@@ -63,8 +63,8 @@ class RobotMap {
         leftSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
         rightSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
 
-        OscarSmartMotorGroup leftDrive = new OscarSmartMotorGroup(leftMaster, leftSlave);
-        OscarSmartMotorGroup rightDrive = new OscarSmartMotorGroup(rightMaster, rightSlave);
+        OscarCANSmartMotorGroup leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
+        OscarCANSmartMotorGroup rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
 
         canifier = new OscarCANifier(0);
@@ -78,7 +78,7 @@ class RobotMap {
 //        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
 //        OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);
 //        OscarCANVictor fourbarSlave = new OscarCANVictor(IDs.fourbarSlave);
-//        OscarSmartMotorGroup fourbarGroup = new OscarSmartMotorGroup(fourbarMaster, fourbarSlave);
+//        OscarCANSmartMotorGroup fourbarGroup = new OscarCANSmartMotorGroup(fourbarMaster, fourbarSlave);
 //        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
 //        fourbarMech = new OscarRotaryMechanism(fourbarGroup, Fourbar.Constants.FourBarPositions);
 //        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.LiftPositions);
