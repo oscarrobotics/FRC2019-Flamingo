@@ -1,6 +1,7 @@
 package frc.team832.robot.Subsystems;
 
 import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
+import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 

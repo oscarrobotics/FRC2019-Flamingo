@@ -3,16 +3,12 @@ package frc.team832.robot;
 import com.ctre.phoenix.CANifier;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import frc.team832.GrouchLib.Control.OscarPCM;
-import frc.team832.GrouchLib.Control.OscarPDP;
-import frc.team832.GrouchLib.Mechanisms.OscarComplexMechanism;
-import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
-import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
-import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
-import frc.team832.GrouchLib.Motors.OscarCANSparkMax;
-import frc.team832.GrouchLib.Motion.OscarDiffDrive;
-import frc.team832.GrouchLib.Motors.OscarCANSmartMotorGroup;
-import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.GrouchLib.Control.*;
+import frc.team832.GrouchLib.Mechanisms.*;
+import frc.team832.GrouchLib.Motors.*;
+import frc.team832.GrouchLib.Motion.*;
+import frc.team832.GrouchLib.Sensors.*;
+import frc.team832.robot.Subsystems.*;
 
 import java.awt.*;
 
@@ -40,7 +36,7 @@ class RobotMap {
     static OscarPCM pcm;
     static OscarDiffDrive diffDrive;
     static OscarLinearMechanism elevatorMech;
-    static OscarRotaryMechanism fourbarMech;
+    static OscarLinearMechanism fourbarMech;
     static OscarComplexMechanism complexLiftMech;
     static OscarSimpleMechanism cargoIntake;
     static OscarRotaryMechanism hatchHolder;
@@ -75,12 +71,12 @@ class RobotMap {
 
 //        canifier.setLedRGB(1, 0, 1);
 
-//        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
-//        OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);
-//        OscarCANVictor fourbarSlave = new OscarCANVictor(IDs.fourbarSlave);
-//        OscarCANSmartMotorGroup fourbarGroup = new OscarCANSmartMotorGroup(fourbarMaster, fourbarSlave);
-//        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
-//        fourbarMech = new OscarRotaryMechanism(fourbarGroup, Fourbar.Constants.FourBarPositions);
-//        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.LiftPositions);
+        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
+        OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);
+        OscarCANVictor fourbarSlave = new OscarCANVictor(IDs.fourbarSlave);
+        OscarCANSmartMotorGroup fourbarGroup = new OscarCANSmartMotorGroup(fourbarMaster, fourbarSlave);
+        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
+        fourbarMech = new OscarLinearMechanism(fourbarGroup, Fourbar.Constants.Positions);
+        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.Positions);
     }
 }
