@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.OscarComplexMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPositionList;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 
 public class ComplexLift extends Subsystem {
 
@@ -20,6 +21,10 @@ public class ComplexLift extends Subsystem {
     @Override
     public void periodic() {
 
+    }
+
+    public boolean getAtTarget() {
+        return _mechanism.primaryAtTarget() && _mechanism.secondaryAtTarget();
     }
 
     public void setPosition(OscarMechanismComplexPosition position) {

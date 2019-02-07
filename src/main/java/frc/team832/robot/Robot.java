@@ -37,6 +37,7 @@ public class Robot extends TimedRobot
     public static ComplexLift complexLift;
     public static SnowBlower snowBlower;
     public static TheBigOne theBigOne;
+    public static JackStands jackStands;
 
     private static OscarCANifier.Ultrasonic ultrasonic;
 
@@ -54,6 +55,7 @@ public class Robot extends TimedRobot
 //        elevator = new Elevator(RobotMap.elevatorMech);
 //        fourbar = new Fourbar(RobotMap.fourbarMech);
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
+//        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         OI.init();
 
 //        ultrasonic = RobotMap.canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
@@ -106,10 +108,10 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
-        ultrasonic.update();
         drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.PERCENTAGE);
-        double dist = ultrasonic.getRangeInches();
-        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));
+//        ultrasonic.update();
+//        double dist = ultrasonic.getRangeInches();
+//        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));
 //        complexLift.mainLoop();
     }
 

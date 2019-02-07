@@ -30,6 +30,9 @@ class RobotMap {
         public static final int elevator = 6;
         public static final int fourbarMaster = 7;
         public static final int fourbarSlave = 8;
+        public static final int frontJackStand = 9;
+        public static final int backJackStand = 10;
+        public static final int jackStandDrive = 11;
     }
 
     static OscarPDP pdp;
@@ -41,13 +44,17 @@ class RobotMap {
     static OscarSimpleMechanism cargoIntake;
     static OscarRotaryMechanism hatchHolder;
     static OscarRotaryMechanism hatchGrabbor;
+    static OscarLinearMechanism frontJackStand;
+    static OscarLinearMechanism backJackStand;
+    static OscarSimpleMechanism jackStandDrive;
     static OscarCANifier canifier;
     /**
      * Initializes robot hardware
      */
     static void init() {
-//        pdp = new OscarPDP(IDs.pdp);
-//        pcm = new OscarPCM(IDs.pcm);
+        pdp = new OscarPDP(IDs.pdp);
+
+        //pcm = new OscarPCM(IDs.pcm);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
 
@@ -62,6 +69,7 @@ class RobotMap {
         OscarCANSmartMotorGroup leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
         OscarCANSmartMotorGroup rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
+/*
 
         canifier = new OscarCANifier(0);
         canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
@@ -75,8 +83,16 @@ class RobotMap {
         OscarCANTalon fourbarMaster = new OscarCANTalon(IDs.fourbarMaster);
         OscarCANVictor fourbarSlave = new OscarCANVictor(IDs.fourbarSlave);
         OscarCANSmartMotorGroup fourbarGroup = new OscarCANSmartMotorGroup(fourbarMaster, fourbarSlave);
+        OscarCANTalon frontJackStandMotor = new OscarCANTalon(IDs.frontJackStand);
+        OscarCANTalon backJackStandMotor = new OscarCANTalon(IDs.backJackStand);
+        OscarCANVictor jackStandDriveMotor = new OscarCANVictor(IDs.jackStandDrive);
         elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
         fourbarMech = new OscarLinearMechanism(fourbarGroup, Fourbar.Constants.Positions);
         complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.Positions);
+        frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
+        backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
+        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
+*/
+
     }
 }

@@ -2,6 +2,7 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.team832.GrouchLib.Mechanisms.OscarComplexMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
 import frc.team832.robot.Commands.IntakePanelFloor;
 import frc.team832.robot.Robot;
@@ -23,6 +24,14 @@ public class TheBigOne extends Subsystem {
 		INTAKE_FLOOR_HATCH,
 		INTAKE_FLOOR_CARGO,
 		INTAKE_HP_CARGO,
+		CARGO_SHIP_HATCH,
+		CARGO_SHIP_CARGO,
+		ROCKET_HATCH_LOW,
+		ROCKET_HATCH_MID,
+		ROCKET_HATCH_HIGH,
+		ROCKET_CARGO_LOW,
+		ROCKET_CARGO_MID,
+		ROCKET_CARGO_HIGH,
 		IDLE
 	}
 
@@ -49,11 +58,12 @@ public class TheBigOne extends Subsystem {
 					setIdle();
 				break;
 			case INTAKE_FLOOR_HATCH:
-				CommandGroup toRun = new IntakePanelFloor();
+				/*CommandGroup toRun = new IntakePanelFloor();
 				toRun.start();
 				if(toRun.isCompleted()) {
 					setIdle();
-				}
+				}*/
+				setIdle();
 				break;
 			case INTAKE_HP_CARGO:
 			case INTAKE_FLOOR_CARGO:
@@ -83,6 +93,28 @@ public class TheBigOne extends Subsystem {
 						_snowBlower.intakeSet(-0.5);
 						break;
 				}
+				break;
+			case CARGO_SHIP_HATCH:
+				OscarMechanismComplexPosition hatchPosition = ComplexLift.Constants.Positions.getByIndex("");
+				Robot.complexLift.setPosition(hatchPosition);
+				if(Robot.complexLift.getAtTarget())
+
+				break;
+			case CARGO_SHIP_CARGO:
+
+				break;
+			case ROCKET_HATCH_LOW:
+			case ROCKET_HATCH_MID:
+			case ROCKET_HATCH_HIGH:
+
+
+
+				break;
+			case ROCKET_CARGO_LOW:
+			case ROCKET_CARGO_MID:
+			case ROCKET_CARGO_HIGH:
+
+
 				break;
 			case IDLE:
 				// fancy LEDs?
