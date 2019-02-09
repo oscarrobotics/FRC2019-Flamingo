@@ -23,7 +23,7 @@ public class OI {
 	public static Joystick operatorBox;
 	private static JoystickButton op1, op2, op3, op4, op5, op6;
 	private static JoystickButton incr, decr;
-	private static JoystickButton modeButton1, modeButton2, modeButton3;
+	private static JoystickButton modeButton1, modeButton2, modeButton3, standUp, standDown;
 
 	public static OperatorMode operatorMode;
 
@@ -34,6 +34,9 @@ public class OI {
 	    rightStickPress = new JoystickButton(driverPad, 10);
 
 	    operatorBox = new Joystick(1);
+
+	    standUp = new JoystickButton(driverPad, 3);
+	    standDown = new JoystickButton(driverPad, 0);
 
 	    if (operatorBox.getButtonCount() > 11) {
 		    op1 = new JoystickButton(operatorBox, 0);

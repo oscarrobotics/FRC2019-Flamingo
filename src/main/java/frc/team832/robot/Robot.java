@@ -53,9 +53,15 @@ public class Robot extends TimedRobot
         drivetrain = new Drivetrain(RobotMap.diffDrive);
 //        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 //        elevator = new Elevator(RobotMap.elevatorMech);
-//        fourbar = new Fourbar(RobotMap.fourbarMech);
+        fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
+        fourbar.setTopUpperLimit(680);
+        fourbar.setTopLowerLimit(180);
+        fourbar.setBottomLowerLimit(-915);
+        fourbar.setBottomUpperLimit(-200);
+
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
         jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
+
         OI.init();
 
 //        ultrasonic = RobotMap.canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
@@ -108,9 +114,21 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
+        SmartDashboard.putNumber("Top Fourbar", RobotMap.fourbarTopMech.getCurrentPosition());
+        SmartDashboard.putNumber("Bottom Fourbar", RobotMap.fourbarTopMech.getCurrentPosition());
+
         SmartDashboard.putNumber("Front Jack Stand encoder: ", jackStands.getFrontCurrentPosition());
         SmartDashboard.putNumber("Back Jack Stand encoder: ", jackStands.getBackCurrentPosition());
         drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.PERCENTAGE);
+
+        if (OI.driverPad.getYButton()) {
+            RobotMap.backJackStandMotor.set(0.5);
+            RobotMap.frontJackStandMotor.set(0.5);
+        } else {
+            RobotMap.backJackStand.stop();
+            RobotMap.frontJackStand.stop();
+        }
+
 //        ultrasonic.update();
 //        double dist = ultrasonic.getRangeInches();
 //        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));

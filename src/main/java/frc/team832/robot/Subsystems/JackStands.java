@@ -21,6 +21,11 @@ public class JackStands extends Subsystem {
         _drive = drive;
     }
 
+    public void setPower(double pow){
+//        _backStand.set;
+    }
+
+
     public double getFrontTargetPosition(){
         return frontTargetPosition;
     }
@@ -43,6 +48,16 @@ public class JackStands extends Subsystem {
 
     public void setBackPosition(String index) {
         _backStand.setPosition(_backStand.getPresetPosition(index));
+    }
+
+    public void setUpperLimit(int limit){
+        _frontStand.setUpperLimit(limit);
+        _backStand.setUpperLimit(limit);
+    }
+
+    public void setLowerLimit(int limit){
+        _frontStand.setLowerLimit(limit);
+        _backStand.setLowerLimit(limit);
     }
 
     public void stop(){
