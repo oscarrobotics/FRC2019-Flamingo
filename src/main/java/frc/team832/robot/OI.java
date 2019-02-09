@@ -82,25 +82,25 @@ public class OI {
 			    opCommands[5] = new DoNothing(); // button 6 command
 			    break;
 		    case CargoShip:
-			    opCommands[0] = new DoNothing(); // button 1 command
+			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.CARGO_SHIP_CARGO); // button 1 command
 			    opCommands[1] = new DoNothing(); // button 2 command
-			    opCommands[2] = new DoNothing(); // button 3 command
+			    opCommands[2] = new MoveTheBigOne(TheBigOne.Action.CARGO_SHIP_HATCH); // button 3 command
 			    opCommands[3] = new DoNothing(); // button 4 command
 			    opCommands[4] = new DoNothing(); // button 5 command
 			    opCommands[5] = new DoNothing(); // button 6 command
 			    break;
 		    case Rocket_Hatch:
-			    opCommands[0] = new DoNothing(); // button 1 command
-			    opCommands[1] = new DoNothing(); // button 2 command
-			    opCommands[2] = new DoNothing(); // button 3 command
+			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.ROCKET_HATCH_HIGH); // button 1 command
+			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.ROCKET_HATCH_MID); // button 2 command
+			    opCommands[2] = new MoveTheBigOne(TheBigOne.Action.ROCKET_HATCH_LOW); // button 3 command
 			    opCommands[3] = new DoNothing(); // button 4 command
 			    opCommands[4] = new DoNothing(); // button 5 command
 			    opCommands[5] = new DoNothing(); // button 6 command
 			    break;
 		    case Rocket_Cargo:
-			    opCommands[0] = new DoNothing(); // button 1 command
-			    opCommands[1] = new DoNothing(); // button 2 command
-			    opCommands[2] = new DoNothing(); // button 3 command
+			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.ROCKET_CARGO_HIGH); // button 1 command
+			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.ROCKET_CARGO_MID); // button 2 command
+			    opCommands[2] = new MoveTheBigOne(TheBigOne.Action.ROCKET_CARGO_LOW); // button 3 command
 			    opCommands[3] = new DoNothing(); // button 4 command
 			    opCommands[4] = new DoNothing(); // button 5 command
 			    opCommands[5] = new DoNothing(); // button 6 command

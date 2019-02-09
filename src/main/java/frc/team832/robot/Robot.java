@@ -55,7 +55,7 @@ public class Robot extends TimedRobot
 //        elevator = new Elevator(RobotMap.elevatorMech);
 //        fourbar = new Fourbar(RobotMap.fourbarMech);
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
-//        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
+        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         OI.init();
 
 //        ultrasonic = RobotMap.canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
@@ -108,6 +108,8 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic() 
     {
+        SmartDashboard.putNumber("Front Jack Stand encoder: ", jackStands.getFrontCurrentPosition());
+        SmartDashboard.putNumber("Back Jack Stand encoder: ", jackStands.getBackCurrentPosition());
         drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.PERCENTAGE);
 //        ultrasonic.update();
 //        double dist = ultrasonic.getRangeInches();

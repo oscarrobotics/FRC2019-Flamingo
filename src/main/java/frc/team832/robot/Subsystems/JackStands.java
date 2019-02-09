@@ -37,12 +37,12 @@ public class JackStands extends Subsystem {
         return _backStand.getCurrentPosition();
     }
 
-    public void setFrontPosition(OscarMechanismPosition position) {
-        _frontStand.setPosition(position);
+    public void setFrontPosition(String index) {
+        _frontStand.setPosition(_frontStand.getPresetPosition(index));
     }
 
-    public void setBackPosition(OscarMechanismPosition position) {
-        _backStand.setPosition(position);
+    public void setBackPosition(String index) {
+        _backStand.setPosition(_backStand.getPresetPosition(index));
     }
 
     public void stop(){
@@ -50,6 +50,9 @@ public class JackStands extends Subsystem {
         _frontStand.stop();
     }
 
+    public boolean getAtTarget(){
+        return _backStand.getAtTarget() && _frontStand.getAtTarget();
+    }
 
     @Override
     protected void initDefaultCommand() {

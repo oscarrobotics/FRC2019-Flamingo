@@ -12,6 +12,8 @@ public class TheBigOne extends Subsystem {
 	private ComplexLift _complexLift;
 	private SnowBlower _snowBlower;
 
+	private OscarMechanismComplexPosition targetPosition;
+
 	private Action toRunAction, runningAction;
 
 	public TheBigOne(ComplexLift complexLift, SnowBlower snowBlower) {
@@ -70,11 +72,11 @@ public class TheBigOne extends Subsystem {
 				// we case both together, and check the action later, as the code is 99% the same, just a different position
 
 				// get desired position
-				OscarMechanismComplexPosition cargoPosition = ComplexLift.Constants.Positions.getByIndex(
+				targetPosition = ComplexLift.Constants.Positions.getByIndex(
 						toRunAction == Action.INTAKE_HP_CARGO ? "" : "");
 
 				// set ComplexLift position
-				Robot.complexLift.setPosition(cargoPosition);
+				Robot.complexLift.setPosition(targetPosition);
 
 				switch (_snowBlower.getCargoPosition()) {
 					case UNKNOWN:
@@ -95,26 +97,38 @@ public class TheBigOne extends Subsystem {
 				}
 				break;
 			case CARGO_SHIP_HATCH:
-				OscarMechanismComplexPosition hatchPosition = ComplexLift.Constants.Positions.getByIndex("");
-				Robot.complexLift.setPosition(hatchPosition);
-				if(Robot.complexLift.getAtTarget())
-
+				targetPosition = ComplexLift.Constants.Positions.getByIndex("");
+				Robot.complexLift.setPosition(targetPosition);
+				if(Robot.complexLift.getAtTarget()){
+				    _snowBlower.setHatchHolderOpen(false);
+                }
 				break;
 			case CARGO_SHIP_CARGO:
-
+			    targetPosition = ComplexLift.Constants.Positions.getByIndex("");
+                Robot.complexLift.setPosition(targetPosition);
+                if(Robot.complexLift.getAtTarget()){
+                    _snowBlower.intakeSet(.5);
+                }
 				break;
 			case ROCKET_HATCH_LOW:
 			case ROCKET_HATCH_MID:
 			case ROCKET_HATCH_HIGH:
-
-
-
+                targetPosition = ComplexLift.Constants.Positions.getByIndex(
+                        toRunAction == Action.ROCKET_HATCH_HIGH ? "": toRunAction == Action.ROCKET_HATCH_MID ? "" : "");
+                Robot.complexLift.setPosition(targetPosition);
+                if(Robot.complexLift.getAtTarget()){
+                    _snowBlower.setHatchHolderOpen(false);
+                }
 				break;
 			case ROCKET_CARGO_LOW:
 			case ROCKET_CARGO_MID:
 			case ROCKET_CARGO_HIGH:
-
-
+                targetPosition = ComplexLift.Constants.Positions.getByIndex(
+                        toRunAction == Action.ROCKET_CARGO_HIGH ? "": toRunAction == Action.ROCKET_CARGO_MID ? "" : "");
+                Robot.complexLift.setPosition(targetPosition);
+                if(Robot.complexLift.getAtTarget()){
+                    _snowBlower.setHatchHolderOpen(false);
+                }
 				break;
 			case IDLE:
 				// fancy LEDs?
