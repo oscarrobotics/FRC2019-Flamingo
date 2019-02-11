@@ -86,6 +86,11 @@ class RobotMap {
         leftSlave.getInstance().follow(leftMaster.getInstance());
         rightSlave.getInstance().follow(rightMaster.getInstance());
 
+        leftMaster.setOutputRange(-1.0, 1.0);
+        leftSlave.setOutputRange(-1.0, 1.0);
+        rightMaster.setOutputRange(-1.0, 1.0);
+        rightSlave.setOutputRange(-1.0, 1.0);
+
         leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
         rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
@@ -96,8 +101,8 @@ class RobotMap {
         leftDrive.setNeutralMode(NeutralMode.Coast);
         rightDrive.setNeutralMode(NeutralMode.Coast);
 
-        leftMaster.setkP(.25);
-        rightMaster.setkP(.25);
+        leftMaster.setkP(.000025);
+        rightMaster.setkP(.000025);
 
 //        canifier = new OscarCANifier(0);
 //        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
