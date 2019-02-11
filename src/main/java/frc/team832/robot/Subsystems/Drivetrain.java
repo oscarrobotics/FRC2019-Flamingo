@@ -3,10 +3,11 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Motion.OscarDiffDrive;
+import frc.team832.GrouchLib.Motion.OscarSmartDiffDrive;
 
 public class Drivetrain extends Subsystem {
 
-    private OscarDiffDrive _driveSystem;
+    private OscarSmartDiffDrive _driveSystem;
 
     public enum LoopMode {
         SPEED,
@@ -22,7 +23,7 @@ public class Drivetrain extends Subsystem {
         TANK
     }
 
-    public Drivetrain(OscarDiffDrive driveSystem) {
+    public Drivetrain(OscarSmartDiffDrive driveSystem) {
         _driveSystem = driveSystem;
     }
 

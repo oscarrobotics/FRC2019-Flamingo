@@ -43,7 +43,7 @@ class RobotMap {
 
     static OscarPDP pdp;
     static OscarPCM pcm;
-    static OscarDiffDrive diffDrive;
+    static OscarSmartDiffDrive diffDrive;
     static OscarLinearMechanism elevatorMech;
     static OscarLinearMechanism fourbarTopMech;
     static OscarLinearMechanism fourbarBottomMech;
@@ -93,7 +93,7 @@ class RobotMap {
 
         leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
         rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
-        diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
+        diffDrive = new OscarSmartDiffDrive(leftDrive, rightDrive, 5600);
 
         leftDrive.setClosedLoopRamp(0);
         rightDrive.setClosedLoopRamp(0);

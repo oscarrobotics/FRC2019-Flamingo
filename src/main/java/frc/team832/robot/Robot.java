@@ -129,14 +129,12 @@ public class Robot extends TimedRobot
 
         SmartDashboard.putNumber("Front Jack Stand encoder: ", jackStands.getFrontCurrentPosition());
         SmartDashboard.putNumber("Back Jack Stand encoder: ", jackStands.getBackCurrentPosition());
-         drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.SPEED);
-//        leftMaster.setReference(-OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
-//        rightMaster.setReference(OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
+        drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.SPEED);
 
 
         if (OI.driverPad.getYButton()) {
             RobotMap.backJackStandMotor.set(0.5);
-            RobotMap.frontJackStandMotor.set(0.5);;
+            RobotMap.frontJackStandMotor.set(0.5);
         } else if (OI.driverPad.getAButton()) {
             RobotMap.backJackStandMotor.set(-0.5);
             RobotMap.frontJackStandMotor.set(-0.5);
