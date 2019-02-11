@@ -47,6 +47,10 @@ public class Drivetrain extends Subsystem {
         }
     }
 
+    public void test(double stick){
+
+    }
+
     @Override
     public void initDefaultCommand() { }
 }

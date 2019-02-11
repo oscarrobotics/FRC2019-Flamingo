@@ -10,7 +10,12 @@ import frc.team832.GrouchLib.Mechanisms.*;
 import frc.team832.GrouchLib.Motors.*;
 import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.Sensors.*;
+import frc.team832.robot.Subsystems.ComplexLift;
+import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
+import frc.team832.robot.Subsystems.JackStands;
+
+import java.util.zip.CheckedOutputStream;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -50,6 +55,12 @@ class RobotMap {
     static OscarLinearMechanism backJackStand;
     static OscarSimpleMechanism jackStandDrive;
     static OscarCANifier canifier;
+    static OscarCANSmartMotorGroup leftDrive;
+    static OscarCANSmartMotorGroup rightDrive;
+    static OscarCANSparkMax leftMaster;
+    static OscarCANSparkMax leftSlave;
+    static OscarCANSparkMax rightMaster;
+    static OscarCANSparkMax rightSlave;
 
     public static OscarCANTalon frontJackStandMotor;
     public static OscarCANTalon backJackStandMotor;
@@ -65,18 +76,28 @@ class RobotMap {
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
 
-        OscarCANSparkMax leftMaster = new OscarCANSparkMax(IDs.leftMaster, driveMotorType);
-        OscarCANSparkMax leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
-        OscarCANSparkMax rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
-        OscarCANSparkMax rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
+        leftMaster = new OscarCANSparkMax(IDs.leftMaster, driveMotorType);
+        leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
+        rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
+        rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
 
         leftSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
         rightSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
+        leftSlave.getInstance().follow(leftMaster.getInstance());
+        rightSlave.getInstance().follow(rightMaster.getInstance());
 
-        OscarCANSmartMotorGroup leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
-        OscarCANSmartMotorGroup rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
+        leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
+        rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
         diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
 
+        leftDrive.setClosedLoopRamp(0);
+        rightDrive.setClosedLoopRamp(0);
+
+        leftDrive.setNeutralMode(NeutralMode.Coast);
+        rightDrive.setNeutralMode(NeutralMode.Coast);
+
+        leftMaster.setkP(.25);
+        rightMaster.setkP(.25);
 
 //        canifier = new OscarCANifier(0);
 //        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
@@ -100,21 +121,23 @@ class RobotMap {
         fourbarBottom.setInverted(true);
         fourbarBottom.setSensorPhase(true);
 
-        frontJackStandMotor.setNeutralMode(NeutralMode.Coast);
-        backJackStandMotor.setNeutralMode(NeutralMode.Coast);
+        frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
+        backJackStandMotor.setNeutralMode(NeutralMode.Brake);
         jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
         frontJackStandMotor.setSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         backJackStandMotor.setSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        backJackStandMotor.setInverted(true);
 
+        OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
 
         fourbarTopMech = new OscarLinearMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new OscarLinearMechanism(fourbarBottom, Fourbar.Constants.Positions);
-//        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
+        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
 //        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.Positions);
-//        frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
-//        backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
+        frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
+        backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
 //        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
-//        frontJackStand.setPID(1.0, 1.0,1.0);
-//        backJackStand.setPID(1.0, 1.0,1.0);
+        frontJackStand.setPID(1.0, 1.0,1.0);
+        backJackStand.setPID(1.0, 1.0,1.0);
     }
 }

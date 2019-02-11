@@ -16,9 +16,9 @@ public class JackStands extends Subsystem {
     public static double frontTargetPosition, backTargetPosition;
 
     public JackStands(OscarLinearMechanism frontStand, OscarLinearMechanism backStand, OscarSimpleMechanism drive){
-        _backStand = backStand;
         _frontStand = frontStand;
-        _drive = drive;
+        _backStand = backStand;
+//        _drive = drive;
     }
 
     public void setPower(double pow){
@@ -58,6 +58,11 @@ public class JackStands extends Subsystem {
     public void setLowerLimit(int limit){
         _frontStand.setLowerLimit(limit);
         _backStand.setLowerLimit(limit);
+    }
+
+    public void resetEncoders(){
+        _backStand.resetSensor();
+        _frontStand.resetSensor();
     }
 
     public void stop(){

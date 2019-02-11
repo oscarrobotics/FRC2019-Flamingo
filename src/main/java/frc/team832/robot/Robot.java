@@ -8,12 +8,16 @@
 package frc.team832.robot;
 
 import com.ctre.phoenix.CANifier;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.robot.Subsystems.*;
+
+import static frc.team832.robot.RobotMap.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -61,6 +65,10 @@ public class Robot extends TimedRobot
 
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
         jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
+        jackStands.setUpperLimit(78500);
+        jackStands.setLowerLimit(0);
+
+
 
         OI.init();
 
@@ -84,6 +92,8 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit() 
     {
+
+        jackStands.resetEncoders();
         autoSelected = chooser.getSelected();
         // autoSelected = SmartDashboard.getString("Auto Selector",
         // defaultAuto);
@@ -119,11 +129,18 @@ public class Robot extends TimedRobot
 
         SmartDashboard.putNumber("Front Jack Stand encoder: ", jackStands.getFrontCurrentPosition());
         SmartDashboard.putNumber("Back Jack Stand encoder: ", jackStands.getBackCurrentPosition());
-        drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.PERCENTAGE);
+         //drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.SPEED);
+        leftMaster.setReference(-OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
+        rightMaster.setReference(OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
+        //leftSlave.setReference(-OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
+        //rightSlave.setReference(OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
 
         if (OI.driverPad.getYButton()) {
             RobotMap.backJackStandMotor.set(0.5);
             RobotMap.frontJackStandMotor.set(0.5);
+        } else if (OI.driverPad.getAButton()) {
+            RobotMap.backJackStandMotor.set(-0.5);
+            RobotMap.frontJackStandMotor.set(-0.5);
         } else {
             RobotMap.backJackStand.stop();
             RobotMap.frontJackStand.stop();
