@@ -28,7 +28,7 @@ public class ComplexLift extends Subsystem {
     }
 
     public void setPosition(OscarMechanismComplexPosition position) {
-        _mechanism.setPosition(position);
+        _mechanism.getPrimaryMechanism().setPosition(position.getPrimaryPosition().getIndex());
     }
 
     public OscarMechanismComplexPosition getComplexPosition(String index) {

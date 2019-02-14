@@ -2,7 +2,6 @@ package frc.team832.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import frc.team832.GrouchLib.Control.*;
@@ -15,7 +14,6 @@ import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.JackStands;
 
-import java.util.zip.CheckedOutputStream;
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -43,7 +41,7 @@ class RobotMap {
 
     static OscarPDP pdp;
     static OscarPCM pcm;
-    static OscarDiffDrive diffDrive;
+    static OscarSmartDiffDrive diffDrive;
     static OscarLinearMechanism elevatorMech;
     static OscarLinearMechanism fourbarTopMech;
     static OscarLinearMechanism fourbarBottomMech;
@@ -93,13 +91,13 @@ class RobotMap {
 
         leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
         rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
-        diffDrive = new OscarDiffDrive(leftDrive, rightDrive);
+        diffDrive = new OscarSmartDiffDrive(leftDrive, rightDrive, 5700);
 
-        leftDrive.setClosedLoopRamp(0);
-        rightDrive.setClosedLoopRamp(0);
+        leftDrive.setClosedLoopRamp(0.8);
+        rightDrive.setClosedLoopRamp(0.8);
 
-        leftDrive.setNeutralMode(NeutralMode.Coast);
-        rightDrive.setNeutralMode(NeutralMode.Coast);
+        leftDrive.setNeutralMode(NeutralMode.Brake);
+        rightDrive.setNeutralMode(NeutralMode.Brake);
 
         leftMaster.setkP(.000025);
         rightMaster.setkP(.000025);
@@ -119,21 +117,30 @@ class RobotMap {
         backJackStandMotor = new OscarCANTalon(IDs.backJackStand);
         OscarCANVictor jackStandDriveMotor = new OscarCANVictor(IDs.jackStandDrive);
 
-        fourbarTop.setSensor(FeedbackDevice.Analog);
-        fourbarTop.setNeutralMode(NeutralMode.Coast);
-        fourbarBottom.setSensor(FeedbackDevice.Analog);
-        fourbarBottom.setNeutralMode(NeutralMode.Coast);
-        fourbarBottom.setInverted(true);
-        fourbarBottom.setSensorPhase(true);
+        fourbarTop.setSensorType(FeedbackDevice.Analog);
+        fourbarTop.setNeutralMode(NeutralMode.Brake);
+        fourbarBottom.setSensorType(FeedbackDevice.Analog);
+        fourbarBottom.setNeutralMode(NeutralMode.Brake);
+//        fourbarBottom.setInverted(false);
+//        fourbarBottom.setSensorPhase(true);
+
 
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
         backJackStandMotor.setNeutralMode(NeutralMode.Brake);
         jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
-        frontJackStandMotor.setSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-        backJackStandMotor.setSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+        backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
         backJackStandMotor.setInverted(true);
+        backJackStandMotor.setPeakOutputForward(.2);
+        backJackStandMotor.setPeakOutputReverse(-.2);
+        frontJackStandMotor.setPeakOutputForward(.2);
+        frontJackStandMotor.setPeakOutputReverse(-.2);
+
+
 
         OscarCANTalon elevatorMotor = new OscarCANTalon(IDs.elevator);
+        elevatorMotor.setSensorType(FeedbackDevice.Analog);
+        elevatorMotor.setNeutralMode(NeutralMode.Brake);
 
         fourbarTopMech = new OscarLinearMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new OscarLinearMechanism(fourbarBottom, Fourbar.Constants.Positions);
@@ -142,7 +149,9 @@ class RobotMap {
         frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
         backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
 //        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
-        frontJackStand.setPID(1.0, 1.0,1.0);
-        backJackStand.setPID(1.0, 1.0,1.0);
+        frontJackStand.setPID(1.0, 0,0);
+        backJackStand.setPID(1.0, 0,0);
+        frontJackStandMotor.setSensorPhase(true);
+        backJackStandMotor.setSensorPhase(true);
     }
 }

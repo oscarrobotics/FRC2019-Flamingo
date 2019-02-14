@@ -1,12 +1,14 @@
 package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 import frc.team832.GrouchLib.Motors.IOscarSimpleMotor;
 import frc.team832.GrouchLib.Motors.IOscarSmartMotor;
+import frc.team832.robot.OI;
 
 public class JackStands extends Subsystem {
 
@@ -20,11 +22,6 @@ public class JackStands extends Subsystem {
         _backStand = backStand;
 //        _drive = drive;
     }
-
-    public void setPower(double pow){
-//        _backStand.set;
-    }
-
 
     public double getFrontTargetPosition(){
         return frontTargetPosition;
@@ -43,11 +40,11 @@ public class JackStands extends Subsystem {
     }
 
     public void setFrontPosition(String index) {
-        _frontStand.setPosition(_frontStand.getPresetPosition(index));
+        _frontStand.setPosition(index);
     }
 
     public void setBackPosition(String index) {
-        _backStand.setPosition(_backStand.getPresetPosition(index));
+        _backStand.setPosition(index);
     }
 
     public void setUpperLimit(int limit){
@@ -70,14 +67,31 @@ public class JackStands extends Subsystem {
         _frontStand.stop();
     }
 
+    @Override
+    public void periodic() {
+    }
+
+    public void teleopControl(){
+        if(OI.driverPad.getYButton()){
+            setFrontPosition("TEST1");
+            setBackPosition("TEST1");
+        }else if(OI.driverPad.getAButton()){
+            setFrontPosition("TEST2");
+            setBackPosition("TEST2");
+        }
+    }
+
+    public void pushData() {
+        SmartDashboard.putNumber("Front Jack Stand", getFrontCurrentPosition());
+        SmartDashboard.putNumber("Back Jack Stand", getBackCurrentPosition());
+    }
+
     public boolean getAtTarget(){
         return _backStand.getAtTarget() && _frontStand.getAtTarget();
     }
 
     @Override
-    protected void initDefaultCommand() {
-
-    }
+    protected void initDefaultCommand() {}
 
     public static class Constants {
         public static final int ENC_MIN_VAL = 0;
@@ -88,10 +102,11 @@ public class JackStands extends Subsystem {
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
 
         private static OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
+                new OscarMechanismPosition("TEST1", 500),
+                new OscarMechanismPosition("TEST2", 50000),
                 new OscarMechanismPosition("Bottom", 0.0 * INCHES_TO_ENC),
                 new OscarMechanismPosition("Middle", 10 * INCHES_TO_ENC),
                 new OscarMechanismPosition("Top", MAX_INCHES * INCHES_TO_ENC),
-
         };
 
         public static final OscarMechanismPositionList Positions = new OscarMechanismPositionList(_positions);

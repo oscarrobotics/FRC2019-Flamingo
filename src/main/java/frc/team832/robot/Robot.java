@@ -7,13 +7,11 @@
 
 package frc.team832.robot;
 
-import com.ctre.phoenix.CANifier;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team832.GrouchLib.Motion.OscarSmartDiffDrive;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.robot.Subsystems.*;
 
@@ -27,8 +25,7 @@ import static frc.team832.robot.RobotMap.*;
  * project.
  */
 // If you rename or move this class, update the build.properties file in the project root
-public class Robot extends TimedRobot
-{
+public class Robot extends TimedRobot {
 
     private static final String DEFAULT_AUTO = "Default";
     private static final String CUSTOM_AUTO = "My Auto";
@@ -50,25 +47,25 @@ public class Robot extends TimedRobot
      * used for any initialization code.
      */
     @Override
-    public void robotInit() 
-    {
+    public void robotInit() {
         RobotMap.init();
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
-//        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
-//        elevator = new Elevator(RobotMap.elevatorMech);
+        elevator = new Elevator(RobotMap.elevatorMech);
         fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
-        fourbar.setTopUpperLimit(680);
-        fourbar.setTopLowerLimit(180);
-        fourbar.setBottomLowerLimit(-915);
-        fourbar.setBottomUpperLimit(-200);
+//        fourbar.setTopUpperLimit(680);
+//        fourbar.setTopLowerLimit(180);
+//        fourbar.setBottomLowerLimit(915);
+//        fourbar.setBottomUpperLimit(200);
+        fourbar.setPID(8,0,0);
+//        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
         jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         jackStands.setUpperLimit(78500);
         jackStands.setLowerLimit(0);
 
-
+        jackStands.resetEncoders();
 
         OI.init();
 
@@ -76,6 +73,15 @@ public class Robot extends TimedRobot
 //        ultrasonic.start();
 
         SmartDashboard.putData("Auto choices", chooser);
+    }
+
+    @Override
+    public void robotPeriodic() {
+        SmartDashboard.putData(pdp.getInstance());
+        drivetrain.pushData();
+        elevator.pushData();
+        fourbar.pushData();
+        jackStands.pushData();
     }
 
     /**
@@ -90,10 +96,7 @@ public class Robot extends TimedRobot
      * SendableChooser make sure to add them to the chooser code above as well.
      */
     @Override
-    public void autonomousInit() 
-    {
-
-        jackStands.resetEncoders();
+    public void autonomousInit() {
         autoSelected = chooser.getSelected();
         // autoSelected = SmartDashboard.getString("Auto Selector",
         // defaultAuto);
@@ -104,10 +107,8 @@ public class Robot extends TimedRobot
      * This function is called periodically during autonomous.
      */
     @Override
-    public void autonomousPeriodic() 
-    {
-        switch (autoSelected) 
-        {
+    public void autonomousPeriodic() {
+        switch (autoSelected) {
             case CUSTOM_AUTO:
 
                 break;
@@ -122,41 +123,25 @@ public class Robot extends TimedRobot
      * This function is called periodically during operator control.
      */
     @Override
-    public void teleopPeriodic() 
-    {
-        SmartDashboard.putNumber("Top Fourbar", RobotMap.fourbarTopMech.getCurrentPosition());
-        SmartDashboard.putNumber("Bottom Fourbar", RobotMap.fourbarTopMech.getCurrentPosition());
+    public void teleopPeriodic() {
+        drivetrain.teleopControl(
+                Math.pow(OI.driverPad.getY(GenericHID.Hand.kLeft), 3),
+                Math.pow(-OI.driverPad.getX(GenericHID.Hand.kRight), 3),
+                Drivetrain.DriveMode.CURVATURE,
+                OscarSmartDiffDrive.LoopMode.VELOCITY);
 
-        SmartDashboard.putNumber("Front Jack Stand encoder: ", jackStands.getFrontCurrentPosition());
-        SmartDashboard.putNumber("Back Jack Stand encoder: ", jackStands.getBackCurrentPosition());
-         drivetrain.teleopControl(OI.driverPad.getY(GenericHID.Hand.kLeft), -OI.driverPad.getX(GenericHID.Hand.kRight), Drivetrain.DriveMode.CURVATURE, Drivetrain.LoopMode.SPEED);
-//        leftMaster.setReference(-OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
-//        rightMaster.setReference(OI.driverPad.getY(GenericHID.Hand.kLeft)*5000, ControlType.kVelocity);
+        jackStands.teleopControl();
 
-
-        if (OI.driverPad.getYButton()) {
-            RobotMap.backJackStandMotor.set(0.5);
-            RobotMap.frontJackStandMotor.set(0.5);;
-        } else if (OI.driverPad.getAButton()) {
-            RobotMap.backJackStandMotor.set(-0.5);
-            RobotMap.frontJackStandMotor.set(-0.5);
-        } else {
-            RobotMap.backJackStand.stop();
-            RobotMap.frontJackStand.stop();
-        }
-
+//        fourbar.teleopControl();
+//        elevator.teleopControl();
 //        ultrasonic.update();
 //        double dist = ultrasonic.getRangeInches();
 //        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));
 //        complexLift.mainLoop();
     }
 
-    /**
-     * This function is called periodically during test mode.
-     */
     @Override
-    public void testPeriodic() 
-    {
-        
+    public void disabledInit() {
+        jackStands.resetEncoders();
     }
 }

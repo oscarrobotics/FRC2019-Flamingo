@@ -1,13 +1,14 @@
 package frc.team832.robot.Subsystems;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
-import frc.team832.GrouchLib.Mechanisms.OscarRotaryMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
-import frc.team832.GrouchLib.Motors.IOscarCANSmartMotor;
+import frc.team832.robot.OI;
 
 
-public class Fourbar {
+public class Fourbar extends Subsystem {
     private OscarLinearMechanism _top, _bottom;
 
     public Fourbar(OscarLinearMechanism top, OscarLinearMechanism bottom){
@@ -39,23 +40,51 @@ public class Fourbar {
         _bottom.setLowerLimit(limit);
     }
 
+    public void setPID(double kP, double kI, double kD){
+        _top.setPID(kP, kI, kD);
+        _bottom.setPID(kP, kI, kD);
+    }
+
+    public void teleopControl(){
+
+    }
+
+    @Override
+    public void periodic() {
+    }
+
+    public void pushData() {
+        SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
+        SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
+        SmartDashboard.putNumber("BottomTestPos", Constants.convertUpperToLower(getTopCurrentPosition()));
+    }
 
     public void stop(){
         _top.stop();
         _bottom.stop();
     }
 
+    public void setPosition(String index) {
+        OscarMechanismPosition upperPos = Constants.Positions.getByIndex(index);
+        OscarMechanismPosition lowerPos = new OscarMechanismPosition(index, Constants.convertUpperToLower(upperPos.getTarget()));
+        _top.setPosition(upperPos);
+        _bottom.setPosition(lowerPos);
+    }
+
+    @Override
     public void initDefaultCommand() { }
 
 	public static class Constants {
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
-        public static final double LOWERPOTTOANGLE = -.183;
         public static final double UPPERPOTOFFSET = 112.66;
-        public static final double LOWERPOTOFFSET = 102.128;
         public static final double HEIGHTOFFSET = 2;
 
         private static OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
+                new OscarMechanismPosition("TestMiddle", 450),
+                new OscarMechanismPosition("TestTop", 575),
+                new OscarMechanismPosition("TestBottom", 250),
+
                 new OscarMechanismPosition("Bottom", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
                 new OscarMechanismPosition("Middle", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
                 new OscarMechanismPosition("Top", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
@@ -81,6 +110,8 @@ public class Fourbar {
             return (Math.asin((inches + HEIGHTOFFSET)/ARMLENGTH) + potOffset)/potToAngle;
         }
 
-
+        private static double convertUpperToLower(double upperVal) {
+            return (-1.39 * upperVal) + 1044;
+        }
     }
 }
