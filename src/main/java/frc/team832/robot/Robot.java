@@ -48,7 +48,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        RobotMap.init();
+
+        if (!RobotMap.init()) {
+            // Oh no!
+            throw new RuntimeException("Something went wrong during RobotMap.init()! Look above here for more.");
+        }
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
         elevator = new Elevator(RobotMap.elevatorMech);
@@ -57,7 +61,7 @@ public class Robot extends TimedRobot {
 //        fourbar.setTopLowerLimit(180);
 //        fourbar.setBottomLowerLimit(915);
 //        fourbar.setBottomUpperLimit(200);
-        fourbar.setPID(8,0,0);
+        fourbar.setPID(8,0,0); // TODO: DONT DO THIS HERE GAVIN!!!!!!
 //        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
@@ -69,7 +73,7 @@ public class Robot extends TimedRobot {
 
         OI.init();
 
-//        ultrasonic = RobotMap.canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
+//        ultrasonic = RobotMap.canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
 //        ultrasonic.start();
 
         SmartDashboard.putData("Auto choices", chooser);

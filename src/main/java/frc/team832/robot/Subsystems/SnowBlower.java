@@ -19,7 +19,6 @@ public class SnowBlower extends Subsystem {
     private OscarCANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
     private MiniPID _cargoHeightController;
 
-    public HatchGrabFloorState _currentHatchState = HatchGrabFloorState.INITIAL;
 
     private CargoPosition _cargoPosition;
 
@@ -31,8 +30,10 @@ public class SnowBlower extends Subsystem {
         _canifier = canifier;
         _hatchGrabbor = hatchGrabber;
 
-        _heightUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
-        _centeringUltrasonic = _canifier.addUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel2);
+        CANifier.PWMChannel triggerChannel = CANifier.PWMChannel.PWMChannel0;
+
+        _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, CANifier.PWMChannel.PWMChannel1);
+        _centeringUltrasonic = _canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel2);
 
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
     }
@@ -57,14 +58,6 @@ public class SnowBlower extends Subsystem {
         return _hatchHoldor.getCurrentPosition();
     }
 
-    public enum HatchGrabFloorState {
-        INITIAL,
-        LOWER_ARMS,
-        RAISE_ARMS,
-        OPEN_HOLDER,
-        RETRACT_ARMS
-    }
-
     @Override
     public void periodic() {
         _cargoPosition = updateCargoPosition();
@@ -73,7 +66,6 @@ public class SnowBlower extends Subsystem {
     public enum CargoPosition {
         UNKNOWN,
         BOTTOM,
-        BOTTOM_CENTERED,
         MIDDLE,
         TOP
     }
@@ -83,28 +75,16 @@ public class SnowBlower extends Subsystem {
         return false;
     }
 
-    public void newHatchState(HatchGrabFloorState newState){
-        _currentHatchState = newState;
-    }
-
     public CargoPosition getCargoPosition() {
         return _cargoPosition;
     }
 
     private CargoPosition updateCargoPosition() {
-        // todo: determine how to differentiate the cargo being centered in the bottom, or being off-center in the bottom
-        // is this even really necessary? we could just bring the ball to the middle and it'd be centered.
-        // maybe some combination of reflectance/optical and a line break?
-        // maybe even another ultrasonic going across the bottom?
-
         _heightUltrasonic.update();
         double cargoDist = _heightUltrasonic.getRangeInches();
-        boolean cargoBottomSensor = true;
+        boolean cargoBottomSensor = true; // TODO: check height and bottom ultrasonic
 
-        if (cargoBottomSensor && cargoAtBottom(cargoDist)) {
-            return CargoPosition.BOTTOM_CENTERED;
-        }
-        else if (cargoBottomSensor) {
+        if (cargoBottomSensor) {
             return CargoPosition.BOTTOM;
         }
         else if (cargoAtMiddle(cargoDist)) {
@@ -139,8 +119,8 @@ public class SnowBlower extends Subsystem {
         return inRange(cargoDistInches, Constants.CargoTop_MinInches, Constants.CargoTop_MaxInches);
     }
 
-    private boolean cargoCentered(double cargoDistInches) {
-        return inRange(cargoDistInches, Constants.CargoCenter_LeftInches, Constants.CargoCenter_RightInches);
+    private boolean cargoEntered(double cargoDistInches) {
+        return inRange(cargoDistInches, Constants.CargoEnter_LeftInches, Constants.CargoEnter_RightInches);
     }
 
 
@@ -161,8 +141,10 @@ public class SnowBlower extends Subsystem {
         public static final double CargoTop_MinInches = 16.1;
         public static final double CargoTop_MaxInches = 8;
 
-        public static final double CargoCenter_LeftInches = 8;
-        public static final double CargoCenter_RightInches = 12;
+        public static final double CargoEnter_LeftInches = 8;
+        public static final double CargoEnter_RightInches = 12;
+
+        public static final CANifier.PWMChannel UltrasonicTriggerChannel = CANifier.PWMChannel.PWMChannel0;
 
         public static final OscarMechanismPosition[] holderPositions = new OscarMechanismPosition[]{
                 //TODO: put actual numbers here

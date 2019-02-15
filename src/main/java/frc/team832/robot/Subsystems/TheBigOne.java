@@ -85,9 +85,6 @@ public class TheBigOne extends Subsystem {
 					case BOTTOM:
 						_snowBlower.intakeSet(0.5);
 						break;
-					case BOTTOM_CENTERED:
-						_snowBlower.intakeSet(0.5);
-						break;
 					case MIDDLE:
 						_snowBlower.intakeSet(0.0);
 						break;
