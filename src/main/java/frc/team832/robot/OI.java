@@ -78,7 +78,7 @@ public class OI {
     	switch (operatorMode = getOperatorMode()) {
 		    case Intake:
 				opCommands[0] = new MoveTheBigOne(TheBigOne.Action.INTAKE_FLOOR_CARGO); // button 1 command
-			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_CARGO); // button 2 command
+			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_HATCH); // button 2 command
 			    opCommands[2] = new DoNothing(); // button 3 command
 			    opCommands[3] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_CARGO); // button 4 command
 			    opCommands[4] = new DoNothing(); // button 5 command

@@ -56,7 +56,8 @@ public class Fourbar extends Subsystem {
     public void pushData() {
         SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
         SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
-        SmartDashboard.putNumber("BottomTestPos", Constants.convertUpperToLower(getTopCurrentPosition()));
+        SmartDashboard.putNumber("Approximate max inches as pot", Constants.inchToPotTick(27));
+        SmartDashboard.putNumber("Approximate min inches as pot", Constants.inchToPotTick(-29));
     }
 
     public void stop(){
@@ -80,34 +81,41 @@ public class Fourbar extends Subsystem {
         public static final double UPPERPOTOFFSET = 112.66;
         public static final double HEIGHTOFFSET = 2;
 
+        public static final double MAXINCHES = 27;
+        public static final double MININCHES = -29;
+
         private static OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
                 new OscarMechanismPosition("TestMiddle", 450),
                 new OscarMechanismPosition("TestTop", 575),
                 new OscarMechanismPosition("TestBottom", 250),
 
-                new OscarMechanismPosition("Bottom", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("Middle", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("Top", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
+                new OscarMechanismPosition("Bottom", inchToPotTick(0.0)),
+                new OscarMechanismPosition("Middle", inchToPotTick(0.0)),
+                new OscarMechanismPosition("Top", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("IntakeHatch_HP", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("IntakeHatch_Floor", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
+                new OscarMechanismPosition("IntakeHatch_HP", inchToPotTick(0.0)),
+                new OscarMechanismPosition("IntakeHatch_Floor", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("CargoShip_Hatch", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("CargoShip_Cargo", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
+                new OscarMechanismPosition("CargoShip_Hatch", inchToPotTick(0.0)),
+                new OscarMechanismPosition("CargoShip_Cargo", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("RocketHatch_Low", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("RocketHatch_Middle", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("RocketHatch_High", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
+                new OscarMechanismPosition("RocketHatch_Low", inchToPotTick(0.0)),
+                new OscarMechanismPosition("RocketHatch_Middle", inchToPotTick(0.0)),
+                new OscarMechanismPosition("RocketHatch_High", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("RocketCargo_Low", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("RocketCargo_Middle", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
-                new OscarMechanismPosition("RocketCargo_High", inchToPotTick(0.0, UPPERPOTOFFSET, UPPERPOTTOANGLE)),
+                new OscarMechanismPosition("RocketCargo_Low", inchToPotTick(0.0)),
+                new OscarMechanismPosition("RocketCargo_Middle", inchToPotTick(0.0)),
+                new OscarMechanismPosition("RocketCargo_High", inchToPotTick(0.0)),
         };
 
         public static final OscarMechanismPositionList Positions = new OscarMechanismPositionList(_positions);
 
-        public static double inchToPotTick(double inches, double potOffset, double potToAngle){
-            return (Math.asin((inches + HEIGHTOFFSET)/ARMLENGTH) + potOffset)/potToAngle;
+        public static double inchToPotTick(double inches){
+            return (Math.toDegrees(Math.asin(inches/ARMLENGTH)) + UPPERPOTOFFSET)/UPPERPOTTOANGLE;
+        }
+
+        public static double potTickToInchTop(double potTick){
+            return Math.sin(Math.toRadians((potTick*UPPERPOTTOANGLE)-UPPERPOTOFFSET))*ARMLENGTH;
         }
 
         private static double convertUpperToLower(double upperVal) {

@@ -28,7 +28,11 @@ public class ComplexLift extends Subsystem {
     }
 
     public void setPosition(OscarMechanismComplexPosition position) {
-        _mechanism.getPrimaryMechanism().setPosition(position.getPrimaryPosition().getIndex());
+        _mechanism.getSecondaryMechanism().setPosition(position.getSecondaryPosition().getIndex());
+        if(_mechanism.getSecondaryMechanism().getAtTarget()){
+            _mechanism.getPrimaryMechanism().setPosition(position.getPrimaryPosition().getIndex());
+
+        }
     }
 
     public OscarMechanismComplexPosition getComplexPosition(String index) {
@@ -43,23 +47,22 @@ public class ComplexLift extends Subsystem {
             new OscarMechanismComplexPosition("StartingPosition", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
 
             // constant positions that are pre-defined and the same across two mechanisms
-            new OscarMechanismComplexPosition("IntakeCargo_Low", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("IntakeCargo_Middle", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("IntakeCargo_High", Elevator.Constants.Positions, Fourbar.Constants.Positions),
+            new OscarMechanismComplexPosition("IntakeCargo_Floor", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new OscarMechanismComplexPosition("IntakeCargo_HP", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Middle")),
 
-            new OscarMechanismComplexPosition("IntakeHatch_HP", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("IntakeHatch_Floor", Elevator.Constants.Positions, Fourbar.Constants.Positions),
+            new OscarMechanismComplexPosition("IntakeHatch_HP", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+//            new OscarMechanismComplexPosition("IntakeHatch_Floor", Elevator.Constants.Positions, Fourbar.Constants.Positions),
 
-            new OscarMechanismComplexPosition("CargoShip_Hatch", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("CargoShip_Cargo", Elevator.Constants.Positions, Fourbar.Constants.Positions),
+            new OscarMechanismComplexPosition("CargoShip_Hatch", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new OscarMechanismComplexPosition("CargoShip_Cargo", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
 
-            new OscarMechanismComplexPosition("RocketHatch_Low", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("RocketHatch_Middle", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("RocketHatch_High", Elevator.Constants.Positions, Fourbar.Constants.Positions),
+            new OscarMechanismComplexPosition("RocketHatch_Low", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new OscarMechanismComplexPosition("RocketHatch_Middle", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new OscarMechanismComplexPosition("RocketHatch_High", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
 
-            new OscarMechanismComplexPosition("RocketCargo_Low", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("RocketCargo_Middle", Elevator.Constants.Positions, Fourbar.Constants.Positions),
-            new OscarMechanismComplexPosition("RocketCargo_High", Elevator.Constants.Positions, Fourbar.Constants.Positions)
+            new OscarMechanismComplexPosition("RocketCargo_Low", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new OscarMechanismComplexPosition("RocketCargo_Middle", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new OscarMechanismComplexPosition("RocketCargo_High", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom"))
         };
 
         public static OscarMechanismComplexPositionList Positions = new OscarMechanismComplexPositionList(_positions);

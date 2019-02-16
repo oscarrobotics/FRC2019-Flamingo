@@ -11,6 +11,7 @@ import frc.team832.GrouchLib.Motors.*;
 import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.OscarCANDevice;
 import frc.team832.GrouchLib.Sensors.*;
+import frc.team832.robot.Subsystems.ComplexLift;
 import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.JackStands;
@@ -208,10 +209,12 @@ public class RobotMap {
         fourbarTopMech.setPID(8,0,0);
 
         elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
-//        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.Positions);
+        elevatorMech.setPID(16, 0, 0);
+
+        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
         frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
         backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
-//        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
+        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
         frontJackStand.setPID(1.0, 0,0);
         backJackStand.setPID(1.0, 0,0);
         frontJackStandMotor.setSensorPhase(true);

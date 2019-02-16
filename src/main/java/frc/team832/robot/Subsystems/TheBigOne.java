@@ -73,7 +73,7 @@ public class TheBigOne extends Subsystem {
 
 				// get desired position
 				targetPosition = ComplexLift.Constants.Positions.getByIndex(
-						toRunAction == Action.INTAKE_HP_CARGO ? "" : "");
+						toRunAction == Action.INTAKE_HP_CARGO ? "IntakeCargo_HP" : "IntakeCargo_Floor");
 
 				// set ComplexLift position
 				Robot.complexLift.setPosition(targetPosition);

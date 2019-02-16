@@ -68,26 +68,28 @@ public class Elevator extends Subsystem {
         public static double PotToInches(double value) {
             return OscarMath.map(value, POT_MIN_VAL, POT_MAX_VAL, 0, 30);
         }
+        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_MIN_VAL, POT_MAX_VAL);}
+
 
         private static final OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
                 new OscarMechanismPosition("TestBottom", POT_MIN_VAL - 50),
                 new OscarMechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new OscarMechanismPosition("TestTop", POT_MAX_VAL + 50),
 
-                new OscarMechanismPosition("Bottom", 0.0 * INCHES_TO_POT),
-                new OscarMechanismPosition("Middle", 22.0 * INCHES_TO_POT),
-                new OscarMechanismPosition("Top", 44 * INCHES_TO_POT),
+                new OscarMechanismPosition("Bottom", InchesToPot(3)),
+                new OscarMechanismPosition("Middle", InchesToPot(15)),
+                new OscarMechanismPosition("Top", InchesToPot(28)),
 
-                new OscarMechanismPosition("CargoShip_Hatch", 0 * INCHES_TO_POT),
-                new OscarMechanismPosition("CargoShip_Cargo", 0 * INCHES_TO_POT),
+                new OscarMechanismPosition("CargoShip_Hatch", InchesToPot(28)),
+                new OscarMechanismPosition("CargoShip_Cargo", InchesToPot(15)),
 
-                new OscarMechanismPosition("RocketHatch_Low", 6 * INCHES_TO_POT),
-                new OscarMechanismPosition("RocketHatch_Middle", 15 * INCHES_TO_POT),
-                new OscarMechanismPosition("RocketHatch_High", 19 * INCHES_TO_POT),
+                new OscarMechanismPosition("RocketHatch_Low", 28 * INCHES_TO_POT),
+                new OscarMechanismPosition("RocketHatch_Middle", 28 * INCHES_TO_POT),
+                new OscarMechanismPosition("RocketHatch_High", 28 * INCHES_TO_POT),
 
-                new OscarMechanismPosition("RocketCargo_Low", 30 * INCHES_TO_POT),
-                new OscarMechanismPosition("RocketCargo_Middle", 34 * INCHES_TO_POT),
-                new OscarMechanismPosition("RocketCargo_High", 34 * INCHES_TO_POT)
+                new OscarMechanismPosition("RocketCargo_Low", 28 * INCHES_TO_POT),
+                new OscarMechanismPosition("RocketCargo_Middle", 28 * INCHES_TO_POT),
+                new OscarMechanismPosition("RocketCargo_High", 28 * INCHES_TO_POT)
         };
 
         public static final OscarMechanismPositionList Positions = new OscarMechanismPositionList(_positions);

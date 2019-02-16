@@ -65,9 +65,9 @@ public class Robot extends TimedRobot {
 //        fourbar.setTopLowerLimit(180);
 //        fourbar.setBottomLowerLimit(915);
 //        fourbar.setBottomUpperLimit(200);
-//        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
+        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 
-//        complexLift = new ComplexLift(RobotMap.complexLiftMech);
+        complexLift = new ComplexLift(RobotMap.complexLiftMech);
 
         jackStands.resetEncoders();
 
