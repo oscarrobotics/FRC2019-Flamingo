@@ -24,15 +24,15 @@ import java.awt.*;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-class RobotMap {
+public class RobotMap {
 
     static class IDs {
         public static final int pdp = 0;
         public static final int pcm = 1;
-        public static final int leftMaster = 2;
-        public static final int leftSlave = 3;
-        public static final int rightMaster = 4;
-        public static final int rightSlave = 5;
+        public static final int leftMaster = 22;
+        public static final int leftSlave = 23;
+        public static final int rightMaster = 24;
+        public static final int rightSlave = 25;
         public static final int elevator = 6;
         public static final int fourbarTop = 7;
         public static final int fourbarBottom = 8;
@@ -43,6 +43,7 @@ class RobotMap {
         public static final int hatchHolder = 13;
         public static final int hatchGrabbor = 14;
         public static final int canifier = 0;
+        public static final int lightPort = 0;
     }
 
     // Keep organized by subsystem
@@ -113,10 +114,14 @@ class RobotMap {
         pcm = new OscarPCM(IDs.pcm);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
-        leftMaster = new OscarCANSparkMax(IDs.leftMaster, driveMotorType);
-        leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
-        rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
-        rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
+        try {
+            leftMaster = new OscarCANSparkMax(IDs.leftMaster, driveMotorType);
+            leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
+            rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
+            rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         elevatorMotor = new OscarCANTalon(IDs.elevator);
         fourbarTop = new OscarCANTalon(IDs.fourbarTop);
@@ -125,6 +130,7 @@ class RobotMap {
         frontJackStandMotor = new OscarCANTalon(IDs.frontJackStand);
         backJackStandMotor = new OscarCANTalon(IDs.backJackStand);
         jackStandDriveMotor = new OscarCANVictor(IDs.jackStandDrive);
+        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
 
         // not yet added, and not CAN-safe
         // cargoIntakeMotor = new OscarCANTalon(IDs.cargoIntake);
@@ -136,7 +142,8 @@ class RobotMap {
 
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
-            return false;
+            System.out.println("Missing CAN Device(s)!");
+//            return false;
         }
         /** Configuration and Mechanism Creation **/
 
@@ -157,16 +164,16 @@ class RobotMap {
         rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
         diffDrive = new OscarSmartDiffDrive(leftDrive, rightDrive, 5700);
 
-        leftDrive.setClosedLoopRamp(0.8);
-        rightDrive.setClosedLoopRamp(0.8);
+        leftDrive.setClosedLoopRamp(0.0);
+        rightDrive.setClosedLoopRamp(0.0);
 
         leftDrive.setNeutralMode(NeutralMode.Brake);
         rightDrive.setNeutralMode(NeutralMode.Brake);
 
-        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
-        canifier.setLedMaxOutput(1);
-        canifier.setLedColor(Color.GREEN);
-        canifier.setLedRGB(1, 0, 1);
+//        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
+//        canifier.setLedMaxOutput(1);
+//        canifier.setLedColor(Color.GREEN);
+//        canifier.setLedRGB(1, 0, 1);
 
         fourbarTop.setSensorType(FeedbackDevice.Analog);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
@@ -180,17 +187,26 @@ class RobotMap {
         jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
         frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
         backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+
         backJackStandMotor.setInverted(true);
         backJackStandMotor.setPeakOutputForward(.2);
         backJackStandMotor.setPeakOutputReverse(-.2);
         frontJackStandMotor.setPeakOutputForward(.2);
         frontJackStandMotor.setPeakOutputReverse(-.2);
 
+        frontJackStandMotor.setUpperLimit(78500);
+        backJackStandMotor.setUpperLimit(78500);
+        frontJackStandMotor.setLowerLimit(0);
+        backJackStandMotor.setLowerLimit(0);
+
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
 
         fourbarTopMech = new OscarLinearMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new OscarLinearMechanism(fourbarBottom, Fourbar.Constants.Positions);
+
+        fourbarTopMech.setPID(8,0,0);
+
         elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
 //        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarMech, ComplexLift.Constants.Positions);
         frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
@@ -201,14 +217,16 @@ class RobotMap {
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
 
+
+        System.out.println("Finish INIT");
         // If we got this far, we're doing pretty good
         return true;
     }
 
     private static boolean printCANDeviceStatus() {
-        StringBuilder deviceList = new StringBuilder("CAN Device Statuses:");
+        StringBuilder deviceList = new StringBuilder("CAN Device Statuses:\n");
         for (OscarCANDevice canDevice : OscarCANDevice.getDevices()) {
-            String str = "\t" + canDevice.toString();
+            String str = "\t" + canDevice.toString() + "\n";
             deviceList.append(str);
         }
         System.out.println(deviceList.toString());

@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
 
+    public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
     private static OscarCANifier.Ultrasonic ultrasonic;
 
     /**
@@ -51,38 +52,42 @@ public class Robot extends TimedRobot {
 
         if (!RobotMap.init()) {
             // Oh no!
+            System.out.println("Something went wrong during RobotMap.init()! Look above here for more");
             throw new RuntimeException("Something went wrong during RobotMap.init()! Look above here for more.");
         }
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
         elevator = new Elevator(RobotMap.elevatorMech);
         fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
+        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
+        System.out.println("D, E, F, J INIT");
 //        fourbar.setTopUpperLimit(680);
 //        fourbar.setTopLowerLimit(180);
 //        fourbar.setBottomLowerLimit(915);
 //        fourbar.setBottomUpperLimit(200);
-        fourbar.setPID(8,0,0); // TODO: DONT DO THIS HERE GAVIN!!!!!!
 //        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 
 //        complexLift = new ComplexLift(RobotMap.complexLiftMech);
-        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
-        jackStands.setUpperLimit(78500);
-        jackStands.setLowerLimit(0);
 
         jackStands.resetEncoders();
 
         OI.init();
 
+        System.out.println("OI INIT");
+
 //        ultrasonic = RobotMap.canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
 //        ultrasonic.start();
 
         SmartDashboard.putData("Auto choices", chooser);
+
+        drivetrain.setPIDF(.00005, 0, 0, 0);
     }
 
     @Override
     public void robotPeriodic() {
         SmartDashboard.putData(pdp.getInstance());
-        drivetrain.pushData();
+        SmartDashboard.putNumber("JoystickForward", OI.driverPad.getY(GenericHID.Hand.kLeft));
+//        drivetrain.pushData();
         elevator.pushData();
         fourbar.pushData();
         jackStands.pushData();
@@ -123,6 +128,11 @@ public class Robot extends TimedRobot {
         }
     }
 
+    @Override
+    public void teleopInit(){
+        jackStands.resetEncoders();
+    }
+
     /**
      * This function is called periodically during operator control.
      */
@@ -135,6 +145,12 @@ public class Robot extends TimedRobot {
                 OscarSmartDiffDrive.LoopMode.VELOCITY);
 
         jackStands.teleopControl();
+
+//        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
+//            pcm.setOutput(IDs.lightPort, true);
+//        }else{
+//            pcm.setOutput(IDs.lightPort, false);
+//        }
 
 //        fourbar.teleopControl();
 //        elevator.teleopControl();

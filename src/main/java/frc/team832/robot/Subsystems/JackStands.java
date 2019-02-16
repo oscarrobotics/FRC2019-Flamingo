@@ -20,7 +20,7 @@ public class JackStands extends Subsystem {
     public JackStands(OscarLinearMechanism frontStand, OscarLinearMechanism backStand, OscarSimpleMechanism drive){
         _frontStand = frontStand;
         _backStand = backStand;
-//        _drive = drive;
+        _drive = drive;
     }
 
     public double getFrontTargetPosition(){
@@ -47,16 +47,6 @@ public class JackStands extends Subsystem {
         _backStand.setPosition(index);
     }
 
-    public void setUpperLimit(int limit){
-        _frontStand.setUpperLimit(limit);
-        _backStand.setUpperLimit(limit);
-    }
-
-    public void setLowerLimit(int limit){
-        _frontStand.setLowerLimit(limit);
-        _backStand.setLowerLimit(limit);
-    }
-
     public void resetEncoders(){
         _backStand.resetSensor();
         _frontStand.resetSensor();
@@ -79,6 +69,12 @@ public class JackStands extends Subsystem {
             setFrontPosition("TEST2");
             setBackPosition("TEST2");
         }
+
+        if(OI.driverPad.getPOV() == 0){
+            _drive.set(.5);
+        }else{
+            _drive.set(0.0);
+        }
     }
 
     public void pushData() {
@@ -94,16 +90,16 @@ public class JackStands extends Subsystem {
     protected void initDefaultCommand() {}
 
     public static class Constants {
-        public static final int ENC_MIN_VAL = 0;
-        public static final int ENC_MAX_VAL = 1500;
+        public static final int ENC_MIN_VAL = -78000;
+        public static final int ENC_MAX_VAL = -500;
         public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
 
         private static OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
-                new OscarMechanismPosition("TEST1", 500),
-                new OscarMechanismPosition("TEST2", 50000),
+                new OscarMechanismPosition("TEST1", -500),
+                new OscarMechanismPosition("TEST2", -78000),
                 new OscarMechanismPosition("Bottom", 0.0 * INCHES_TO_ENC),
                 new OscarMechanismPosition("Middle", 10 * INCHES_TO_ENC),
                 new OscarMechanismPosition("Top", MAX_INCHES * INCHES_TO_ENC),
