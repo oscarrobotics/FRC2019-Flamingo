@@ -5,11 +5,11 @@ import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
-import jaci.pathfinder.Trajectory;
 
 public class Elevator extends Subsystem {
 
@@ -67,8 +67,8 @@ public class Elevator extends Subsystem {
         }
     }
 
-    public void startFillingTrajectory(Trajectory traj) {
-        _elevator.startFillingTrajectory(traj);
+    public void bufferTrajectory(OscarMechanismMotionProfile profile) {
+        _elevator.bufferTrajectory(profile);
     }
 
     public MotionProfileStatus getMPStatus(){
@@ -76,7 +76,7 @@ public class Elevator extends Subsystem {
     }
 
     public void setMPControl(SetValueMotionProfile v) {
-        _elevator.setMotionProfile( v.value);
+        _elevator.setMotionProfile(v.value);
     }
 
     public static class Constants {

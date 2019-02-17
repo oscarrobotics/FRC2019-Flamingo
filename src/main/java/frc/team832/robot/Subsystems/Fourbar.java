@@ -5,17 +5,17 @@ import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
-import frc.team832.robot.OI;
 import jaci.pathfinder.Trajectory;
 
 
 public class Fourbar extends Subsystem {
-    private OscarGeniusMechanism _top, _bottom;
 
+    private OscarGeniusMechanism _top, _bottom;
     private MotionProfileStatus topStatus = new MotionProfileStatus();
-    private  MotionProfileStatus botStatus = new MotionProfileStatus();
+    private MotionProfileStatus botStatus = new MotionProfileStatus();
 
     public Fourbar(OscarGeniusMechanism top, OscarGeniusMechanism bottom){
         _bottom = bottom;
@@ -30,25 +30,22 @@ public class Fourbar extends Subsystem {
 
     public double getBottomCurrentPosition(){ return _bottom.getCurrentPosition(); }
 
-    public void setTopUpperLimit(int limit){
-        _top.setUpperLimit(limit);
+    public void setTopLimits(int lowerLimit, int upperLimit) {
+        _top.setLowerLimit(lowerLimit);
+        _top.setUpperLimit(upperLimit);
     }
 
-    public void setTopLowerLimit(int limit){
-        _top.setLowerLimit(limit);
+    public void setBottomLimits(int lowerLimit, int upperLimit) {
+        _bottom.setLowerLimit(lowerLimit);
+        _bottom.setUpperLimit(upperLimit);
     }
 
-    public void setBottomUpperLimit(int limit){
-        _bottom.setUpperLimit(limit);
+    public void setTopPIDF(double kP, double kI, double kD, double kF) {
+        _top.setPIDF(kP, kI, kD, kF);
     }
 
-    public void setBottomLowerLimit(int limit){
-        _bottom.setLowerLimit(limit);
-    }
-
-    public void setPID(double kP, double kI, double kD){
-        _top.setPID(kP, kI, kD);
-        _bottom.setPID(kP, kI, kD);
+    public void setBottomPIDF(double kP, double kI, double kD, double kF) {
+        _bottom.setPIDF(kP, kI, kD, kF);
     }
 
     public void teleopControl(){
@@ -88,12 +85,9 @@ public class Fourbar extends Subsystem {
     @Override
     public void initDefaultCommand() { }
 
-    public void startFillingBotTrajectory(Trajectory botTraj) {
-        _bottom.startFillingTrajectory(botTraj);
-    }
-
-    public void startFillingTopTrajectory(Trajectory topTraj){
-        _top.startFillingTrajectory(topTraj);
+    public void bufferTrajectories(OscarMechanismMotionProfile topTraj, OscarMechanismMotionProfile botTraj){
+        _top.bufferTrajectory(topTraj);
+        _bottom.bufferTrajectory(botTraj);
     }
 
     public MotionProfileStatus getBotMpStatus() {

@@ -207,10 +207,10 @@ public class RobotMap {
         fourbarTopMech = new OscarGeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new OscarGeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
-        fourbarTopMech.setPID(8,0,0);
+        fourbarTopMech.setPIDF(8,0,0, 0);
 
         elevatorMech = new OscarGeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
-        elevatorMech.setPID(16, 0, 0);
+        elevatorMech.setPIDF(16, 0, 0, 0);
 
         complexLiftMech = new OscarGeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
         frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
