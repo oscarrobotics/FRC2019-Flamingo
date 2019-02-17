@@ -1,18 +1,23 @@
 package frc.team832.robot.Subsystems;
 
+import com.ctre.phoenix.motion.MotionProfileStatus;
+import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
+import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
+import jaci.pathfinder.Trajectory;
 
 public class Elevator extends Subsystem {
 
-    private OscarLinearMechanism _elevator;
+    private OscarGeniusMechanism _elevator;
 
-    public Elevator(OscarLinearMechanism elevator){
+    private MotionProfileStatus elevatorStatus;
+
+    public Elevator(OscarGeniusMechanism elevator){
         _elevator = elevator;
     }
 
@@ -28,6 +33,10 @@ public class Elevator extends Subsystem {
 
     public void setPosition(String index) {
         _elevator.setPosition(index);
+    }
+
+    public void setPosition(double pos){
+        _elevator.setPosition(new OscarMechanismPosition("ManualControl", pos));
     }
 
     @Override
@@ -56,6 +65,18 @@ public class Elevator extends Subsystem {
         else {
             stop();
         }
+    }
+
+    public void startFillingTrajectory(Trajectory traj) {
+        _elevator.startFillingTrajectory(traj);
+    }
+
+    public MotionProfileStatus getMPStatus(){
+        return elevatorStatus;
+    }
+
+    public void setMPControl(SetValueMotionProfile v) {
+        _elevator.setMotionProfile( v.value);
     }
 
     public static class Constants {

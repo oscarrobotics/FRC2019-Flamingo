@@ -1,17 +1,23 @@
 package frc.team832.robot.Subsystems;
 
+import com.ctre.phoenix.motion.MotionProfileStatus;
+import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
+import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 import frc.team832.robot.OI;
+import jaci.pathfinder.Trajectory;
 
 
 public class Fourbar extends Subsystem {
-    private OscarLinearMechanism _top, _bottom;
+    private OscarGeniusMechanism _top, _bottom;
 
-    public Fourbar(OscarLinearMechanism top, OscarLinearMechanism bottom){
+    private MotionProfileStatus topStatus = new MotionProfileStatus();
+    private  MotionProfileStatus botStatus = new MotionProfileStatus();
+
+    public Fourbar(OscarGeniusMechanism top, OscarGeniusMechanism bottom){
         _bottom = bottom;
         _top = top;
     }
@@ -72,10 +78,38 @@ public class Fourbar extends Subsystem {
         _bottom.setPosition(lowerPos);
     }
 
+    public void setPosition(double pos){
+        OscarMechanismPosition upperPos = new OscarMechanismPosition("ManualControl", pos);
+        OscarMechanismPosition lowerPos = new OscarMechanismPosition("ManualControl", Constants.convertUpperToLower(upperPos.getTarget()));
+        _top.setPosition(upperPos);
+        _bottom.setPosition(lowerPos);
+    }
+
     @Override
     public void initDefaultCommand() { }
 
-	public static class Constants {
+    public void startFillingBotTrajectory(Trajectory botTraj) {
+        _bottom.startFillingTrajectory(botTraj);
+    }
+
+    public void startFillingTopTrajectory(Trajectory topTraj){
+        _top.startFillingTrajectory(topTraj);
+    }
+
+    public MotionProfileStatus getBotMpStatus() {
+        return botStatus;
+    }
+
+    public MotionProfileStatus getTopMpStatus() {
+        return topStatus;
+    }
+
+    public void setMPControl(SetValueMotionProfile v) {
+        _top.setMotionProfile( v.value);
+        _bottom.setMotionProfile(v.value);
+    }
+
+    public static class Constants {
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
         public static final double UPPERPOTOFFSET = 112.66;

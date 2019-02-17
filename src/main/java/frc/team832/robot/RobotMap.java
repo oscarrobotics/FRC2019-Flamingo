@@ -1,6 +1,5 @@
 package frc.team832.robot;
 
-import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
@@ -11,12 +10,11 @@ import frc.team832.GrouchLib.Motors.*;
 import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.OscarCANDevice;
 import frc.team832.GrouchLib.Sensors.*;
+import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.ComplexLift;
 import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.JackStands;
-
-import java.awt.*;
 
 
 /**
@@ -74,24 +72,25 @@ public class RobotMap {
 
     /** Elevator **/
     static OscarCANTalon elevatorMotor;
-    static OscarLinearMechanism elevatorMech;
+    static OscarGeniusMechanism elevatorMech;
 
     /** Fourbars **/
     static OscarCANTalon fourbarTop;
     static OscarCANTalon fourbarBottom;
     // TODO: make combo mech!!!
-    static OscarLinearMechanism fourbarTopMech;
-    static OscarLinearMechanism fourbarBottomMech;
+    static OscarGeniusMechanism fourbarTopMech;
+    static OscarGeniusMechanism fourbarBottomMech;
 
     /** ComplexLift **/
-    static OscarComplexMechanism complexLiftMech;
+    static OscarGeniusComplexMechanism complexLiftMech;
 
     /** Snowblower **/
     static OscarCANVictor cargoIntakeMotor;
     static OscarSimpleMechanism cargoIntake;
 
-    static OscarCANTalon hatchHolderMotor;
+    static OscarCANVictor hatchHolderMotor;
     static OscarRotaryMechanism hatchHolder;
+    static MiniPID hatchHolderPID;
 
     static OscarCANTalon hatchGrabborMotor;
     static OscarRotaryMechanism hatchGrabbor;
@@ -134,9 +133,11 @@ public class RobotMap {
         jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
 
         // not yet added, and not CAN-safe
-        // cargoIntakeMotor = new OscarCANTalon(IDs.cargoIntake);
-        // hatchHolderMotor = new OscarCANTalon(IDs.hatchHolder);
+         cargoIntakeMotor = new OscarCANVictor(IDs.cargoIntake);
+         hatchHolderMotor = new OscarCANVictor(IDs.hatchHolder);
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
+
+        hatchHolderPID = new MiniPID(1,0,0);
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new OscarCANifier(0);
@@ -203,15 +204,15 @@ public class RobotMap {
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
 
-        fourbarTopMech = new OscarLinearMechanism(fourbarTop, Fourbar.Constants.Positions);
-        fourbarBottomMech = new OscarLinearMechanism(fourbarBottom, Fourbar.Constants.Positions);
+        fourbarTopMech = new OscarGeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
+        fourbarBottomMech = new OscarGeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
         fourbarTopMech.setPID(8,0,0);
 
-        elevatorMech = new OscarLinearMechanism(elevatorMotor, Elevator.Constants.Positions);
+        elevatorMech = new OscarGeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPID(16, 0, 0);
 
-        complexLiftMech = new OscarComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
+        complexLiftMech = new OscarGeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
         frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
         backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
         jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
