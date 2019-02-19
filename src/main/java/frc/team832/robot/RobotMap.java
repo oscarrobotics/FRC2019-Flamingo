@@ -173,9 +173,9 @@ public class RobotMap {
         rightDrive.setNeutralMode(NeutralMode.Brake);
 
 //        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
-//        canifier.setLedMaxOutput(1);
-//        canifier.setLedColor(Color.GREEN);
-//        canifier.setLedRGB(1, 0, 1);
+//        canifier.setMaxOutput(1);
+//        canifier.setColor(Color.GREEN);
+//        canifier.setRGB(1, 0, 1);
 
         fourbarTop.setSensorType(FeedbackDevice.Analog);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
