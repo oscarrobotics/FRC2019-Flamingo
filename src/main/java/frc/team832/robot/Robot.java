@@ -9,10 +9,12 @@ package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.OscarSmartDiffDrive;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
 
 import static frc.team832.robot.RobotMap.*;
@@ -39,6 +41,8 @@ public class Robot extends TimedRobot {
     public static SnowBlower snowBlower;
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
+    public static OI oi;
+    public MiniPID holderPID;
 
     public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
     private static OscarCANifier.Ultrasonic ultrasonic;
@@ -61,18 +65,18 @@ public class Robot extends TimedRobot {
         fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
         jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         System.out.println("D, E, F, J INIT");
-//        fourbar.setTopUpperLimit(680);
-//        fourbar.setTopLowerLimit(180);
-//        fourbar.setBottomLowerLimit(915);
-//        fourbar.setBottomUpperLimit(200);
-        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
+
+        holderPID = new MiniPID(1, 0, 0);
+
+        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, holderPID, RobotMap.canifier, RobotMap.hatchGrabbor);
 
         complexLift = new ComplexLift(RobotMap.complexLiftMech);
 
+        theBigOne = new TheBigOne(complexLift, snowBlower);
+
         jackStands.resetEncoders();
 
-        OI.init();
-
+        oi = new OI();
         System.out.println("OI INIT");
 
 //        ultrasonic = RobotMap.canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
@@ -144,7 +148,9 @@ public class Robot extends TimedRobot {
                 Drivetrain.DriveMode.CURVATURE,
                 OscarSmartDiffDrive.LoopMode.VELOCITY);
 
-        jackStands.teleopControl();
+        Scheduler.getInstance().run();
+
+//        jackStands.teleopControl();
 
 //        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
 //            pcm.setOutput(IDs.lightPort, true);

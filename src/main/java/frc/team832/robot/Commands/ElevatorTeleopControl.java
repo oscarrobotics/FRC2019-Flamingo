@@ -3,15 +3,21 @@ package frc.team832.robot.Commands;
 import edu.wpi.first.wpilibj.command.Command;
 
 import frc.team832.robot.Robot;
+import frc.team832.robot.Subsystems.Elevator;
 
 
 public class ElevatorTeleopControl extends Command {
 
-    public ElevatorTeleopControl() {requires(Robot.elevator);}
+    String _index;
+
+    public ElevatorTeleopControl(String index) {
+        requires(Robot.elevator);
+        _index = index;
+    }
 
     @Override
     protected void initialize() {
-
+        Robot.elevator.setPosition(_index);
     }
 
     /**

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
+import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
 import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
 
@@ -13,18 +14,19 @@ import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 public class SnowBlower extends Subsystem {
 
     private OscarSimpleMechanism _intake;
-    private OscarSmartMechanism _hatchHoldor;
+    private OscarSimpleMechanism _hatchHoldor;
     private OscarSmartMechanism _hatchGrabbor;
     private OscarCANifier _canifier;
     private OscarCANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
-    private MiniPID _cargoHeightController;
+    private MiniPID _cargoHeightController, _holderPID;
 
+    private double holdorTarget;
 
     private CargoPosition _cargoPosition;
 
     private boolean _open;
 
-    public SnowBlower(OscarSimpleMechanism intake, OscarSmartMechanism hatchHolder, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
+    public SnowBlower(OscarSimpleMechanism intake, OscarSimpleMechanism hatchHolder, MiniPID holderPID, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
         _intake = intake;
         _hatchHoldor = hatchHolder;
         _canifier = canifier;
@@ -51,11 +53,11 @@ public class SnowBlower extends Subsystem {
     }
 
     public double getHoldorTargetPosition(){
-        return _hatchHoldor.getPresetPosition(_open ? "Open" : "Closed").getTarget();
+        return holdorTarget;
     }
 
     public double getHoldorCurrentPosition(){
-        return _hatchHoldor.getCurrentPosition();
+        return _canifier.getQuadPosition();
     }
 
     @Override
@@ -102,9 +104,12 @@ public class SnowBlower extends Subsystem {
         _intake.set(power);
     }
 
-    public void setHatchHolderOpen(boolean open){
-        _hatchHoldor.setPosition(open ? "Open" : "Closed");
-        _open = open;
+    public void setHatchHolderPosition(String index){
+        holdorTarget = Constants.HolderPositions. getByIndex(index).getTarget();
+        _holderPID.setSetpoint(holdorTarget);
+        _hatchHoldor.set(_holderPID.getOutput(_canifier.getQuadPosition()));
+
+        _open = !(index == "Closed");
     }
 
     private boolean cargoAtBottom(double cargoDistInches) {
@@ -148,9 +153,12 @@ public class SnowBlower extends Subsystem {
 
         public static final OscarMechanismPosition[] holderPositions = new OscarMechanismPosition[]{
                 //TODO: put actual numbers here
+                new OscarMechanismPosition("Start", 0),
                 new OscarMechanismPosition("Open", 100),
                 new OscarMechanismPosition("Closed", 200)
         };
+
+        public static final OscarMechanismPositionList HolderPositions = new OscarMechanismPositionList(holderPositions);
 
         public static final OscarMechanismPosition[] grabberPositions = new OscarMechanismPosition[]{
                 //TODO: put actual numbers here

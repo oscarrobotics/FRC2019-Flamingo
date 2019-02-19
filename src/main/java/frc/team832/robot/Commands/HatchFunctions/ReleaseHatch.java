@@ -11,7 +11,7 @@ public class ReleaseHatch extends Command {
     }
 
     public void initialize(){
-        Robot.snowBlower.setHatchHolderOpen(false);
+        Robot.snowBlower.setHatchHolderPosition("Closed");
     }
 
     public void execute(){

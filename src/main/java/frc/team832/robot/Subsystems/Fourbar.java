@@ -30,6 +30,10 @@ public class Fourbar extends Subsystem {
 
     public double getBottomCurrentPosition(){ return _bottom.getCurrentPosition(); }
 
+    public boolean atTargetPosition() {
+        return (Math.abs(getTopCurrentPosition() - getTopTargetPosition()) < 20);
+    }
+
     public void setTopLimits(int lowerLimit, int upperLimit) {
         _top.setLowerLimit(lowerLimit);
         _top.setUpperLimit(upperLimit);
@@ -103,7 +107,13 @@ public class Fourbar extends Subsystem {
         _bottom.setMotionProfile(v.value);
     }
 
+    public void startMP() {
+        _bottom.startMP();
+        _top.startMP();
+    }
+
     public static class Constants {
+        public static final double TOP_MAX_VAL = 162;
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
         public static final double UPPERPOTOFFSET = 112.66;
@@ -113,7 +123,7 @@ public class Fourbar extends Subsystem {
         public static final double MININCHES = -29;
 
         private static OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
-                new OscarMechanismPosition("TestMiddle", 450),
+                new OscarMechanismPosition("StartConfig", TOP_MAX_VAL),
                 new OscarMechanismPosition("TestTop", 575),
                 new OscarMechanismPosition("TestBottom", 250),
 

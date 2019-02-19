@@ -11,10 +11,7 @@ import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.OscarCANDevice;
 import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
-import frc.team832.robot.Subsystems.ComplexLift;
-import frc.team832.robot.Subsystems.Elevator;
-import frc.team832.robot.Subsystems.Fourbar;
-import frc.team832.robot.Subsystems.JackStands;
+import frc.team832.robot.Subsystems.*;
 
 
 /**
@@ -89,8 +86,7 @@ public class RobotMap {
     static OscarSimpleMechanism cargoIntake;
 
     static OscarCANVictor hatchHolderMotor;
-    static OscarRotaryMechanism hatchHolder;
-    static MiniPID hatchHolderPID;
+    static OscarSimpleMechanism hatchHolder;
 
     static OscarCANTalon hatchGrabborMotor;
     static OscarRotaryMechanism hatchGrabbor;
@@ -137,8 +133,6 @@ public class RobotMap {
          hatchHolderMotor = new OscarCANVictor(IDs.hatchHolder);
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
 
-        hatchHolderPID = new MiniPID(1,0,0);
-
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new OscarCANifier(0);
 
@@ -181,7 +175,7 @@ public class RobotMap {
         fourbarTop.setNeutralMode(NeutralMode.Brake);
         fourbarBottom.setSensorType(FeedbackDevice.Analog);
         fourbarBottom.setNeutralMode(NeutralMode.Brake);
-//        fourbarBottom.setInverted(false);
+        fourbarBottom.setInverted(false);
 //        fourbarBottom.setSensorPhase(true);
 
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
@@ -203,14 +197,23 @@ public class RobotMap {
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
+        elevatorMotor.setInverted(true);
 
         fourbarTopMech = new OscarGeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new OscarGeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
+        fourbarTopMech.setUpperLimit(680);
+        fourbarTopMech.setLowerLimit(164);
+        fourbarBottomMech.setUpperLimit(915);
+        fourbarBottomMech.setLowerLimit(200);
+
         fourbarTopMech.setPIDF(8,0,0, 0);
 
         elevatorMech = new OscarGeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
-        elevatorMech.setPIDF(16, 0, 0, 0);
+        elevatorMech.setPIDF(8, 0, 0, 0);
+
+        elevatorMech.setUpperLimit(350);
+        elevatorMech.setLowerLimit(725);
 
         complexLiftMech = new OscarGeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
         frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
@@ -221,6 +224,7 @@ public class RobotMap {
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
 
+//        hatchHolder = new OscarSimpleMechanism(hatchHolderMotor);
 
         System.out.println("Finish INIT");
         // If we got this far, we're doing pretty good

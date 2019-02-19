@@ -29,6 +29,10 @@ public class Elevator extends Subsystem {
         return _elevator.getCurrentPosition();
     }
 
+    public boolean atTargetPosition() {
+        return (Math.abs(getCurrentPosition() - getTargetPosition()) < 20);
+    }
+
     public double getCurrentInches() { return Constants.PotToInches(getCurrentPosition()); }
 
     public void setPosition(String index) {
@@ -79,6 +83,10 @@ public class Elevator extends Subsystem {
         _elevator.setMotionProfile(v.value);
     }
 
+    public void startMP() {
+        _elevator.startMP();
+    }
+
     public static class Constants {
         public static final int POT_MIN_VAL = 710;
         public static final int POT_MAX_VAL = 374;
@@ -93,7 +101,7 @@ public class Elevator extends Subsystem {
 
 
         private static final OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
-                new OscarMechanismPosition("TestBottom", POT_MIN_VAL - 50),
+                new OscarMechanismPosition("StartConfig", 1.1*POT_MAX_VAL + 2),
                 new OscarMechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new OscarMechanismPosition("TestTop", POT_MAX_VAL + 50),
 
