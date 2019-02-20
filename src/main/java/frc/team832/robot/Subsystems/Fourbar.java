@@ -4,20 +4,19 @@ import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
+import frc.team832.GrouchLib.Mechanisms.GeniusMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
-import jaci.pathfinder.Trajectory;
 
 
 public class Fourbar extends Subsystem {
 
-    private OscarGeniusMechanism _top, _bottom;
+    private GeniusMechanism _top, _bottom;
     private MotionProfileStatus topStatus = new MotionProfileStatus();
     private MotionProfileStatus botStatus = new MotionProfileStatus();
 
-    public Fourbar(OscarGeniusMechanism top, OscarGeniusMechanism bottom){
+    public Fourbar(GeniusMechanism top, GeniusMechanism bottom){
         _bottom = bottom;
         _top = top;
     }

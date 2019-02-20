@@ -3,7 +3,7 @@ package frc.team832.robot.Subsystems;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
+import frc.team832.GrouchLib.Mechanisms.GeniusMechanism;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
@@ -13,11 +13,11 @@ import frc.team832.robot.OI;
 
 public class Elevator extends Subsystem {
 
-    private OscarGeniusMechanism _elevator;
+    private GeniusMechanism _elevator;
 
     private MotionProfileStatus elevatorStatus;
 
-    public Elevator(OscarGeniusMechanism elevator){
+    public Elevator(GeniusMechanism elevator){
         _elevator = elevator;
     }
 

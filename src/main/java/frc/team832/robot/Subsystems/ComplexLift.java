@@ -1,15 +1,15 @@
 package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.OscarGeniusComplexMechanism;
+import frc.team832.GrouchLib.Mechanisms.GeniusComplexMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPositionList;
 
 public class ComplexLift extends Subsystem {
 
-    private OscarGeniusComplexMechanism _mechanism;
+    private GeniusComplexMechanism _mechanism;
 
-    public ComplexLift(OscarGeniusComplexMechanism mechanism) {
+    public ComplexLift(GeniusComplexMechanism mechanism) {
         _mechanism = mechanism;
     }
 

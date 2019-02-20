@@ -2,13 +2,12 @@ package frc.team832.robot;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import frc.team832.GrouchLib.Control.*;
 import frc.team832.GrouchLib.Mechanisms.*;
 import frc.team832.GrouchLib.Motors.*;
 import frc.team832.GrouchLib.Motion.*;
-import frc.team832.GrouchLib.OscarCANDevice;
+import frc.team832.GrouchLib.CANDevice;
 import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.ComplexLift;
@@ -47,55 +46,55 @@ public class RobotMap {
 
     // Keep organized by subsystem
 
-    static OscarPDP pdp;
-    static OscarPCM pcm;
+    static PDP pdp;
+    static PCM pcm;
 
     /** Drivetrain **/
-    static OscarCANSparkMax leftMaster;
-    static OscarCANSparkMax leftSlave;
-    static OscarCANSparkMax rightMaster;
-    static OscarCANSparkMax rightSlave;
+    static CANSparkMax leftMaster;
+    static CANSparkMax leftSlave;
+    static CANSparkMax rightMaster;
+    static CANSparkMax rightSlave;
 
-    static OscarCANSmartMotorGroup leftDrive;
-    static OscarCANSmartMotorGroup rightDrive;
+    static CANSmartMotorGroup leftDrive;
+    static CANSmartMotorGroup rightDrive;
 
-    static OscarSmartDiffDrive diffDrive;
+    static SmartDifferentialDrive diffDrive;
 
     /** Jackstands **/
-    static OscarCANTalon frontJackStandMotor;
-    static OscarCANTalon backJackStandMotor;
-    static OscarLinearMechanism frontJackStand;
-    static OscarLinearMechanism backJackStand;
+    static CANTalon frontJackStandMotor;
+    static CANTalon backJackStandMotor;
+    static LinearMechanism frontJackStand;
+    static LinearMechanism backJackStand;
 
-    static OscarCANVictor jackStandDriveMotor;
-    static OscarSimpleMechanism jackStandDrive;
+    static CANVictor jackStandDriveMotor;
+    static SimpleMechanism jackStandDrive;
 
     /** Elevator **/
-    static OscarCANTalon elevatorMotor;
-    static OscarGeniusMechanism elevatorMech;
+    static CANTalon elevatorMotor;
+    static GeniusMechanism elevatorMech;
 
     /** Fourbars **/
-    static OscarCANTalon fourbarTop;
-    static OscarCANTalon fourbarBottom;
+    static CANTalon fourbarTop;
+    static CANTalon fourbarBottom;
     // TODO: make combo mech!!!
-    static OscarGeniusMechanism fourbarTopMech;
-    static OscarGeniusMechanism fourbarBottomMech;
+    static GeniusMechanism fourbarTopMech;
+    static GeniusMechanism fourbarBottomMech;
 
     /** ComplexLift **/
-    static OscarGeniusComplexMechanism complexLiftMech;
+    static GeniusComplexMechanism complexLiftMech;
 
     /** Snowblower **/
-    static OscarCANVictor cargoIntakeMotor;
-    static OscarSimpleMechanism cargoIntake;
+    static CANVictor cargoIntakeMotor;
+    static SimpleMechanism cargoIntake;
 
-    static OscarCANVictor hatchHolderMotor;
-    static OscarRotaryMechanism hatchHolder;
+    static CANVictor hatchHolderMotor;
+    static RotaryMechanism hatchHolder;
     static MiniPID hatchHolderPID;
 
-    static OscarCANTalon hatchGrabborMotor;
-    static OscarRotaryMechanism hatchGrabbor;
+    static CANTalon hatchGrabborMotor;
+    static RotaryMechanism hatchGrabbor;
 
-    static OscarCANifier canifier;
+    static CANifier canifier;
 
     /**
      * Initializes robot hardware
@@ -109,38 +108,38 @@ public class RobotMap {
          **/
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pdp = new OscarPDP(IDs.pdp);
+        pdp = new PDP(IDs.pdp);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pcm = new OscarPCM(IDs.pcm);
+        pcm = new PCM(IDs.pcm);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
         try {
-            leftMaster = new OscarCANSparkMax(IDs.leftMaster, driveMotorType);
-            leftSlave = new OscarCANSparkMax(IDs.leftSlave, driveMotorType);
-            rightMaster = new OscarCANSparkMax(IDs.rightMaster, driveMotorType);
-            rightSlave = new OscarCANSparkMax(IDs.rightSlave, driveMotorType);
+            leftMaster = new CANSparkMax(IDs.leftMaster, driveMotorType);
+            leftSlave = new CANSparkMax(IDs.leftSlave, driveMotorType);
+            rightMaster = new CANSparkMax(IDs.rightMaster, driveMotorType);
+            rightSlave = new CANSparkMax(IDs.rightSlave, driveMotorType);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        elevatorMotor = new OscarCANTalon(IDs.elevator);
-        fourbarTop = new OscarCANTalon(IDs.fourbarTop);
-        fourbarBottom = new OscarCANTalon(IDs.fourbarBottom);
+        elevatorMotor = new CANTalon(IDs.elevator);
+        fourbarTop = new CANTalon(IDs.fourbarTop);
+        fourbarBottom = new CANTalon(IDs.fourbarBottom);
 
-        frontJackStandMotor = new OscarCANTalon(IDs.frontJackStand);
-        backJackStandMotor = new OscarCANTalon(IDs.backJackStand);
-        jackStandDriveMotor = new OscarCANVictor(IDs.jackStandDrive);
-        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
+        frontJackStandMotor = new CANTalon(IDs.frontJackStand);
+        backJackStandMotor = new CANTalon(IDs.backJackStand);
+        jackStandDriveMotor = new CANVictor(IDs.jackStandDrive);
+        jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
 
         // not yet added, and not CAN-safe
-         cargoIntakeMotor = new OscarCANVictor(IDs.cargoIntake);
-         hatchHolderMotor = new OscarCANVictor(IDs.hatchHolder);
+         cargoIntakeMotor = new CANVictor(IDs.cargoIntake);
+         hatchHolderMotor = new CANVictor(IDs.hatchHolder);
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
 
         hatchHolderPID = new MiniPID(1,0,0);
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        canifier = new OscarCANifier(0);
+        canifier = new CANifier(0);
 
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
@@ -149,8 +148,8 @@ public class RobotMap {
         }
         /** Configuration and Mechanism Creation **/
 
-        leftSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
-        rightSlave.setFollowType(CANSparkMax.ExternalFollower.kFollowerSparkMax);
+        leftSlave.setFollowType(com.revrobotics.CANSparkMax.ExternalFollower.kFollowerSparkMax);
+        rightSlave.setFollowType(com.revrobotics.CANSparkMax.ExternalFollower.kFollowerSparkMax);
         leftSlave.getInstance().follow(leftMaster.getInstance());
         rightSlave.getInstance().follow(rightMaster.getInstance());
 
@@ -162,9 +161,9 @@ public class RobotMap {
         leftMaster.setkP(.000025);
         rightMaster.setkP(.000025);
 
-        leftDrive = new OscarCANSmartMotorGroup(leftMaster, leftSlave);
-        rightDrive = new OscarCANSmartMotorGroup(rightMaster, rightSlave);
-        diffDrive = new OscarSmartDiffDrive(leftDrive, rightDrive, 5700);
+        leftDrive = new CANSmartMotorGroup(leftMaster, leftSlave);
+        rightDrive = new CANSmartMotorGroup(rightMaster, rightSlave);
+        diffDrive = new SmartDifferentialDrive(leftDrive, rightDrive, 5700);
 
         leftDrive.setClosedLoopRamp(0.0);
         rightDrive.setClosedLoopRamp(0.0);
@@ -204,18 +203,18 @@ public class RobotMap {
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
 
-        fourbarTopMech = new OscarGeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
-        fourbarBottomMech = new OscarGeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
+        fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
+        fourbarBottomMech = new GeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
         fourbarTopMech.setPIDF(8,0,0, 0);
 
-        elevatorMech = new OscarGeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
+        elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPIDF(16, 0, 0, 0);
 
-        complexLiftMech = new OscarGeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
-        frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
-        backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
-        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
+        complexLiftMech = new GeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
+        frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
+        backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
+        jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
         frontJackStand.setPID(1.0, 0,0);
         backJackStand.setPID(1.0, 0,0);
         frontJackStandMotor.setSensorPhase(true);
@@ -229,11 +228,11 @@ public class RobotMap {
 
     private static boolean printCANDeviceStatus() {
         StringBuilder deviceList = new StringBuilder("CAN Device Statuses:\n");
-        for (OscarCANDevice canDevice : OscarCANDevice.getDevices()) {
+        for (CANDevice canDevice : CANDevice.getDevices()) {
             String str = "\t" + canDevice.toString() + "\n";
             deviceList.append(str);
         }
         System.out.println(deviceList.toString());
-        return OscarCANDevice.hasMissingDevices();
+        return CANDevice.hasMissingDevices();
     }
 }

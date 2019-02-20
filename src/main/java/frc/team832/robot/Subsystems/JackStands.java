@@ -2,22 +2,20 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Mechanisms.OscarLinearMechanism;
-import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
+import frc.team832.GrouchLib.Mechanisms.LinearMechanism;
+import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
-import frc.team832.GrouchLib.Motors.IOscarSimpleMotor;
-import frc.team832.GrouchLib.Motors.IOscarSmartMotor;
 import frc.team832.robot.OI;
 
 public class JackStands extends Subsystem {
 
-    public OscarLinearMechanism _frontStand, _backStand;
-    public OscarSimpleMechanism _drive;
+    public LinearMechanism _frontStand, _backStand;
+    public SimpleMechanism _drive;
 
     public static double frontTargetPosition, backTargetPosition;
 
-    public JackStands(OscarLinearMechanism frontStand, OscarLinearMechanism backStand, OscarSimpleMechanism drive){
+    public JackStands(LinearMechanism frontStand, LinearMechanism backStand, SimpleMechanism drive){
         _frontStand = frontStand;
         _backStand = backStand;
         _drive = drive;

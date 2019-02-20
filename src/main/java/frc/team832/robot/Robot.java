@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Motion.OscarSmartDiffDrive;
-import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
+import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.robot.Subsystems.*;
 
 import static frc.team832.robot.RobotMap.*;
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
     public static JackStands jackStands;
 
     public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
-    private static OscarCANifier.Ultrasonic ultrasonic;
+    private static CANifier.Ultrasonic ultrasonic;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -142,7 +142,7 @@ public class Robot extends TimedRobot {
                 Math.pow(OI.driverPad.getY(GenericHID.Hand.kLeft), 3),
                 Math.pow(-OI.driverPad.getX(GenericHID.Hand.kRight), 3),
                 Drivetrain.DriveMode.CURVATURE,
-                OscarSmartDiffDrive.LoopMode.VELOCITY);
+                SmartDifferentialDrive.LoopMode.VELOCITY);
 
         jackStands.teleopControl();
 
