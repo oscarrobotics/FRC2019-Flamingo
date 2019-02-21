@@ -1,5 +1,6 @@
 package frc.team832.robot.Subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,7 +16,7 @@ public class Elevator extends Subsystem {
 
     private OscarGeniusMechanism _elevator;
 
-    private MotionProfileStatus elevatorStatus;
+    private MotionProfileStatus elevatorStatus = new MotionProfileStatus();
 
     public Elevator(OscarGeniusMechanism elevator){
         _elevator = elevator;
@@ -75,16 +76,20 @@ public class Elevator extends Subsystem {
         _elevator.bufferTrajectory(profile);
     }
 
-    public MotionProfileStatus getMPStatus(){
-        return elevatorStatus;
+    public ErrorCode getMPStatus(){
+        return _elevator.getMotionProfileStatus(elevatorStatus);
     }
 
     public void setMPControl(SetValueMotionProfile v) {
         _elevator.setMotionProfile(v.value);
     }
 
-    public void startMP() {
-        _elevator.startMP();
+    public void bufferAndSendMP() {
+        _elevator.bufferAndSendMP();
+    }
+
+    public boolean isMPFinished() {
+        return _elevator.isMPFinished();
     }
 
     public static class Constants {
@@ -101,7 +106,7 @@ public class Elevator extends Subsystem {
 
 
         private static final OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
-                new OscarMechanismPosition("StartConfig", 1.1*POT_MAX_VAL + 2),
+                new OscarMechanismPosition("StartConfig", -380),
                 new OscarMechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new OscarMechanismPosition("TestTop", POT_MAX_VAL + 50),
 

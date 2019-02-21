@@ -8,7 +8,6 @@ import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
-import jaci.pathfinder.Trajectory;
 
 
 public class Fourbar extends Subsystem {
@@ -63,8 +62,7 @@ public class Fourbar extends Subsystem {
     public void pushData() {
         SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
         SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
-        SmartDashboard.putNumber("Approximate max inches as pot", Constants.inchToPotTick(27));
-        SmartDashboard.putNumber("Approximate min inches as pot", Constants.inchToPotTick(-29));
+        SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
     }
 
     public void stop(){
@@ -107,9 +105,13 @@ public class Fourbar extends Subsystem {
         _bottom.setMotionProfile(v.value);
     }
 
-    public void startMP() {
-        _bottom.startMP();
-        _top.startMP();
+    public void bufferAndSendMP() {
+        _bottom.bufferAndSendMP();
+        _top.bufferAndSendMP();
+    }
+
+    public boolean isMPFinished() {
+        return _bottom.isMPFinished() && _top.isMPFinished();
     }
 
     public static class Constants {

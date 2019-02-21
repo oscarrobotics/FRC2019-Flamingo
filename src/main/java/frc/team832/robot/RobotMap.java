@@ -105,9 +105,9 @@ public class RobotMap {
          **/
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pdp = new OscarPDP(IDs.pdp);
+//        pdp = new OscarPDP(IDs.pdp);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pcm = new OscarPCM(IDs.pcm);
+//        pcm = new OscarPCM(IDs.pcm);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
         try {
@@ -119,22 +119,22 @@ public class RobotMap {
             ex.printStackTrace();
         }
 
-        elevatorMotor = new OscarCANTalon(IDs.elevator);
-        fourbarTop = new OscarCANTalon(IDs.fourbarTop);
-        fourbarBottom = new OscarCANTalon(IDs.fourbarBottom);
-
-        frontJackStandMotor = new OscarCANTalon(IDs.frontJackStand);
-        backJackStandMotor = new OscarCANTalon(IDs.backJackStand);
-        jackStandDriveMotor = new OscarCANVictor(IDs.jackStandDrive);
-        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
+//        elevatorMotor = new OscarCANTalon(IDs.elevator);
+//        fourbarTop = new OscarCANTalon(IDs.fourbarTop);
+//        fourbarBottom = new OscarCANTalon(IDs.fourbarBottom);
+//
+//        frontJackStandMotor = new OscarCANTalon(IDs.frontJackStand);
+//        backJackStandMotor = new OscarCANTalon(IDs.backJackStand);
+//        jackStandDriveMotor = new OscarCANVictor(IDs.jackStandDrive);
+//        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
 
         // not yet added, and not CAN-safe
-         cargoIntakeMotor = new OscarCANVictor(IDs.cargoIntake);
-         hatchHolderMotor = new OscarCANVictor(IDs.hatchHolder);
+//         cargoIntakeMotor = new OscarCANVictor(IDs.cargoIntake);
+//         hatchHolderMotor = new OscarCANVictor(IDs.hatchHolder);
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        canifier = new OscarCANifier(0);
+//        canifier = new OscarCANifier(0);
 
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
@@ -171,58 +171,59 @@ public class RobotMap {
 //        canifier.setLedColor(Color.GREEN);
 //        canifier.setLedRGB(1, 0, 1);
 
-        fourbarTop.setSensorType(FeedbackDevice.Analog);
-        fourbarTop.setNeutralMode(NeutralMode.Brake);
-        fourbarBottom.setSensorType(FeedbackDevice.Analog);
-        fourbarBottom.setNeutralMode(NeutralMode.Brake);
-        fourbarBottom.setInverted(false);
+//        fourbarTop.setSensorType(FeedbackDevice.Analog);
+//        fourbarTop.setNeutralMode(NeutralMode.Brake);
+//        fourbarBottom.setSensorType(FeedbackDevice.Analog);
+//        fourbarBottom.setNeutralMode(NeutralMode.Brake);
+//        fourbarBottom.setInverted(false);
 //        fourbarBottom.setSensorPhase(true);
 
-        frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
-        backJackStandMotor.setNeutralMode(NeutralMode.Brake);
-        jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
-        frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
-        backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+//        frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
+//        backJackStandMotor.setNeutralMode(NeutralMode.Brake);
+//        jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
+//        frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+//        backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-        backJackStandMotor.setInverted(true);
-        backJackStandMotor.setPeakOutputForward(.2);
-        backJackStandMotor.setPeakOutputReverse(-.2);
-        frontJackStandMotor.setPeakOutputForward(.2);
-        frontJackStandMotor.setPeakOutputReverse(-.2);
+//        backJackStandMotor.setInverted(true);
+//        backJackStandMotor.setPeakOutputForward(.2);
+//        backJackStandMotor.setPeakOutputReverse(-.2);
+//        frontJackStandMotor.setPeakOutputForward(.2);
+//        frontJackStandMotor.setPeakOutputReverse(-.2);
 
-        frontJackStandMotor.setUpperLimit(78500);
-        backJackStandMotor.setUpperLimit(78500);
-        frontJackStandMotor.setLowerLimit(0);
-        backJackStandMotor.setLowerLimit(0);
+//        frontJackStandMotor.setUpperLimit(78500);
+//        backJackStandMotor.setUpperLimit(78500);
+//        frontJackStandMotor.setLowerLimit(0);
+//        backJackStandMotor.setLowerLimit(0);
 
-        elevatorMotor.setSensorType(FeedbackDevice.Analog);
-        elevatorMotor.setNeutralMode(NeutralMode.Brake);
-        elevatorMotor.setInverted(true);
+//        elevatorMotor.setSensorType(FeedbackDevice.Analog);
+//        elevatorMotor.setNeutralMode(NeutralMode.Brake);
+//        elevatorMotor.setInverted(true);
+//        elevatorMotor.setSensorPhase(false);
 
-        fourbarTopMech = new OscarGeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
-        fourbarBottomMech = new OscarGeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
+//        fourbarTopMech = new OscarGeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
+//        fourbarBottomMech = new OscarGeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
+//
+//        fourbarTopMech.setUpperLimit(680);
+//        fourbarTopMech.setLowerLimit(164);
+//        fourbarBottomMech.setUpperLimit(915);
+//        fourbarBottomMech.setLowerLimit(200);
 
-        fourbarTopMech.setUpperLimit(680);
-        fourbarTopMech.setLowerLimit(164);
-        fourbarBottomMech.setUpperLimit(915);
-        fourbarBottomMech.setLowerLimit(200);
+//        fourbarTopMech.setPIDF(8,0,0, 0);
 
-        fourbarTopMech.setPIDF(8,0,0, 0);
+//        elevatorMech = new OscarGeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
+//        elevatorMech.setPIDF(8, 0, 0, 0);
 
-        elevatorMech = new OscarGeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
-        elevatorMech.setPIDF(8, 0, 0, 0);
+//        elevatorMech.setUpperLimit(-360);
+//        elevatorMech.setLowerLimit(-725);
 
-        elevatorMech.setUpperLimit(350);
-        elevatorMech.setLowerLimit(725);
-
-        complexLiftMech = new OscarGeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
-        frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
-        backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
-        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
-        frontJackStand.setPID(1.0, 0,0);
-        backJackStand.setPID(1.0, 0,0);
-        frontJackStandMotor.setSensorPhase(true);
-        backJackStandMotor.setSensorPhase(true);
+//        complexLiftMech = new OscarGeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
+//        frontJackStand = new OscarLinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
+//        backJackStand = new OscarLinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
+//        jackStandDrive = new OscarSimpleMechanism(jackStandDriveMotor);
+//        frontJackStand.setPID(1.0, 0,0);
+//        backJackStand.setPID(1.0, 0,0);
+//        frontJackStandMotor.setSensorPhase(true);
+//        backJackStandMotor.setSensorPhase(true);
 
 //        hatchHolder = new OscarSimpleMechanism(hatchHolderMotor);
 
