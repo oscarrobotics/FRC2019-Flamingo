@@ -9,6 +9,7 @@ package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
@@ -39,6 +40,8 @@ public class Robot extends TimedRobot {
     public static SnowBlower snowBlower;
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
+    public static OI oi;
+    public MiniPID holderPID;
 
     public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
     private static CANifier.Ultrasonic ultrasonic;
@@ -57,22 +60,22 @@ public class Robot extends TimedRobot {
         }
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
-        elevator = new Elevator(RobotMap.elevatorMech);
-        fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
-        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
+//        elevator = new Elevator(RobotMap.elevatorMech);
+//        fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
+//        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         System.out.println("D, E, F, J INIT");
-//        fourbar.setTopUpperLimit(680);
-//        fourbar.setTopLowerLimit(180);
-//        fourbar.setBottomLowerLimit(915);
-//        fourbar.setBottomUpperLimit(200);
-        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
 
-        complexLift = new ComplexLift(RobotMap.complexLiftMech);
+//        holderPID = new MiniPID(1, 0, 0);
+//
+//        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, holderPID, RobotMap.canifier, RobotMap.hatchGrabbor);
+//
+//        complexLift = new ComplexLift(RobotMap.complexLiftMech);
+//
+//        theBigOne = new TheBigOne(complexLift, snowBlower);
+//
+//        jackStands.resetEncoders();
 
-        jackStands.resetEncoders();
-
-        OI.init();
-
+        oi = new OI();
         System.out.println("OI INIT");
 
 //        ultrasonic = RobotMap.canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
@@ -85,12 +88,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putData(pdp.getInstance());
+//        SmartDashboard.putData(pdp.getInstance());
         SmartDashboard.putNumber("JoystickForward", OI.driverPad.getY(GenericHID.Hand.kLeft));
 //        drivetrain.pushData();
-        elevator.pushData();
-        fourbar.pushData();
-        jackStands.pushData();
+//        elevator.pushData();
+//        fourbar.pushData();
+//        jackStands.pushData();
     }
 
     /**
@@ -130,7 +133,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit(){
-        jackStands.resetEncoders();
+        Scheduler.getInstance().enable();
+//        jackStands.resetEncoders();
     }
 
     /**
@@ -144,7 +148,9 @@ public class Robot extends TimedRobot {
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.VELOCITY);
 
-        jackStands.teleopControl();
+        Scheduler.getInstance().run();
+
+//        jackStands.teleopControl();
 
 //        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
 //            pcm.setOutput(IDs.lightPort, true);
@@ -161,7 +167,16 @@ public class Robot extends TimedRobot {
     }
 
     @Override
+    public void disabledPeriodic(){
+        Scheduler.getInstance().removeAll();
+        Scheduler.getInstance().disable();
+    }
+
+    @Override
     public void disabledInit() {
-        jackStands.resetEncoders();
+        Scheduler.getInstance().removeAll();
+        Scheduler.getInstance().disable();
+
+//        jackStands.resetEncoders();
     }
 }

@@ -10,10 +10,7 @@ import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.CANDevice;
 import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
-import frc.team832.robot.Subsystems.ComplexLift;
-import frc.team832.robot.Subsystems.Elevator;
-import frc.team832.robot.Subsystems.Fourbar;
-import frc.team832.robot.Subsystems.JackStands;
+import frc.team832.robot.Subsystems.*;
 
 
 /**
@@ -141,9 +138,6 @@ public class RobotMap {
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
 
         hatchHolderPID = new MiniPID(1,0,0);
-
-
-
         hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
         // print out all CAN devices
@@ -176,17 +170,17 @@ public class RobotMap {
         leftDrive.setNeutralMode(NeutralMode.Brake);
         rightDrive.setNeutralMode(NeutralMode.Brake);
 
-//        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
-//        canifier.setMaxOutput(1);
-//        canifier.setColor(Color.GREEN);
-//        canifier.setRGB(1, 0, 1);
+        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
+        canifier.setMaxOutput(1);
+        canifier.setColor(Color.GREEN);
+        canifier.setRGB(1, 0, 1);
 
         fourbarTop.setSensorType(FeedbackDevice.Analog);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
         fourbarBottom.setSensorType(FeedbackDevice.Analog);
         fourbarBottom.setNeutralMode(NeutralMode.Brake);
-//        fourbarBottom.setInverted(false);
-//        fourbarBottom.setSensorPhase(true);
+        fourbarBottom.setInverted(false);
+        fourbarBottom.setSensorPhase(true);
 
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
         backJackStandMotor.setNeutralMode(NeutralMode.Brake);
@@ -224,7 +218,6 @@ public class RobotMap {
         backJackStand.setPID(1.0, 0,0);
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
-
 
         System.out.println("Finish INIT");
         // If we got this far, we're doing pretty good

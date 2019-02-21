@@ -29,6 +29,10 @@ public class Fourbar extends Subsystem {
 
     public double getBottomCurrentPosition(){ return _bottom.getCurrentPosition(); }
 
+    public boolean atTargetPosition() {
+        return (Math.abs(getTopCurrentPosition() - getTopTargetPosition()) < 20);
+    }
+
     public void setTopLimits(int lowerLimit, int upperLimit) {
         _top.setLowerLimit(lowerLimit);
         _top.setUpperLimit(upperLimit);
@@ -58,8 +62,7 @@ public class Fourbar extends Subsystem {
     public void pushData() {
         SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
         SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
-        SmartDashboard.putNumber("Approximate max inches as pot", Constants.inchToPotTick(27));
-        SmartDashboard.putNumber("Approximate min inches as pot", Constants.inchToPotTick(-29));
+        SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
     }
 
     public void stop(){
@@ -102,7 +105,17 @@ public class Fourbar extends Subsystem {
         _bottom.setMotionProfile(v.value);
     }
 
+    public void bufferAndSendMP() {
+        _bottom.bufferAndSendMP();
+        _top.bufferAndSendMP();
+    }
+
+    public boolean isMPFinished() {
+        return _bottom.isMPFinished() && _top.isMPFinished();
+    }
+
     public static class Constants {
+        public static final double TOP_MAX_VAL = 162;
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
         public static final double UPPERPOTOFFSET = 112.66;
@@ -112,7 +125,7 @@ public class Fourbar extends Subsystem {
         public static final double MININCHES = -29;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("TestMiddle", 450),
+                new MechanismPosition("StartConfig", TOP_MAX_VAL),
                 new MechanismPosition("TestTop", 575),
                 new MechanismPosition("TestBottom", 250),
 

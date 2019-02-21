@@ -18,6 +18,7 @@ public class SnowBlower extends Subsystem {
     private CANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
     private MiniPID _cargoHeightController;
 
+    private double holdorTarget;
 
     private CargoPosition _cargoPosition;
 
@@ -50,11 +51,11 @@ public class SnowBlower extends Subsystem {
     }
 
     public double getHoldorTargetPosition(){
-        return _hatchHoldor.getPresetPosition(_open ? "Open" : "Closed").getTarget();
+        return holdorTarget;
     }
 
     public double getHoldorCurrentPosition(){
-        return _hatchHoldor.getCurrentPosition();
+        return _canifier.getQuadPosition();
     }
 
     @Override
@@ -101,9 +102,12 @@ public class SnowBlower extends Subsystem {
         _intake.set(power);
     }
 
-    public void setHatchHolderOpen(boolean open){
-        _hatchHoldor.setPosition(open ? "Open" : "Closed");
-        _open = open;
+    public void setHatchHolderPosition(String index){
+        holdorTarget = Constants.HolderPositions. getByIndex(index).getTarget();
+        _holderPID.setSetpoint(holdorTarget);
+        _hatchHoldor.set(_holderPID.getOutput(_canifier.getQuadPosition()));
+
+        _open = !(index == "Closed");
     }
 
     private boolean cargoAtBottom(double cargoDistInches) {
@@ -121,7 +125,6 @@ public class SnowBlower extends Subsystem {
     private boolean cargoEntered(double cargoDistInches) {
         return inRange(cargoDistInches, Constants.CargoEnter_LeftInches, Constants.CargoEnter_RightInches);
     }
-
 
 
     public static class Constants {

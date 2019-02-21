@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.DoNothing;
-import frc.team832.robot.Commands.MoveTheBigOne;
-import frc.team832.robot.Subsystems.SnowBlower;
+import frc.team832.robot.Commands.TheBigOne.BigOneToStartConfig;
+import frc.team832.robot.Commands.TheBigOne.InitializeBigOne;
+import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
+import frc.team832.robot.Commands.TheBigOne.TeleopBigOneMotionProfiling;
 import frc.team832.robot.Subsystems.TheBigOne;
 
 /**
@@ -27,33 +29,34 @@ public class OI {
 
 	public static OperatorMode operatorMode;
 
-    public static void init() {
-	    driverPad = new XboxController(0);
+	public OI(){
+    	driverPad = new XboxController(0);
 
-	    leftStickPress = new JoystickButton(driverPad, 9);
-	    rightStickPress = new JoystickButton(driverPad, 10);
+		leftStickPress = new JoystickButton(driverPad, 9);
+		rightStickPress = new JoystickButton(driverPad, 10);
 
-	    operatorBox = new Joystick(1);
+		operatorBox = new Joystick(1);
 
-	    standUp = new JoystickButton(driverPad, 3);
-	    standDown = new JoystickButton(driverPad, 0);
+		standUp = new JoystickButton(driverPad, 3);
+		standDown = new JoystickButton(driverPad, 1);
 
-	    if (operatorBox.getButtonCount() > 11) {
-		    op1 = new JoystickButton(operatorBox, 0);
-		    op2 = new JoystickButton(operatorBox, 1);
-		    op3 = new JoystickButton(operatorBox, 2);
-		    op4 = new JoystickButton(operatorBox, 3);
-		    op5 = new JoystickButton(operatorBox, 4);
-		    op6 = new JoystickButton(operatorBox, 5);
-		    incr = new JoystickButton(operatorBox, 6);
-		    decr = new JoystickButton(operatorBox, 7);
-		    modeButton1 = new JoystickButton(operatorBox, 8);
-		    modeButton2 = new JoystickButton(operatorBox, 9);
-		    modeButton3 = new JoystickButton(operatorBox, 10);
-	    }
-    }
+		op1 = new JoystickButton(operatorBox, 1);
+		op2 = new JoystickButton(operatorBox, 2);
+		op3 = new JoystickButton(operatorBox, 3);
+		op4 = new JoystickButton(operatorBox, 4);
+		op5 = new JoystickButton(operatorBox, 5);
+		op6 = new JoystickButton(operatorBox, 6);
+		incr = new JoystickButton(operatorBox, 7);
+		decr = new JoystickButton(operatorBox, 8);
+		modeButton1 = new JoystickButton(operatorBox, 9);
+		modeButton2 = new JoystickButton(operatorBox, 10);
+		modeButton3 = new JoystickButton(operatorBox, 11);
 
+		System.out.println("Buttons initialized");
 
+//		standUp.whenPressed(new InitializeBigOne());
+//		standDown.whenPressed((new TeleopBigOneMotionProfiling(TheBigOne.Constants.MotionProfilePosition.CARGO_SHIP_CARGO)));
+	}
 
     public enum OperatorMode {
     	Intake,

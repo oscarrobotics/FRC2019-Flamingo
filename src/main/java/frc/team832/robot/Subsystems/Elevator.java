@@ -1,10 +1,11 @@
 package frc.team832.robot.Subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.GeniusMechanism;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
@@ -15,7 +16,7 @@ public class Elevator extends Subsystem {
 
     private GeniusMechanism _elevator;
 
-    private MotionProfileStatus elevatorStatus;
+    private MotionProfileStatus elevatorStatus = new MotionProfileStatus();
 
     public Elevator(GeniusMechanism elevator){
         _elevator = elevator;
@@ -27,6 +28,10 @@ public class Elevator extends Subsystem {
 
     public double getCurrentPosition(){
         return _elevator.getCurrentPosition();
+    }
+
+    public boolean atTargetPosition() {
+        return (Math.abs(getCurrentPosition() - getTargetPosition()) < 20);
     }
 
     public double getCurrentInches() { return Constants.PotToInches(getCurrentPosition()); }
@@ -71,12 +76,20 @@ public class Elevator extends Subsystem {
         _elevator.bufferTrajectory(profile);
     }
 
-    public MotionProfileStatus getMPStatus(){
-        return elevatorStatus;
+    public ErrorCode getMPStatus(){
+        return _elevator.getMotionProfileStatus(elevatorStatus);
     }
 
     public void setMPControl(SetValueMotionProfile v) {
         _elevator.setMotionProfile(v.value);
+    }
+
+    public void bufferAndSendMP() {
+        _elevator.bufferAndSendMP();
+    }
+
+    public boolean isMPFinished() {
+        return _elevator.isMPFinished();
     }
 
     public static class Constants {
@@ -91,9 +104,8 @@ public class Elevator extends Subsystem {
         }
         public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_MIN_VAL, POT_MAX_VAL);}
 
-
         private static final MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("TestBottom", POT_MIN_VAL - 50),
+                new MechanismPosition("StartConfig", -380),
                 new MechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new MechanismPosition("TestTop", POT_MAX_VAL + 50),
 
