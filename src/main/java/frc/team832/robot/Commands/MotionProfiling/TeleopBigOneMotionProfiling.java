@@ -2,7 +2,7 @@ package frc.team832.robot.Commands.MotionProfiling;
 
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.robot.Robot;
 import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
@@ -10,16 +10,16 @@ import frc.team832.robot.Subsystems.TheBigOne;
 
 public class TeleopBigOneMotionProfiling extends Command {
 
-    private OscarMechanismMotionProfile _elevatorTraj, _toptraj, _botTraj;
+    private MechanismMotionProfile _elevatorTraj, _toptraj, _botTraj;
 
     public TeleopBigOneMotionProfiling(TheBigOne.Constants.MotionProfilePosition destination){
         requires(Robot.elevator);
         requires(Robot.fourbar);
         requires(Robot.theBigOne);
 
-        _elevatorTraj = new OscarMechanismMotionProfile(TheBigOne.currentPos, destination.index(), "Elevator");
-        _toptraj = new OscarMechanismMotionProfile(TheBigOne.currentPos, destination.index(), "TopFourbar");
-        _botTraj = new OscarMechanismMotionProfile(TheBigOne.currentPos, destination.index(), "BottomFourbar");
+        _elevatorTraj = new MechanismMotionProfile(TheBigOne.currentPos, destination.index(), "Elevator");
+        _toptraj = new MechanismMotionProfile(TheBigOne.currentPos, destination.index(), "TopFourbar");
+        _botTraj = new MechanismMotionProfile(TheBigOne.currentPos, destination.index(), "BottomFourbar");
     }
 
     public void initialize(){

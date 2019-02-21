@@ -25,6 +25,7 @@ import frc.team832.robot.Subsystems.JackStands;
 public class RobotMap {
 
     static class IDs {
+
         public static final int pdp = 0;
         public static final int pcm = 1;
         public static final int leftMaster = 22;
@@ -92,6 +93,7 @@ public class RobotMap {
     static MiniPID hatchHolderPID;
 
     static CANTalon hatchGrabborMotor;
+    static SimplySmartMotor hatchHolderSmartMotor;
     static RotaryMechanism hatchGrabbor;
 
     static CANifier canifier;
@@ -111,6 +113,8 @@ public class RobotMap {
         pdp = new PDP(IDs.pdp);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         pcm = new PCM(IDs.pcm);
+        // SHOULD be CAN-safe (shouldn't suicide if not connected)
+        canifier = new CANifier(0);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
         try {
@@ -132,14 +136,15 @@ public class RobotMap {
         jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
 
         // not yet added, and not CAN-safe
-         cargoIntakeMotor = new CANVictor(IDs.cargoIntake);
-         hatchHolderMotor = new CANVictor(IDs.hatchHolder);
+        cargoIntakeMotor = new CANVictor(IDs.cargoIntake);
+        hatchHolderMotor = new CANVictor(IDs.hatchHolder);
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
 
         hatchHolderPID = new MiniPID(1,0,0);
 
-        // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        canifier = new CANifier(0);
+
+
+        hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
@@ -195,10 +200,10 @@ public class RobotMap {
         frontJackStandMotor.setPeakOutputForward(.2);
         frontJackStandMotor.setPeakOutputReverse(-.2);
 
-        frontJackStandMotor.setUpperLimit(78500);
-        backJackStandMotor.setUpperLimit(78500);
-        frontJackStandMotor.setLowerLimit(0);
-        backJackStandMotor.setLowerLimit(0);
+        frontJackStandMotor.setForwardSoftLimit(78500);
+        backJackStandMotor.setForwardSoftLimit(78500);
+        frontJackStandMotor.setReverseSoftLimit(0);
+        backJackStandMotor.setReverseSoftLimit(0);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);

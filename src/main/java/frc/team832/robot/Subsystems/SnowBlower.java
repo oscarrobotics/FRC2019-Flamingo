@@ -1,7 +1,7 @@
 package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
 import frc.team832.GrouchLib.Sensors.CANifier;
@@ -145,17 +145,17 @@ public class SnowBlower extends Subsystem {
 
         public static final com.ctre.phoenix.CANifier.PWMChannel UltrasonicTriggerChannel = com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0;
 
-        public static final OscarMechanismPosition[] holderPositions = new OscarMechanismPosition[]{
+        public static final MechanismPosition[] holderPositions = new MechanismPosition[]{
                 //TODO: put actual numbers here
-                new OscarMechanismPosition("Open", 100),
-                new OscarMechanismPosition("Closed", 200)
+                new MechanismPosition("Open", 100),
+                new MechanismPosition("Closed", 200)
         };
 
-        public static final OscarMechanismPosition[] grabberPositions = new OscarMechanismPosition[]{
+        public static final MechanismPosition[] grabberPositions = new MechanismPosition[]{
                 //TODO: put actual numbers here
-                new OscarMechanismPosition("Initial", 100),
-                new OscarMechanismPosition("Release", 200),
-                new OscarMechanismPosition("Floor", 700)
+                new MechanismPosition("Initial", 100),
+                new MechanismPosition("Release", 200),
+                new MechanismPosition("Floor", 700)
         };
     }
 
