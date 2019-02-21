@@ -1,24 +1,22 @@
 package frc.team832.robot.Subsystems;
 
-import com.ctre.phoenix.CANifier;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
-import frc.team832.GrouchLib.Mechanisms.OscarSimpleMechanism;
-import frc.team832.GrouchLib.Mechanisms.OscarSmartMechanism;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
-import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
+import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
+import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
 public class SnowBlower extends Subsystem {
 
-    private OscarSimpleMechanism _intake;
-    private OscarSimpleMechanism _hatchHoldor;
-    private OscarSmartMechanism _hatchGrabbor;
-    private OscarCANifier _canifier;
-    private OscarCANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
-    private MiniPID _cargoHeightController, _holderPID;
+    private SimpleMechanism _intake;
+    private SmartMechanism _hatchHoldor;
+    private SmartMechanism _hatchGrabbor;
+    private CANifier _canifier;
+    private CANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
+    private MiniPID _cargoHeightController;
 
     private double holdorTarget;
 
@@ -26,16 +24,16 @@ public class SnowBlower extends Subsystem {
 
     private boolean _open;
 
-    public SnowBlower(OscarSimpleMechanism intake, OscarSimpleMechanism hatchHolder, MiniPID holderPID, OscarCANifier canifier, OscarSmartMechanism hatchGrabber){
+    public SnowBlower(SimpleMechanism intake, SmartMechanism hatchHolder, CANifier canifier, SmartMechanism hatchGrabber){
         _intake = intake;
         _hatchHoldor = hatchHolder;
         _canifier = canifier;
         _hatchGrabbor = hatchGrabber;
 
-        CANifier.PWMChannel triggerChannel = CANifier.PWMChannel.PWMChannel0;
+        com.ctre.phoenix.CANifier.PWMChannel triggerChannel = com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0;
 
-        _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, CANifier.PWMChannel.PWMChannel1);
-        _centeringUltrasonic = _canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel2);
+        _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel1);
+        _centeringUltrasonic = _canifier.getUltrasonic(com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel2);
 
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
     }
@@ -129,7 +127,6 @@ public class SnowBlower extends Subsystem {
     }
 
 
-
     public static class Constants {
 
         public static final double HeightController_kP = 1;
@@ -149,22 +146,19 @@ public class SnowBlower extends Subsystem {
         public static final double CargoEnter_LeftInches = 8;
         public static final double CargoEnter_RightInches = 12;
 
-        public static final CANifier.PWMChannel UltrasonicTriggerChannel = CANifier.PWMChannel.PWMChannel0;
+        public static final com.ctre.phoenix.CANifier.PWMChannel UltrasonicTriggerChannel = com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0;
 
-        public static final OscarMechanismPosition[] holderPositions = new OscarMechanismPosition[]{
+        public static final MechanismPosition[] holderPositions = new MechanismPosition[]{
                 //TODO: put actual numbers here
-                new OscarMechanismPosition("Start", 0),
-                new OscarMechanismPosition("Open", 100),
-                new OscarMechanismPosition("Closed", 200)
+                new MechanismPosition("Open", 100),
+                new MechanismPosition("Closed", 200)
         };
 
-        public static final OscarMechanismPositionList HolderPositions = new OscarMechanismPositionList(holderPositions);
-
-        public static final OscarMechanismPosition[] grabberPositions = new OscarMechanismPosition[]{
+        public static final MechanismPosition[] grabberPositions = new MechanismPosition[]{
                 //TODO: put actual numbers here
-                new OscarMechanismPosition("Initial", 100),
-                new OscarMechanismPosition("Release", 200),
-                new OscarMechanismPosition("Floor", 700)
+                new MechanismPosition("Initial", 100),
+                new MechanismPosition("Release", 200),
+                new MechanismPosition("Floor", 700)
         };
     }
 

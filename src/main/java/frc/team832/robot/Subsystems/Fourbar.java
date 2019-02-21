@@ -4,19 +4,19 @@ import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Mechanisms.OscarGeniusMechanism;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismMotionProfile;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPosition;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismPositionList;
+import frc.team832.GrouchLib.Mechanisms.GeniusMechanism;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 
 
 public class Fourbar extends Subsystem {
 
-    private OscarGeniusMechanism _top, _bottom;
+    private GeniusMechanism _top, _bottom;
     private MotionProfileStatus topStatus = new MotionProfileStatus();
     private MotionProfileStatus botStatus = new MotionProfileStatus();
 
-    public Fourbar(OscarGeniusMechanism top, OscarGeniusMechanism bottom){
+    public Fourbar(GeniusMechanism top, GeniusMechanism bottom){
         _bottom = bottom;
         _top = top;
     }
@@ -71,15 +71,15 @@ public class Fourbar extends Subsystem {
     }
 
     public void setPosition(String index) {
-        OscarMechanismPosition upperPos = Constants.Positions.getByIndex(index);
-        OscarMechanismPosition lowerPos = new OscarMechanismPosition(index, Constants.convertUpperToLower(upperPos.getTarget()));
+        MechanismPosition upperPos = Constants.Positions.getByIndex(index);
+        MechanismPosition lowerPos = new MechanismPosition(index, Constants.convertUpperToLower(upperPos.getTarget()));
         _top.setPosition(upperPos);
         _bottom.setPosition(lowerPos);
     }
 
     public void setPosition(double pos){
-        OscarMechanismPosition upperPos = new OscarMechanismPosition("ManualControl", pos);
-        OscarMechanismPosition lowerPos = new OscarMechanismPosition("ManualControl", Constants.convertUpperToLower(upperPos.getTarget()));
+        MechanismPosition upperPos = new MechanismPosition("ManualControl", pos);
+        MechanismPosition lowerPos = new MechanismPosition("ManualControl", Constants.convertUpperToLower(upperPos.getTarget()));
         _top.setPosition(upperPos);
         _bottom.setPosition(lowerPos);
     }
@@ -87,7 +87,7 @@ public class Fourbar extends Subsystem {
     @Override
     public void initDefaultCommand() { }
 
-    public void bufferTrajectories(OscarMechanismMotionProfile topTraj, OscarMechanismMotionProfile botTraj){
+    public void bufferTrajectories(MechanismMotionProfile topTraj, MechanismMotionProfile botTraj){
         _top.bufferTrajectory(topTraj);
         _bottom.bufferTrajectory(botTraj);
     }
@@ -124,31 +124,31 @@ public class Fourbar extends Subsystem {
         public static final double MAXINCHES = 27;
         public static final double MININCHES = -29;
 
-        private static OscarMechanismPosition[] _positions = new OscarMechanismPosition[]{
-                new OscarMechanismPosition("StartConfig", TOP_MAX_VAL),
-                new OscarMechanismPosition("TestTop", 575),
-                new OscarMechanismPosition("TestBottom", 250),
+        private static MechanismPosition[] _positions = new MechanismPosition[]{
+                new MechanismPosition("StartConfig", TOP_MAX_VAL),
+                new MechanismPosition("TestTop", 575),
+                new MechanismPosition("TestBottom", 250),
 
-                new OscarMechanismPosition("Bottom", inchToPotTick(0.0)),
-                new OscarMechanismPosition("Middle", inchToPotTick(0.0)),
-                new OscarMechanismPosition("Top", inchToPotTick(0.0)),
+                new MechanismPosition("Bottom", inchToPotTick(0.0)),
+                new MechanismPosition("Middle", inchToPotTick(0.0)),
+                new MechanismPosition("Top", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("IntakeHatch_HP", inchToPotTick(0.0)),
-                new OscarMechanismPosition("IntakeHatch_Floor", inchToPotTick(0.0)),
+                new MechanismPosition("IntakeHatch_HP", inchToPotTick(0.0)),
+                new MechanismPosition("IntakeHatch_Floor", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("CargoShip_Hatch", inchToPotTick(0.0)),
-                new OscarMechanismPosition("CargoShip_Cargo", inchToPotTick(0.0)),
+                new MechanismPosition("CargoShip_Hatch", inchToPotTick(0.0)),
+                new MechanismPosition("CargoShip_Cargo", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("RocketHatch_Low", inchToPotTick(0.0)),
-                new OscarMechanismPosition("RocketHatch_Middle", inchToPotTick(0.0)),
-                new OscarMechanismPosition("RocketHatch_High", inchToPotTick(0.0)),
+                new MechanismPosition("RocketHatch_Low", inchToPotTick(0.0)),
+                new MechanismPosition("RocketHatch_Middle", inchToPotTick(0.0)),
+                new MechanismPosition("RocketHatch_High", inchToPotTick(0.0)),
 
-                new OscarMechanismPosition("RocketCargo_Low", inchToPotTick(0.0)),
-                new OscarMechanismPosition("RocketCargo_Middle", inchToPotTick(0.0)),
-                new OscarMechanismPosition("RocketCargo_High", inchToPotTick(0.0)),
+                new MechanismPosition("RocketCargo_Low", inchToPotTick(0.0)),
+                new MechanismPosition("RocketCargo_Middle", inchToPotTick(0.0)),
+                new MechanismPosition("RocketCargo_High", inchToPotTick(0.0)),
         };
 
-        public static final OscarMechanismPositionList Positions = new OscarMechanismPositionList(_positions);
+        public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
 
         public static double inchToPotTick(double inches){
             return (Math.toDegrees(Math.asin(inches/ARMLENGTH)) + UPPERPOTOFFSET)/UPPERPOTTOANGLE;

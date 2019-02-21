@@ -2,13 +2,11 @@ package frc.team832.robot.Subsystems;
 
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Motion.OscarSmartDiffDrive;
-import frc.team832.robot.RobotMap;
+import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 
 public class Drivetrain extends Subsystem {
 
-    private OscarSmartDiffDrive _driveSystem;
+    private SmartDifferentialDrive _driveSystem;
 
 //    private double _kP = .00025, _kI, _kD, _kF;
 
@@ -21,18 +19,18 @@ public class Drivetrain extends Subsystem {
         TANK
     }
 
-    public Drivetrain(OscarSmartDiffDrive driveSystem) {
+    public Drivetrain(SmartDifferentialDrive driveSystem) {
         _driveSystem = driveSystem;
     }
 
     /**
      *
      * @param pathMode The {@link DriveMode} to run inputs through.
-     * @param loopMode The {@link OscarSmartDiffDrive.LoopMode} to run the motors in.
+     * @param loopMode The {@link SmartDifferentialDrive.LoopMode} to run the motors in.
      * @param stick1 X-Axis translation for Arcade and Curvature, left side for Tank.
      * @param stick2 Z-Axis rotation for Arcade and Curvature, right side for Tank.
      */
-    public void teleopControl(double stick1, double stick2, DriveMode pathMode, OscarSmartDiffDrive.LoopMode loopMode) {
+    public void teleopControl(double stick1, double stick2, DriveMode pathMode, SmartDifferentialDrive.LoopMode loopMode) {
         switch(pathMode) {
             case ARCADE:
                 _driveSystem.arcadeDrive(stick1, stick2, false, loopMode);

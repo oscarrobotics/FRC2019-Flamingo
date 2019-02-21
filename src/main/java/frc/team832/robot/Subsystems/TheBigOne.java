@@ -1,8 +1,8 @@
 package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.team832.GrouchLib.Mechanisms.Positions.OscarMechanismComplexPosition;
-import frc.team832.robot.Commands.TheBigOne.TeleopBigOneMotionProfiling;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismComplexPosition;
+import frc.team832.robot.Commands.MotionProfiling.TeleopBigOneMotionProfiling;
 import frc.team832.robot.Robot;
 
 import static frc.team832.robot.Subsystems.TheBigOne.Constants.*;
@@ -12,7 +12,7 @@ public class TheBigOne extends Subsystem {
 	private ComplexLift _complexLift;
 	private SnowBlower _snowBlower;
 
-	private OscarMechanismComplexPosition targetPosition;
+	private MechanismComplexPosition targetPosition;
 
 	public static MotionProfilePosition currentPos = MotionProfilePosition.START;
 
