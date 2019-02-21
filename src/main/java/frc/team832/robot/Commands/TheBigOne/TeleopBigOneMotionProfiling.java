@@ -19,20 +19,18 @@ public class TeleopBigOneMotionProfiling extends Command {
         requires(Robot.fourbar);
         requires(Robot.theBigOne);
 
-        _elevatorTraj = new MechanismMotionProfile(TheBigOne.currentPos, destination.index(), "Elevator");
-        _toptraj = new MechanismMotionProfile(TheBigOne.currentPos, destination.index(), "TopFourbar");
-        _botTraj = new MechanismMotionProfile(TheBigOne.currentPos, destination.index(), "BottomFourbar");
+        _elevatorTraj = new MechanismMotionProfile(TheBigOne.currentPos.index(), destination.index(), "Elevator");
+        _toptraj = new MechanismMotionProfile(TheBigOne.currentPos.index(), destination.index(), "Topfourbar");
+        _botTraj = new MechanismMotionProfile(TheBigOne.currentPos.index(), destination.index(), "Bottomfourbar");
         _destination = destination;
+
+        Robot.elevator.bufferTrajectory(_elevatorTraj);
+        Robot.fourbar.bufferTrajectories(_toptraj, _botTraj);
+
     }
 
     public void initialize(){
         System.out.println("Init mp big one");
-        _elevatorTraj = new OscarMechanismMotionProfile(TheBigOne.currentPos.index(), _destination.index(), "Elevator");
-        _toptraj = new OscarMechanismMotionProfile(TheBigOne.currentPos.index(), _destination.index(), "Topfourbar");
-        _botTraj = new OscarMechanismMotionProfile(TheBigOne.currentPos.index(), _destination.index(), "Bottomfourbar");
-
-        Robot.elevator.bufferTrajectory(_elevatorTraj);
-        Robot.fourbar.bufferTrajectories(_toptraj, _botTraj);
 
         Robot.elevator.bufferAndSendMP();
         Robot.fourbar.bufferAndSendMP();

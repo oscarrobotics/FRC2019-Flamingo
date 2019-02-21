@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
-import frc.team832.GrouchLib.Sensors.CANifier;
+import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
 
 import static frc.team832.robot.RobotMap.*;
@@ -41,10 +42,9 @@ public class Robot extends TimedRobot {
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
     public static OI oi;
-    public MiniPID holderPID;
 
     public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
-    private static CANifier.Ultrasonic ultrasonic;
+    private static OscarCANifier.Ultrasonic ultrasonic;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -60,25 +60,23 @@ public class Robot extends TimedRobot {
         }
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
-//        elevator = new Elevator(RobotMap.elevatorMech);
-//        fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
-//        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
+        elevator = new Elevator(RobotMap.elevatorMech);
+        fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
+        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         System.out.println("D, E, F, J INIT");
 
-//        holderPID = new MiniPID(1, 0, 0);
-//
-//        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, holderPID, RobotMap.canifier, RobotMap.hatchGrabbor);
-//
-//        complexLift = new ComplexLift(RobotMap.complexLiftMech);
-//
-//        theBigOne = new TheBigOne(complexLift, snowBlower);
-//
-//        jackStands.resetEncoders();
+        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
+
+        complexLift = new ComplexLift(RobotMap.complexLiftMech);
+
+        theBigOne = new TheBigOne(complexLift, snowBlower);
+
+        jackStands.resetEncoders();
 
         oi = new OI();
         System.out.println("OI INIT");
 
-//        ultrasonic = RobotMap.canifier.getUltrasonic(CANifier.PWMChannel.PWMChannel0, CANifier.PWMChannel.PWMChannel1);
+//        ultrasonic = RobotMap.canifier.getUltrasonic(OscarCANifier.PWMChannel.PWMChannel0, OscarCANifier.PWMChannel.PWMChannel1);
 //        ultrasonic.start();
 
         SmartDashboard.putData("Auto choices", chooser);
@@ -88,12 +86,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-//        SmartDashboard.putData(pdp.getInstance());
+        SmartDashboard.putData(pdp.getInstance());
         SmartDashboard.putNumber("JoystickForward", OI.driverPad.getY(GenericHID.Hand.kLeft));
-//        drivetrain.pushData();
-//        elevator.pushData();
-//        fourbar.pushData();
-//        jackStands.pushData();
+        drivetrain.pushData();
+        elevator.pushData();
+        fourbar.pushData();
+        jackStands.pushData();
     }
 
     /**
@@ -134,7 +132,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit(){
         Scheduler.getInstance().enable();
-//        jackStands.resetEncoders();
+        jackStands.resetEncoders();
     }
 
     /**
@@ -152,11 +150,11 @@ public class Robot extends TimedRobot {
 
 //        jackStands.teleopControl();
 
-//        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
-//            pcm.setOutput(IDs.lightPort, true);
-//        }else{
-//            pcm.setOutput(IDs.lightPort, false);
-//        }
+        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
+            pcm.setOutput(IDs.lightPort, true);
+        }else{
+            pcm.setOutput(IDs.lightPort, false);
+        }
 
 //        fourbar.teleopControl();
 //        elevator.teleopControl();
@@ -177,6 +175,6 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
 
-//        jackStands.resetEncoders();
+        jackStands.resetEncoders();
     }
 }

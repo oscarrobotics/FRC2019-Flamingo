@@ -2,13 +2,14 @@ package frc.team832.robot.Subsystems;
 
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 
 public class Drivetrain extends Subsystem {
 
     private SmartDifferentialDrive _driveSystem;
 
-//    private double _kP = .00025, _kI, _kD, _kF;
+    private double _kP = .00025, _kI, _kD, _kF;
 
    /**
      * Defines different Drive control methods for teleop stick control
@@ -56,7 +57,7 @@ public class Drivetrain extends Subsystem {
 //        _kD = kD;
 //        _kF = kF;
     }
-/*
+
 
     public void pushData() {
         SmartDashboard.putNumber("Left Drive output", _driveSystem.getLeftOutput());
@@ -105,7 +106,7 @@ public class Drivetrain extends Subsystem {
 //
 //        }
     }
-*/
+
 
     @Override
     public void initDefaultCommand() { }

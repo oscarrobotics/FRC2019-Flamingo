@@ -2,7 +2,7 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismComplexPosition;
-import frc.team832.robot.Commands.MotionProfiling.TeleopBigOneMotionProfiling;
+import frc.team832.robot.Commands.TheBigOne.TeleopBigOneMotionProfiling;
 import frc.team832.robot.Robot;
 
 import static frc.team832.robot.Subsystems.TheBigOne.Constants.*;

@@ -12,6 +12,8 @@ import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
 
+import java.awt.*;
+
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -86,14 +88,14 @@ public class RobotMap {
     static SimpleMechanism cargoIntake;
 
     static CANVictor hatchHolderMotor;
-    static RotaryMechanism hatchHolder;
+    static SimplySmartMotor hatchHolder;
     static MiniPID hatchHolderPID;
 
     static CANTalon hatchGrabborMotor;
     static SimplySmartMotor hatchHolderSmartMotor;
     static RotaryMechanism hatchGrabbor;
 
-    static CANifier canifier;
+    static OscarCANifier canifier;
 
     /**
      * Initializes robot hardware
@@ -111,7 +113,7 @@ public class RobotMap {
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         pcm = new PCM(IDs.pcm);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        canifier = new CANifier(0);
+        canifier = new OscarCANifier(0);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
         try {
@@ -126,6 +128,8 @@ public class RobotMap {
         elevatorMotor = new CANTalon(IDs.elevator);
         fourbarTop = new CANTalon(IDs.fourbarTop);
         fourbarBottom = new CANTalon(IDs.fourbarBottom);
+
+        elevatorMotor.setInverted(true);
 
         frontJackStandMotor = new CANTalon(IDs.frontJackStand);
         backJackStandMotor = new CANTalon(IDs.backJackStand);
@@ -170,17 +174,19 @@ public class RobotMap {
         leftDrive.setNeutralMode(NeutralMode.Brake);
         rightDrive.setNeutralMode(NeutralMode.Brake);
 
-        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
-        canifier.setMaxOutput(1);
-        canifier.setColor(Color.GREEN);
-        canifier.setRGB(1, 0, 1);
+//        canifier.setLedChannels(OscarCANifier.LEDChannel.LEDChannelB, OscarCANifier.LEDChannel.LEDChannelC, OscarCANifier.LEDChannel.LEDChannelA);
+//        canifier.setMaxOutput(1);
+//        canifier.setColor(Color.GREEN);
+//        canifier.setRGB(1, 0, 1);
+
+        hatchHolder = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
         fourbarTop.setSensorType(FeedbackDevice.Analog);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
         fourbarBottom.setSensorType(FeedbackDevice.Analog);
         fourbarBottom.setNeutralMode(NeutralMode.Brake);
         fourbarBottom.setInverted(false);
-        fourbarBottom.setSensorPhase(true);
+        fourbarBottom.setSensorPhase(false);
 
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
         backJackStandMotor.setNeutralMode(NeutralMode.Brake);

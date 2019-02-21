@@ -2,9 +2,11 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
+import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
-import frc.team832.GrouchLib.Sensors.CANifier;
+import frc.team832.GrouchLib.Motors.SimplySmartMotor;
+import frc.team832.GrouchLib.Sensors.OscarCANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
@@ -12,11 +14,11 @@ import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 public class SnowBlower extends Subsystem {
 
     private SimpleMechanism _intake;
-    private SmartMechanism _hatchHoldor;
+    private SimplySmartMotor _hatchHoldor;
     private SmartMechanism _hatchGrabbor;
-    private CANifier _canifier;
-    private CANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
-    private MiniPID _cargoHeightController;
+    private OscarCANifier _canifier;
+    private OscarCANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
+    private MiniPID _cargoHeightController, _holderPID;
 
     private double holdorTarget;
 
@@ -24,7 +26,7 @@ public class SnowBlower extends Subsystem {
 
     private boolean _open;
 
-    public SnowBlower(SimpleMechanism intake, SmartMechanism hatchHolder, CANifier canifier, SmartMechanism hatchGrabber){
+    public SnowBlower(SimpleMechanism intake, SimplySmartMotor hatchHolder, OscarCANifier canifier, SmartMechanism hatchGrabber){
         _intake = intake;
         _hatchHoldor = hatchHolder;
         _canifier = canifier;
@@ -35,6 +37,7 @@ public class SnowBlower extends Subsystem {
         _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel1);
         _centeringUltrasonic = _canifier.getUltrasonic(com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel2);
 
+        _holderPID = new MiniPID(1, 0,0);
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
     }
 
@@ -103,9 +106,9 @@ public class SnowBlower extends Subsystem {
     }
 
     public void setHatchHolderPosition(String index){
-        holdorTarget = Constants.HolderPositions. getByIndex(index).getTarget();
+        holdorTarget = Constants.HolderPositions.getByIndex(index).getTarget();
         _holderPID.setSetpoint(holdorTarget);
-        _hatchHoldor.set(_holderPID.getOutput(_canifier.getQuadPosition()));
+        _hatchHoldor.setPosition(_holderPID.getOutput(_canifier.getQuadPosition()));
 
         _open = !(index == "Closed");
     }
@@ -153,6 +156,8 @@ public class SnowBlower extends Subsystem {
                 new MechanismPosition("Open", 100),
                 new MechanismPosition("Closed", 200)
         };
+
+        public static final MechanismPositionList HolderPositions = new MechanismPositionList(holderPositions);
 
         public static final MechanismPosition[] grabberPositions = new MechanismPosition[]{
                 //TODO: put actual numbers here

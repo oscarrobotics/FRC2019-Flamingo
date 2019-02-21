@@ -54,8 +54,8 @@ public class OI {
 
 		System.out.println("Buttons initialized");
 
-//		standUp.whenPressed(new InitializeBigOne());
-//		standDown.whenPressed((new TeleopBigOneMotionProfiling(TheBigOne.Constants.MotionProfilePosition.CARGO_SHIP_CARGO)));
+		standUp.whenPressed(new InitializeBigOne());
+		standDown.whenPressed((new TeleopBigOneMotionProfiling(TheBigOne.Constants.MotionProfilePosition.CARGO_SHIP_CARGO)));
 	}
 
     public enum OperatorMode {
