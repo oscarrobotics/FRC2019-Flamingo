@@ -22,8 +22,6 @@ public class SnowBlower extends Subsystem {
 
     private double holdorTarget;
 
-    private static final double cargoIntakeMiddleInches = 6.0;
-
     private CargoPosition _cargoPosition;
 
     private boolean _open;
@@ -97,8 +95,8 @@ public class SnowBlower extends Subsystem {
 
 
     public double ballPIDPow(){
-       if(getCargoHeight() > 30.0){
-           return _cargoHeightController.getOutput(getCargoHeight(), cargoIntakeMiddleInches);
+       if(getCargoHeight() > Constants.CargoBottom_MinInches){
+           return _cargoHeightController.getOutput(getCargoHeight(), Constants.CargoMiddle_MinInches - Constants.CargoMiddle_MaxInches);
        }else{
            return 0.0;
        }
