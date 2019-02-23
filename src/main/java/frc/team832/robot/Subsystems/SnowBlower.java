@@ -22,9 +22,13 @@ public class SnowBlower extends Subsystem {
 
     private double holdorTarget;
 
+    private static final double cargoIntakeMiddleInches = 6.0;
+
     private CargoPosition _cargoPosition;
 
     private boolean _open;
+
+    private boolean _holdBall = false;
 
     public SnowBlower(SimpleMechanism intake, SimplySmartMotor hatchHolder, OscarCANifier canifier, SmartMechanism hatchGrabber){
         _intake = intake;
@@ -64,6 +68,10 @@ public class SnowBlower extends Subsystem {
     @Override
     public void periodic() {
         _cargoPosition = updateCargoPosition();
+        if(_holdBall){
+            _intake.set(ballPIDPow());
+        }
+
     }
 
     public enum CargoPosition {
@@ -78,6 +86,26 @@ public class SnowBlower extends Subsystem {
         return false;
     }
 
+    public double getCargoHeight(){
+        _heightUltrasonic.update();
+        return _heightUltrasonic.getRangeInches();
+    }
+
+    public void setBallStatus(boolean holdBall){
+        _holdBall = holdBall;
+    }
+
+
+    public double ballPIDPow(){
+       if(getCargoHeight() > 30.0){
+           return _cargoHeightController.getOutput(getCargoHeight(), cargoIntakeMiddleInches);
+       }else{
+           return 0.0;
+       }
+
+    }
+
+
     public CargoPosition getCargoPosition() {
         return _cargoPosition;
     }
@@ -85,7 +113,7 @@ public class SnowBlower extends Subsystem {
     private CargoPosition updateCargoPosition() {
         _heightUltrasonic.update();
         double cargoDist = _heightUltrasonic.getRangeInches();
-        boolean cargoBottomSensor = true; // TODO: check height and bottom ultrasonic
+        boolean cargoBottomSensor = false; // TODO: check height and bottom ultrasonic
 
         if (cargoBottomSensor) {
             return CargoPosition.BOTTOM;
