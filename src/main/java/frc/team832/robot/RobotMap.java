@@ -12,8 +12,6 @@ import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
 
-import java.awt.*;
-
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -50,10 +48,10 @@ public class RobotMap {
     static PCM pcm;
 
     /** Drivetrain **/
-    static CANSparkMax leftMaster;
-    static CANSparkMax leftSlave;
-    static CANSparkMax rightMaster;
-    static CANSparkMax rightSlave;
+    public static CANSparkMax leftMaster;
+    public static CANSparkMax leftSlave;
+    public static CANSparkMax rightMaster;
+    public static CANSparkMax rightSlave;
 
     static CANSmartMotorGroup leftDrive;
     static CANSmartMotorGroup rightDrive;
@@ -84,7 +82,7 @@ public class RobotMap {
     static GeniusComplexMechanism complexLiftMech;
 
     /** Snowblower **/
-    static CANVictor cargoIntakeMotor;
+    public static CANVictor cargoIntakeMotor;
     static SimpleMechanism cargoIntake;
 
     static CANVictor hatchHolderMotor;
@@ -95,7 +93,7 @@ public class RobotMap {
     static SimplySmartMotor hatchHolderSmartMotor;
     static RotaryMechanism hatchGrabbor;
 
-    static OscarCANifier canifier;
+    static CANifier canifier;
 
     /**
      * Initializes robot hardware
@@ -113,7 +111,7 @@ public class RobotMap {
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         pcm = new PCM(IDs.pcm);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        canifier = new OscarCANifier(0);
+        canifier = new CANifier(0);
 
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
         try {
@@ -129,7 +127,6 @@ public class RobotMap {
         fourbarTop = new CANTalon(IDs.fourbarTop);
         fourbarBottom = new CANTalon(IDs.fourbarBottom);
 
-        elevatorMotor.setInverted(true);
 
         frontJackStandMotor = new CANTalon(IDs.frontJackStand);
         backJackStandMotor = new CANTalon(IDs.backJackStand);
@@ -161,20 +158,23 @@ public class RobotMap {
         rightMaster.setOutputRange(-1.0, 1.0);
         rightSlave.setOutputRange(-1.0, 1.0);
 
-        leftMaster.setkP(.000025);
-        rightMaster.setkP(.000025);
+        leftMaster.getInstance().getPIDController().setP(0.0005);
+        rightMaster.getInstance().getPIDController().setP(0.0005);
+
+//        leftMaster.setkP(.007);
+//        rightMaster.setkP(.007);
 
         leftDrive = new CANSmartMotorGroup(leftMaster, leftSlave);
         rightDrive = new CANSmartMotorGroup(rightMaster, rightSlave);
-        diffDrive = new SmartDifferentialDrive(leftDrive, rightDrive, 5700);
+        diffDrive = new SmartDifferentialDrive(leftDrive, rightDrive, 5500);
 
-        leftDrive.setClosedLoopRamp(0.0);
-        rightDrive.setClosedLoopRamp(0.0);
+//        leftDrive.setClosedLoopRamp(0.0);
+//        rightDrive.setClosedLoopRamp(0.0);
 
         leftDrive.setNeutralMode(NeutralMode.Brake);
         rightDrive.setNeutralMode(NeutralMode.Brake);
 
-//        canifier.setLedChannels(OscarCANifier.LEDChannel.LEDChannelB, OscarCANifier.LEDChannel.LEDChannelC, OscarCANifier.LEDChannel.LEDChannelA);
+//        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
 //        canifier.setMaxOutput(1);
 //        canifier.setColor(Color.GREEN);
 //        canifier.setRGB(1, 0, 1);
@@ -195,26 +195,44 @@ public class RobotMap {
         backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
         backJackStandMotor.setInverted(true);
-        backJackStandMotor.setPeakOutputForward(.2);
-        backJackStandMotor.setPeakOutputReverse(-.2);
-        frontJackStandMotor.setPeakOutputForward(.2);
-        frontJackStandMotor.setPeakOutputReverse(-.2);
+        backJackStandMotor.setPeakOutputForward(.8);
+        backJackStandMotor.setPeakOutputReverse(-.8);
+        frontJackStandMotor.setPeakOutputForward(.8);
+        frontJackStandMotor.setPeakOutputReverse(-.8);
 
-        frontJackStandMotor.setForwardSoftLimit(78500);
-        backJackStandMotor.setForwardSoftLimit(78500);
-        frontJackStandMotor.setReverseSoftLimit(0);
-        backJackStandMotor.setReverseSoftLimit(0);
+        frontJackStandMotor.setForwardSoftLimit(0);
+        backJackStandMotor.setForwardSoftLimit(0);
+        frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MAX_VAL);
+        backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
+        elevatorMotor.setInverted(true);
+        elevatorMotor.setSensorPhase(false);
 
         fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new GeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
-        fourbarTopMech.setPIDF(8,0,0, 0);
+        fourbarTop.setForwardSoftLimit((int)Fourbar.Constants.TOP_MAX_VAL);
+        fourbarTop.setReverseSoftLimit((int)Fourbar.Constants.TOP_MIN_VAL);
+
+        fourbarBottom.setForwardSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MIN_VAL));
+        fourbarBottom.setReverseSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MAX_VAL));
+
+        fourbarTopMech.setPIDF(8,0.0,0.05, 0);
+        fourbarBottomMech.setPIDF(8, 0.0, 0.05,0);
+
+        fourbarBottomMech.setIZone(50);
 
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
-        elevatorMech.setPIDF(16, 0, 0, 0);
+        elevatorMech.setPIDF(8, 0, 0, 0);//was 16
+
+
+
+        elevatorMotor.setForwardSoftLimit(-375);
+        elevatorMotor.setReverseSoftLimit(-705);
+
+        cargoIntake = new SimpleMechanism(cargoIntakeMotor);
 
         complexLiftMech = new GeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
         frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);

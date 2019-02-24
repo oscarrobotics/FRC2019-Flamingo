@@ -14,8 +14,7 @@ public class MoveJackStands extends Command {
     }
 
     public void initialize(){
-        Robot.jackStands.setBackPosition(_backIndex);
-        Robot.jackStands.setFrontPosition(_frontIndex);
+        Robot.jackStands.setPosition(_backIndex);
     }
 
     @Override

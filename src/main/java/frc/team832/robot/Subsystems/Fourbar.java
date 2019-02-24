@@ -8,6 +8,8 @@ import frc.team832.GrouchLib.Mechanisms.GeniusMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
+import frc.team832.robot.OI;
+import frc.team832.robot.Robot;
 
 
 public class Fourbar extends Subsystem {
@@ -52,11 +54,23 @@ public class Fourbar extends Subsystem {
     }
 
     public void teleopControl(){
+        if(OI.operatorBox.getRawButton(1)){
+            setPosition("Bottom");
+        }else if(OI.operatorBox.getRawButton(2)){
+            setPosition("Middle");
+        }else if(OI.operatorBox.getRawButton(3)){
+            setPosition("Top");
+        }else{
 
+        }
     }
 
     @Override
     public void periodic() {
+//        if(Robot.elevator.getTargetPosition() > -350 && getTopTargetPosition() < Constants.Positions.getByIndex("Middle").getTarget()){
+//            setPosition("Middle");
+//        }
+
     }
 
     public void pushData() {
@@ -115,7 +129,8 @@ public class Fourbar extends Subsystem {
     }
 
     public static class Constants {
-        public static final double TOP_MAX_VAL = 162;
+        public static final double TOP_MIN_VAL = 200;
+        public static final double TOP_MAX_VAL = 661;
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
         public static final double UPPERPOTOFFSET = 112.66;
@@ -125,28 +140,49 @@ public class Fourbar extends Subsystem {
         public static final double MININCHES = -29;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("StartConfig", TOP_MAX_VAL),
-                new MechanismPosition("TestTop", 575),
+                new MechanismPosition("StartConfig", TOP_MIN_VAL),
+                new MechanismPosition("TestTop", 630),
                 new MechanismPosition("TestBottom", 250),
 
-                new MechanismPosition("Bottom", inchToPotTick(0.0)),
-                new MechanismPosition("Middle", inchToPotTick(0.0)),
-                new MechanismPosition("Top", inchToPotTick(0.0)),
+                new MechanismPosition("Bottom", TOP_MIN_VAL),
+                new MechanismPosition("Middle", 430),
+                new MechanismPosition("Top", TOP_MAX_VAL-15),
 
-                new MechanismPosition("IntakeHatch_HP", inchToPotTick(0.0)),
-                new MechanismPosition("IntakeHatch_Floor", inchToPotTick(0.0)),
+                new MechanismPosition("IntakeHatch_HP", 0),
+                new MechanismPosition("IntakeHatch_Floor", 0),
 
-                new MechanismPosition("CargoShip_Hatch", inchToPotTick(0.0)),
-                new MechanismPosition("CargoShip_Cargo", inchToPotTick(0.0)),
+                new MechanismPosition("CargoShip_Hatch", 0),
+                new MechanismPosition("CargoShip_Cargo", 0),
 
-                new MechanismPosition("RocketHatch_Low", inchToPotTick(0.0)),
-                new MechanismPosition("RocketHatch_Middle", inchToPotTick(0.0)),
-                new MechanismPosition("RocketHatch_High", inchToPotTick(0.0)),
+                new MechanismPosition("RocketHatch_Low", 0),
+                new MechanismPosition("RocketHatch_Middle", 0),
+                new MechanismPosition("RocketHatch_High", 0),
 
-                new MechanismPosition("RocketCargo_Low", inchToPotTick(0.0)),
-                new MechanismPosition("RocketCargo_Middle", inchToPotTick(0.0)),
-                new MechanismPosition("RocketCargo_High", inchToPotTick(0.0)),
+                new MechanismPosition("RocketCargo_Low", 0),
+                new MechanismPosition("RocketCargo_Middle", 0),
+                new MechanismPosition("RocketCargo_High", 0),
         };
+
+        public enum FourbarPosition {
+            StartConfig("StartConfig"),
+            Bottom("Bottom"),
+            Middle("Middle"),
+            Top("Top"),
+            CargoShip_Hatch("CargoShip_Hatch"),
+            CargoShip_Cargo("CargoShip_Cargo"),
+            RocketHatch_Low("RocketHatch_Low"),
+            RocketHatch_Middle("RocketHatch_Middle"),
+            RocketHatch_High("RocketHatch_High"),
+            RocketCargo_Low ("RocketCargo_Low"),
+            RocketCargo_Middle("RocketCargo_Middle"),
+            RocketCargo_High("RocketCargo_High");
+
+            String _index;
+
+            FourbarPosition(String index) { _index = index; }
+
+            public String getIndex() { return _index; }
+        }
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
 
@@ -158,7 +194,7 @@ public class Fourbar extends Subsystem {
             return Math.sin(Math.toRadians((potTick*UPPERPOTTOANGLE)-UPPERPOTOFFSET))*ARMLENGTH;
         }
 
-        private static double convertUpperToLower(double upperVal) {
+        public static double convertUpperToLower(double upperVal) {
             return (-1.39 * upperVal) + 1044;
         }
     }

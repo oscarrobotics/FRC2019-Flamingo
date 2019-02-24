@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.DoNothing;
+import frc.team832.robot.Commands.HatchFunctions.MoveGrabbor;
+import frc.team832.robot.Commands.MoveCargo;
+import frc.team832.robot.Commands.StopCargo;
+import frc.team832.robot.Commands.TeleopControlFourbar;
 import frc.team832.robot.Commands.TheBigOne.BigOneToStartConfig;
 import frc.team832.robot.Commands.TheBigOne.InitializeBigOne;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
@@ -31,7 +35,6 @@ public class OI {
 
 	public OI(){
     	driverPad = new XboxController(0);
-
 		leftStickPress = new JoystickButton(driverPad, 9);
 		rightStickPress = new JoystickButton(driverPad, 10);
 
@@ -54,8 +57,6 @@ public class OI {
 
 		System.out.println("Buttons initialized");
 
-		standUp.whenPressed(new InitializeBigOne());
-		standDown.whenPressed((new TeleopBigOneMotionProfiling(TheBigOne.Constants.MotionProfilePosition.CARGO_SHIP_CARGO)));
 	}
 
     public enum OperatorMode {

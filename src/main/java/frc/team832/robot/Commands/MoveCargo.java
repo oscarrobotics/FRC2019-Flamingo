@@ -9,7 +9,10 @@ public class MoveCargo extends Command {
         requires(Robot.snowBlower);
     }
 
-
+    @Override
+    protected void initialize(){
+        Robot.snowBlower.intakeSet(.5);
+    }
 
     @Override
     protected boolean isFinished() {

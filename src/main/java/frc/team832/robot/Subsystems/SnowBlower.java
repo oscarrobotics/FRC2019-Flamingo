@@ -1,13 +1,15 @@
 package frc.team832.robot.Subsystems;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
 import frc.team832.GrouchLib.Motors.SimplySmartMotor;
-import frc.team832.GrouchLib.Sensors.OscarCANifier;
+import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
+import frc.team832.robot.OI;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
@@ -16,8 +18,8 @@ public class SnowBlower extends Subsystem {
     private SimpleMechanism _intake;
     private SimplySmartMotor _hatchHoldor;
     private SmartMechanism _hatchGrabbor;
-    private OscarCANifier _canifier;
-    private OscarCANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
+    private CANifier _canifier;
+    private CANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
     private MiniPID _cargoHeightController, _holderPID;
 
     private double holdorTarget;
@@ -28,7 +30,7 @@ public class SnowBlower extends Subsystem {
 
     private boolean _holdBall = false;
 
-    public SnowBlower(SimpleMechanism intake, SimplySmartMotor hatchHolder, OscarCANifier canifier, SmartMechanism hatchGrabber){
+    public SnowBlower(SimpleMechanism intake, SimplySmartMotor hatchHolder, CANifier canifier, SmartMechanism hatchGrabber){
         _intake = intake;
         _hatchHoldor = hatchHolder;
         _canifier = canifier;
@@ -70,6 +72,30 @@ public class SnowBlower extends Subsystem {
             _intake.set(ballPIDPow());
         }
 
+    }
+
+    public void teleopControl() {
+        if(OI.driverPad.getAButton()){
+            intakeSet(.5);
+        }else if(OI.driverPad.getXButton()){
+            intakeSet(-.5);
+        }else if(OI.driverPad.getYButton()){
+            intakeSet(-1);
+        }else{
+            intakeSet(0.0);
+        }
+
+        if(OI.operatorBox.getRawButton(9)){
+            setHatchHolderPosition("Open");
+        }else if(OI.operatorBox.getRawButton(10)){
+            setHatchHolderPosition("Closed");
+        }
+
+        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
+            setBallStatus(true);
+        }else if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
+            setBallStatus(false);
+        }
     }
 
     public enum CargoPosition {
@@ -136,7 +162,7 @@ public class SnowBlower extends Subsystem {
         _holderPID.setSetpoint(holdorTarget);
         _hatchHoldor.setPosition(_holderPID.getOutput(_canifier.getQuadPosition()));
 
-        _open = !(index == "Closed");
+        _open = !(index.equals("Closed"));
     }
 
     private boolean cargoAtBottom(double cargoDistInches) {

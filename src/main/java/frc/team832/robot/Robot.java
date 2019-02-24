@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
-import frc.team832.GrouchLib.Sensors.OscarCANifier;
-import frc.team832.GrouchLib.Util.MiniPID;
+import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.robot.Subsystems.*;
 
+import static com.ctre.phoenix.CANifier.PWMChannel.*;
 import static frc.team832.robot.RobotMap.*;
 
 /**
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
     public static OI oi;
 
     public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
-    private static OscarCANifier.Ultrasonic ultrasonic;
+    private static CANifier.Ultrasonic ultrasonic;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -76,12 +76,14 @@ public class Robot extends TimedRobot {
         oi = new OI();
         System.out.println("OI INIT");
 
-//        ultrasonic = RobotMap.canifier.getUltrasonic(OscarCANifier.PWMChannel.PWMChannel0, OscarCANifier.PWMChannel.PWMChannel1);
-//        ultrasonic.start();
+        ultrasonic = RobotMap.canifier.getUltrasonic(PWMChannel0, PWMChannel1);
+        ultrasonic.start();
 
         SmartDashboard.putData("Auto choices", chooser);
 
         drivetrain.setPIDF(.00005, 0, 0, 0);
+
+
     }
 
     @Override
@@ -92,6 +94,8 @@ public class Robot extends TimedRobot {
         elevator.pushData();
         fourbar.pushData();
         jackStands.pushData();
+        SmartDashboard.putNumber("Fourbar error: ", fourbarTop.getClosedLoopError());
+
     }
 
     /**
@@ -133,6 +137,9 @@ public class Robot extends TimedRobot {
     public void teleopInit(){
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
+        fourbar.setPosition("Bottom");
+        elevator.setPosition("Top");
+        jackStands.setPosition("TEST1");
     }
 
     /**
@@ -147,7 +154,7 @@ public class Robot extends TimedRobot {
                 SmartDifferentialDrive.LoopMode.VELOCITY);
 
         Scheduler.getInstance().run();
-
+        snowBlower.teleopControl();
 //        jackStands.teleopControl();
 
         if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
@@ -156,12 +163,14 @@ public class Robot extends TimedRobot {
             pcm.setOutput(IDs.lightPort, false);
         }
 
+
 //        fourbar.teleopControl();
 //        elevator.teleopControl();
 //        ultrasonic.update();
 //        double dist = ultrasonic.getRangeInches();
 //        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));
 //        complexLift.mainLoop();
+//        SmartDashboard.putNumber("UltraSonic inches", ultrasonic.getRangeInches());
     }
 
     @Override

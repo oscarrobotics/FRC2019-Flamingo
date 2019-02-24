@@ -46,6 +46,7 @@ public class Elevator extends Subsystem {
 
     @Override
     public void periodic() {
+
     }
 
     public void pushData() {
@@ -61,14 +62,14 @@ public class Elevator extends Subsystem {
     public void initDefaultCommand() { }
 
     public void teleopControl() {
-        if(OI.driverPad.getYButton()){
-            setPosition("TestTop");
-        }
-        else if (OI.driverPad.getAButton()) {
-            setPosition("TestBottom");
-        }
-        else {
-            stop();
+        if(OI.operatorBox.getRawButton(4)){
+            setPosition("Bottom");
+        }else if(OI.operatorBox.getRawButton(5)){
+            setPosition("Middle");
+        }else if(OI.operatorBox.getRawButton(6)) {
+            setPosition("Top");
+        }else{
+
         }
     }
 
@@ -93,8 +94,8 @@ public class Elevator extends Subsystem {
     }
 
     public static class Constants {
-        public static final int POT_MIN_VAL = 710;
-        public static final int POT_MAX_VAL = 374;
+        public static final int POT_MIN_VAL = -705;
+        public static final int POT_MAX_VAL = -370;
         public static final int POT_RANGE = (POT_MAX_VAL - 1023) + 1023 - POT_MIN_VAL;
         public static final double POT_TO_INCHES = 44.0 / (double)POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
@@ -109,9 +110,9 @@ public class Elevator extends Subsystem {
                 new MechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new MechanismPosition("TestTop", POT_MAX_VAL + 50),
 
-                new MechanismPosition("Bottom", InchesToPot(3)),
-                new MechanismPosition("Middle", InchesToPot(15)),
-                new MechanismPosition("Top", InchesToPot(28)),
+                new MechanismPosition("Bottom", -700),
+                new MechanismPosition("Middle", -500),
+                new MechanismPosition("Top", -380),
 
                 new MechanismPosition("CargoShip_Hatch", InchesToPot(28)),
                 new MechanismPosition("CargoShip_Cargo", InchesToPot(15)),

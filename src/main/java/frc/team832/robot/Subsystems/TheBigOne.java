@@ -60,7 +60,7 @@ public class TheBigOne extends Subsystem {
 
 			switch (runningAction) {
 				case INTAKE_HP_HATCH:
-					new TeleopBigOneMotionProfiling(MotionProfilePosition.INTAKE_HP_HATCH).start();
+//					new TeleopBigOneMotionProfiling(MotionProfilePosition.INTAKE_HP_HATCH).start();
 					_snowBlower.setHatchHolderPosition(_snowBlower.getHatchCoverStatus() ? "Open" : "Closed");
 					if (_snowBlower.getHatchCoverStatus()) {
 						currentPos = MotionProfilePosition.INTAKE_HP_HATCH;
@@ -78,13 +78,13 @@ public class TheBigOne extends Subsystem {
 				case INTAKE_HP_CARGO:
 				case INTAKE_FLOOR_CARGO:
 					// we case both together, and check the action later, as the code is 99% the same, just a different position
-					new TeleopBigOneMotionProfiling(toRunAction == Action.INTAKE_HP_CARGO ? MotionProfilePosition.INTAKE_HP_CARGO : MotionProfilePosition.INTAKE_FLOOR_CARGO).start();
+//					new TeleopBigOneMotionProfiling(toRunAction == Action.INTAKE_HP_CARGO ? MotionProfilePosition.INTAKE_HP_CARGO : MotionProfilePosition.INTAKE_FLOOR_CARGO).start();
 					// get desired position
 					targetPosition = ComplexLift.Constants.Positions.getByIndex(
 							toRunAction == Action.INTAKE_HP_CARGO ? "IntakeCargo_HP" : "IntakeCargo_Floor");
 
 					// set ComplexLift position
-					//Robot.complexLift.setPosition(targetPosition);
+					Robot.complexLift.setPosition(targetPosition);
 
 					switch (_snowBlower.getCargoPosition()) {
 						case UNKNOWN:
@@ -104,10 +104,10 @@ public class TheBigOne extends Subsystem {
 					}
 					break;
 				case CARGO_SHIP_HATCH:
-					new TeleopBigOneMotionProfiling(MotionProfilePosition.CARGO_SHIP_HATCH).start();
+//					new TeleopBigOneMotionProfiling(MotionProfilePosition.CARGO_SHIP_HATCH).start();
 
 					targetPosition = ComplexLift.Constants.Positions.getByIndex("");
-					//Robot.complexLift.setPosition(targetPosition);
+					Robot.complexLift.setPosition(targetPosition);
 					if (Robot.complexLift.getAtTarget()) {
 						_snowBlower.setHatchHolderPosition("Closed");
 						currentPos = MotionProfilePosition.CARGO_SHIP_HATCH;
@@ -115,10 +115,10 @@ public class TheBigOne extends Subsystem {
 					}
 					break;
 				case CARGO_SHIP_CARGO:
-					new TeleopBigOneMotionProfiling(MotionProfilePosition.CARGO_SHIP_CARGO).start();
+//					new TeleopBigOneMotionProfiling(MotionProfilePosition.CARGO_SHIP_CARGO).start();
 
 					targetPosition = ComplexLift.Constants.Positions.getByIndex("");
-					//Robot.complexLift.setPosition(targetPosition);
+					Robot.complexLift.setPosition(targetPosition);
 					if (Robot.complexLift.getAtTarget()) {
 						_snowBlower.intakeSet(.5);
 						currentPos = MotionProfilePosition.CARGO_SHIP_CARGO;
@@ -131,10 +131,10 @@ public class TheBigOne extends Subsystem {
 					targetPosition = ComplexLift.Constants.Positions.getByIndex(
 							toRunAction == Action.ROCKET_HATCH_HIGH ? "" : toRunAction == Action.ROCKET_HATCH_MID ? "" : "");
 
-					new TeleopBigOneMotionProfiling(toRunAction == Action.ROCKET_HATCH_HIGH ? MotionProfilePosition.ROCKET_HATCH_HIGH :
-							toRunAction == Action.ROCKET_HATCH_MID ? MotionProfilePosition.ROCKET_HATCH_MID : MotionProfilePosition.ROCKET_HATCH_LOW).start();
+//					new TeleopBigOneMotionProfiling(toRunAction == Action.ROCKET_HATCH_HIGH ? MotionProfilePosition.ROCKET_HATCH_HIGH :
+//							toRunAction == Action.ROCKET_HATCH_MID ? MotionProfilePosition.ROCKET_HATCH_MID : MotionProfilePosition.ROCKET_HATCH_LOW).start();
 
-					//Robot.complexLift.setPosition(targetPosition);
+					Robot.complexLift.setPosition(targetPosition);
 					if (Robot.complexLift.getAtTarget()) {
 						_snowBlower.setHatchHolderPosition("Closed");
 						currentPos = toRunAction == Action.ROCKET_HATCH_HIGH ? MotionProfilePosition.ROCKET_HATCH_HIGH :
@@ -149,10 +149,10 @@ public class TheBigOne extends Subsystem {
 					targetPosition = ComplexLift.Constants.Positions.getByIndex(
 							toRunAction == Action.ROCKET_CARGO_HIGH ? "" : toRunAction == Action.ROCKET_CARGO_MID ? "" : "");
 
-					new TeleopBigOneMotionProfiling(toRunAction == Action.ROCKET_CARGO_HIGH ? MotionProfilePosition.ROCKET_CARGO_HIGH :
-							toRunAction == Action.ROCKET_CARGO_MID ? MotionProfilePosition.ROCKET_CARGO_MID : MotionProfilePosition.ROCKET_CARGO_LOW).start();
+//					new TeleopBigOneMotionProfiling(toRunAction == Action.ROCKET_CARGO_HIGH ? MotionProfilePosition.ROCKET_CARGO_HIGH :
+//							toRunAction == Action.ROCKET_CARGO_MID ? MotionProfilePosition.ROCKET_CARGO_MID : MotionProfilePosition.ROCKET_CARGO_LOW).start();
 
-					//                Robot.complexLift.setPosition(targetPosition);
+					Robot.complexLift.setPosition(targetPosition);
 					if (Robot.complexLift.getAtTarget()) {
 						_snowBlower.setHatchHolderPosition("Closed");
 						currentPos = toRunAction == Action.ROCKET_CARGO_HIGH ? MotionProfilePosition.ROCKET_CARGO_HIGH :
@@ -166,6 +166,11 @@ public class TheBigOne extends Subsystem {
 					break;
 			}
 		}
+	}
+
+	public void initialize(){
+		Robot.elevator.setPosition("StartConfig");
+		Robot.fourbar.setPosition("StartConfig");
 	}
 
 	@Override
