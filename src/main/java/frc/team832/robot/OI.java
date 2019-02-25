@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.team832.robot.Commands.DoNothing;
+import frc.team832.robot.Commands.*;
 import frc.team832.robot.Commands.HatchFunctions.MoveGrabbor;
-import frc.team832.robot.Commands.MoveCargo;
-import frc.team832.robot.Commands.StopCargo;
-import frc.team832.robot.Commands.TeleopControlFourbar;
 import frc.team832.robot.Commands.TheBigOne.BigOneToStartConfig;
 import frc.team832.robot.Commands.TheBigOne.InitializeBigOne;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
 import frc.team832.robot.Commands.TheBigOne.TeleopBigOneMotionProfiling;
+import frc.team832.robot.Subsystems.Elevator;
+import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.TheBigOne;
 
 /**
@@ -56,6 +55,14 @@ public class OI {
 		modeButton3 = new JoystickButton(operatorBox, 11);
 
 		System.out.println("Buttons initialized");
+
+		op1.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketHatch_Low.getIndex(), Elevator.Constants.ElevatorPosition.RocketHatch_Low.getIndex()));
+		op2.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketHatch_Middle.getIndex(), Elevator.Constants.ElevatorPosition.RocketHatch_Middle.getIndex()));
+		op3.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketHatch_High.getIndex(), Elevator.Constants.ElevatorPosition.RocketHatch_High.getIndex()));
+		op4.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketCargo_Low.getIndex(), Elevator.Constants.ElevatorPosition.RocketCargo_Low.getIndex()));
+		op5.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketCargo_Middle.getIndex(), Elevator.Constants.ElevatorPosition.RocketCargo_Middle.getIndex()));
+		op6.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketCargo_High.getIndex(), Elevator.Constants.ElevatorPosition.RocketCargo_High.getIndex()));
+		modeButton2.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.IntakeCargo_Floor.getIndex(), Elevator.Constants.ElevatorPosition.IntakeCargo_Floor.getIndex()));
 
 	}
 

@@ -93,6 +93,11 @@ public class Elevator extends Subsystem {
         return _elevator.isMPFinished();
     }
 
+    public void testAdjustment(int adjVal) {
+        _elevator.setPosition(new MechanismPosition("AdjControl", getTargetPosition()+adjVal));
+
+    }
+
     public static class Constants {
         public static final int POT_MIN_VAL = -705;
         public static final int POT_MAX_VAL = -370;
@@ -114,17 +119,41 @@ public class Elevator extends Subsystem {
                 new MechanismPosition("Middle", -500),
                 new MechanismPosition("Top", -380),
 
+                new MechanismPosition("IntakeCargo_Floor", -630),
+
                 new MechanismPosition("CargoShip_Hatch", InchesToPot(28)),
                 new MechanismPosition("CargoShip_Cargo", InchesToPot(15)),
 
-                new MechanismPosition("RocketHatch_Low", 28 * INCHES_TO_POT),
-                new MechanismPosition("RocketHatch_Middle", 28 * INCHES_TO_POT),
-                new MechanismPosition("RocketHatch_High", 28 * INCHES_TO_POT),
+                new MechanismPosition("RocketHatch_Low", -670),
+                new MechanismPosition("RocketHatch_Middle", -400),
+                new MechanismPosition("RocketHatch_High", -380),
 
-                new MechanismPosition("RocketCargo_Low", 28 * INCHES_TO_POT),
-                new MechanismPosition("RocketCargo_Middle", 28 * INCHES_TO_POT),
-                new MechanismPosition("RocketCargo_High", 28 * INCHES_TO_POT)
+                new MechanismPosition("RocketCargo_Low", -690),
+                new MechanismPosition("RocketCargo_Middle", -420),
+                new MechanismPosition("RocketCargo_High", -400)
         };
+
+        public enum ElevatorPosition {
+            StartConfig("StartConfig"),
+            Bottom("Bottom"),
+            Middle("Middle"),
+            Top("Top"),
+            IntakeCargo_Floor("IntakeCargo_Floor"),
+            CargoShip_Hatch("CargoShip_Hatch"),
+            CargoShip_Cargo("CargoShip_Cargo"),
+            RocketHatch_Low("RocketHatch_Low"),
+            RocketHatch_Middle("RocketHatch_Middle"),
+            RocketHatch_High("RocketHatch_High"),
+            RocketCargo_Low ("RocketCargo_Low"),
+            RocketCargo_Middle("RocketCargo_Middle"),
+            RocketCargo_High("RocketCargo_High");
+
+            String _index;
+
+            ElevatorPosition(String index) { _index = index; }
+
+            public String getIndex() { return _index; }
+        }
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
     }

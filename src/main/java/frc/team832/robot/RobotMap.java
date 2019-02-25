@@ -86,11 +86,10 @@ public class RobotMap {
     static SimpleMechanism cargoIntake;
 
     static CANVictor hatchHolderMotor;
-    static SimplySmartMotor hatchHolder;
+    static SimpleMechanism hatchHolder;
     static MiniPID hatchHolderPID;
 
     static CANTalon hatchGrabborMotor;
-    static SimplySmartMotor hatchHolderSmartMotor;
     static RotaryMechanism hatchGrabbor;
 
     static CANifier canifier;
@@ -139,7 +138,6 @@ public class RobotMap {
         // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
 
         hatchHolderPID = new MiniPID(1,0,0);
-        hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
@@ -179,7 +177,7 @@ public class RobotMap {
 //        canifier.setColor(Color.GREEN);
 //        canifier.setRGB(1, 0, 1);
 
-        hatchHolder = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
+        hatchHolder = new SimpleMechanism(hatchHolderMotor);
 
         fourbarTop.setSensorType(FeedbackDevice.Analog);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
@@ -194,7 +192,8 @@ public class RobotMap {
         frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
         backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-        backJackStandMotor.setInverted(true);
+        frontJackStandMotor.setInverted(false);
+        backJackStandMotor.setInverted(false);
         backJackStandMotor.setPeakOutputForward(.8);
         backJackStandMotor.setPeakOutputReverse(-.8);
         frontJackStandMotor.setPeakOutputForward(.8);
@@ -202,8 +201,8 @@ public class RobotMap {
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
-        frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MAX_VAL);
-        backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
+        frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
+        backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL+50000);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
@@ -225,12 +224,14 @@ public class RobotMap {
         fourbarBottomMech.setIZone(50);
 
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
-        elevatorMech.setPIDF(8, 0, 0, 0);//was 16
+        elevatorMech.setPIDF(16, 0, 0, 0);
 
-
+        elevatorMotor.setPeakOutputReverse(-.20);
 
         elevatorMotor.setForwardSoftLimit(-375);
         elevatorMotor.setReverseSoftLimit(-705);
+
+        cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 
         cargoIntake = new SimpleMechanism(cargoIntakeMotor);
 

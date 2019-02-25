@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData("Auto choices", chooser);
 
-        drivetrain.setPIDF(.00005, 0, 0, 0);
+        drivetrain.setPIDF(.0005, 0, 0, 0);
 
 
     }
@@ -137,9 +137,10 @@ public class Robot extends TimedRobot {
     public void teleopInit(){
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
-        fourbar.setPosition("Bottom");
-        elevator.setPosition("Top");
-        jackStands.setPosition("TEST1");
+        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
+        elevator.setPosition(Elevator.Constants.ElevatorPosition.Middle.getIndex());
+//        jackStands.setPosition("TEST1");
+        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
     }
 
     /**
@@ -147,11 +148,29 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
         drivetrain.teleopControl(
-                Math.pow(OI.driverPad.getY(GenericHID.Hand.kLeft), 3),
-                Math.pow(-OI.driverPad.getX(GenericHID.Hand.kRight), 3),
+                Math.pow(OI.driverPad.getY(GenericHID.Hand.kLeft), 1),
+                Math.pow(-OI.driverPad.getX(GenericHID.Hand.kRight), 1),
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.VELOCITY);
+
+        if(OI.driverPad.getYButtonReleased()){
+            //fourbar.testAdjustment(25);
+            jackStands.setFrontPosition(jackStands.getFrontCurrentPosition() + 5000);
+        }else if (OI.driverPad.getAButtonReleased()){
+//            fourbar.testAdjustment(-25);
+            jackStands.setFrontPosition(jackStands.getFrontCurrentPosition() - 5000);
+        }
+
+        if(OI.driverPad.getXButtonReleased()){
+//            elevator.testAdjustment(25);
+            jackStands.setBackPosition(jackStands.getBackCurrentPosition() + 5000);
+        }else if (OI.driverPad.getBButtonReleased()){
+//            elevator.testAdjustment(-25);
+            jackStands.setBackPosition(jackStands.getBackCurrentPosition() - 5000);
+
+        }
 
         Scheduler.getInstance().run();
         snowBlower.teleopControl();

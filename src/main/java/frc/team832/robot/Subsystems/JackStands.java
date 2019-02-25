@@ -38,14 +38,17 @@ public class JackStands extends Subsystem {
     }
 
     public void setPosition(String index) {
-        MechanismPosition backPos = Fourbar.Constants.Positions.getByIndex(index);
+        MechanismPosition backPos = Constants.Positions.getByIndex(index);
         MechanismPosition frontPos = new MechanismPosition(index, Constants.convertBackToFront(backPos.getTarget()));
         _frontStand.setPosition(frontPos);
         _backStand.setPosition(backPos);
     }
     //WILL CODE
-    public void setPosition(double pos) {
+    public void setFrontPosition(double pos) {
         _frontStand.setPosition(pos);
+    }
+
+    public void setBackPosition(double pos) {
         _backStand.setPosition(pos);
     }
 
@@ -68,8 +71,6 @@ public class JackStands extends Subsystem {
             setPosition("TEST1");
         }else if(OI.driverPad.getAButtonPressed()){
             setPosition("TEST2");
-        }else if (OI.driverPad.getYButtonReleased() || OI.driverPad.getAButtonReleased()){
-            setPosition(_frontStand.getCurrentPosition());
         }
 
 
@@ -93,7 +94,7 @@ public class JackStands extends Subsystem {
     protected void initDefaultCommand() {}
 
     public static class Constants {
-        public static final int ENC_MIN_VAL = -78000 + 8000;
+        public static final int ENC_MIN_VAL = -76000;
         public static final int ENC_MAX_VAL = -500 - 8000;
         public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_VAL;
         public static final double MAX_INCHES = 29;
