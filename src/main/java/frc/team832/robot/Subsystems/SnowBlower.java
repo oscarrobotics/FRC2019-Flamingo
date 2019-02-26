@@ -16,7 +16,7 @@ import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 public class SnowBlower extends Subsystem {
 
     private SimpleMechanism _intake;
-    private SimplySmartMotor _hatchHoldor;
+    private SimpleMechanism _hatchHoldor;
     private SmartMechanism _hatchGrabbor;
     private CANifier _canifier;
     private CANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
@@ -30,7 +30,7 @@ public class SnowBlower extends Subsystem {
 
     private boolean _holdBall = false;
 
-    public SnowBlower(SimpleMechanism intake, SimplySmartMotor hatchHolder, CANifier canifier, SmartMechanism hatchGrabber){
+    public SnowBlower(SimpleMechanism intake, SimpleMechanism hatchHolder, CANifier canifier, SmartMechanism hatchGrabber){
         _intake = intake;
         _hatchHoldor = hatchHolder;
         _canifier = canifier;
@@ -38,10 +38,11 @@ public class SnowBlower extends Subsystem {
 
         com.ctre.phoenix.CANifier.PWMChannel triggerChannel = com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0;
 
+
         _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel1);
         _centeringUltrasonic = _canifier.getUltrasonic(com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel2);
 
-        _holderPID = new MiniPID(1, 0,0);
+        _holderPID = new MiniPID(.01, 0,0);
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
     }
 
@@ -75,7 +76,9 @@ public class SnowBlower extends Subsystem {
     }
 
     public void teleopControl() {
-        if(OI.driverPad.getAButton()){
+
+        intakeSet(OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft));
+/*        if(OI.driverPad.getAButton()){
             intakeSet(.5);
         }else if(OI.driverPad.getXButton()){
             intakeSet(-.5);
@@ -95,7 +98,7 @@ public class SnowBlower extends Subsystem {
             setBallStatus(true);
         }else if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
             setBallStatus(false);
-        }
+        }*/
     }
 
     public enum CargoPosition {
@@ -160,9 +163,14 @@ public class SnowBlower extends Subsystem {
     public void setHatchHolderPosition(String index){
         holdorTarget = Constants.HolderPositions.getByIndex(index).getTarget();
         _holderPID.setSetpoint(holdorTarget);
-        _hatchHoldor.setPosition(_holderPID.getOutput(_canifier.getQuadPosition()));
-
+        _hatchHoldor.set(_holderPID.getOutput(_canifier.getQuadPosition()));
         _open = !(index.equals("Closed"));
+    }
+
+    public void setHatchHolderPosition(double pos){
+        holdorTarget = pos;
+        _holderPID.setSetpoint(holdorTarget);
+        _hatchHoldor.set(_holderPID.getOutput(_canifier.getQuadPosition()));
     }
 
     private boolean cargoAtBottom(double cargoDistInches) {
@@ -205,7 +213,7 @@ public class SnowBlower extends Subsystem {
 
         public static final MechanismPosition[] holderPositions = new MechanismPosition[]{
                 //TODO: put actual numbers here
-                new MechanismPosition("Open", 100),
+                new MechanismPosition("Open", 220),
                 new MechanismPosition("Closed", 200)
         };
 

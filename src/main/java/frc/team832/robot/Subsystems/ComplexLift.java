@@ -55,7 +55,7 @@ public class ComplexLift extends Subsystem {
             new MechanismComplexPosition("CargoShip_Hatch", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
             new MechanismComplexPosition("CargoShip_Cargo", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
 
-            new MechanismComplexPosition("RocketHatch_Low", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
+            new MechanismComplexPosition("RocketHatch_Low", Elevator.Constants.Positions.getByIndex("RocketHatch_Low"), Fourbar.Constants.Positions.getByIndex("RocketHatch_Low")),
             new MechanismComplexPosition("RocketHatch_Middle", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
             new MechanismComplexPosition("RocketHatch_High", Elevator.Constants.Positions.getByIndex("Top"), Fourbar.Constants.Positions.getByIndex("Bottom")),
 

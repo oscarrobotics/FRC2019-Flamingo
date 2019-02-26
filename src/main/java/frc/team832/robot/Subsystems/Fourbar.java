@@ -98,6 +98,11 @@ public class Fourbar extends Subsystem {
         _bottom.setPosition(lowerPos);
     }
 
+    public void testAdjustment(double adjVal){
+        _top.setPosition(new MechanismPosition("AdjControl", getTopTargetPosition()+adjVal));
+        _bottom.setPosition(new MechanismPosition("AdjControl", Constants.convertUpperToLower(getTopTargetPosition()+adjVal)));
+    }
+
     @Override
     public void initDefaultCommand() { }
 
@@ -149,18 +154,18 @@ public class Fourbar extends Subsystem {
                 new MechanismPosition("Top", TOP_MAX_VAL-15),
 
                 new MechanismPosition("IntakeHatch_HP", 0),
-                new MechanismPosition("IntakeHatch_Floor", 0),
+                new MechanismPosition("IntakeCargo_Floor", 420),
 
                 new MechanismPosition("CargoShip_Hatch", 0),
                 new MechanismPosition("CargoShip_Cargo", 0),
 
-                new MechanismPosition("RocketHatch_Low", 0),
-                new MechanismPosition("RocketHatch_Middle", 0),
-                new MechanismPosition("RocketHatch_High", 0),
+                new MechanismPosition("RocketHatch_Low", 420),
+                new MechanismPosition("RocketHatch_Middle", 460),
+                new MechanismPosition("RocketHatch_High", 640),
 
-                new MechanismPosition("RocketCargo_Low", 0),
-                new MechanismPosition("RocketCargo_Middle", 0),
-                new MechanismPosition("RocketCargo_High", 0),
+                new MechanismPosition("RocketCargo_Low", 420),
+                new MechanismPosition("RocketCargo_Middle", 460),
+                new MechanismPosition("RocketCargo_High", 640),
         };
 
         public enum FourbarPosition {
@@ -168,6 +173,7 @@ public class Fourbar extends Subsystem {
             Bottom("Bottom"),
             Middle("Middle"),
             Top("Top"),
+            IntakeCargo_Floor("IntakeCargo_Floor"),
             CargoShip_Hatch("CargoShip_Hatch"),
             CargoShip_Cargo("CargoShip_Cargo"),
             RocketHatch_Low("RocketHatch_Low"),

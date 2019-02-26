@@ -190,7 +190,8 @@ public class RobotMap {
         frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
         backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-        backJackStandMotor.setInverted(true);
+        frontJackStandMotor.setInverted(false);
+        backJackStandMotor.setInverted(false);
         backJackStandMotor.setPeakOutputForward(.8);
         backJackStandMotor.setPeakOutputReverse(-.8);
         frontJackStandMotor.setPeakOutputForward(.8);
@@ -198,8 +199,8 @@ public class RobotMap {
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
-        frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MAX_VAL);
-        backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
+        frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
+        backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL+50000);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
@@ -225,6 +226,8 @@ public class RobotMap {
 
         elevatorMotor.setForwardSoftLimit(-375);
         elevatorMotor.setReverseSoftLimit(-705);
+
+        cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 
         cargoIntake = new SimpleMechanism(cargoIntakeMotor);
 
