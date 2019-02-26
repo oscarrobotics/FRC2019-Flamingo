@@ -22,24 +22,27 @@ import frc.team832.robot.Subsystems.*;
 public class RobotMap {
 
     static class IDs {
-
-        public static final int pdp = 0;
-        public static final int pcm = 1;
-        public static final int leftMaster = 22;
-        public static final int leftSlave = 23;
-        public static final int rightMaster = 24;
-        public static final int rightSlave = 25;
-        public static final int elevator = 6;
-        public static final int fourbarTop = 7;
-        public static final int fourbarBottom = 8;
-        public static final int frontJackStand = 9;
-        public static final int backJackStand = 10;
-        public static final int jackStandDrive = 11;
-        public static final int cargoIntake = 12;
-        public static final int hatchHolder = 13;
-        public static final int hatchGrabbor = 14;
-        public static final int canifier = 0;
-        public static final int lightPort = 0;
+        static class CAN {
+            public static final int pdp = 0;
+            public static final int pcm = 1;
+            public static final int leftMaster = 22;
+            public static final int leftSlave = 23;
+            public static final int rightMaster = 24;
+            public static final int rightSlave = 25;
+            public static final int elevator = 6;
+            public static final int fourbarTop = 7;
+            public static final int fourbarBottom = 8;
+            public static final int frontJackStand = 9;
+            public static final int backJackStand = 10;
+            public static final int jackStandDrive = 11;
+            public static final int cargoIntake = 12;
+            public static final int hatchHolder = 13;
+            public static final int hatchGrabbor = 14;
+            public static final int canifier = 0;
+        }
+        static class PCM {
+            public static final int lightPort = 0;
+        }
     }
 
     // Keep organized by subsystem
@@ -95,6 +98,8 @@ public class RobotMap {
 
     static CANifier canifier;
 
+    static Solenoid visionLight;
+
     /**
      * Initializes robot hardware
      */
@@ -107,36 +112,33 @@ public class RobotMap {
          **/
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pdp = new PDP(IDs.pdp);
+        pdp = new PDP(IDs.CAN.pdp);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pcm = new PCM(IDs.pcm);
+        pcm = new PCM(IDs.CAN.pcm);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new CANifier(0);
 
+        visionLight = new Solenoid(pcm, IDs.PCM.lightPort);
+
         CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
-        try {
-            leftMaster = new CANSparkMax(IDs.leftMaster, driveMotorType);
-            leftSlave = new CANSparkMax(IDs.leftSlave, driveMotorType);
-            rightMaster = new CANSparkMax(IDs.rightMaster, driveMotorType);
-            rightSlave = new CANSparkMax(IDs.rightSlave, driveMotorType);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        leftMaster = new CANSparkMax(IDs.CAN.leftMaster, driveMotorType);
+        leftSlave = new CANSparkMax(IDs.CAN.leftSlave, driveMotorType);
+        rightMaster = new CANSparkMax(IDs.CAN.rightMaster, driveMotorType);
+        rightSlave = new CANSparkMax(IDs.CAN.rightSlave, driveMotorType);
 
-        elevatorMotor = new CANTalon(IDs.elevator);
-        fourbarTop = new CANTalon(IDs.fourbarTop);
-        fourbarBottom = new CANTalon(IDs.fourbarBottom);
+        elevatorMotor = new CANTalon(IDs.CAN.elevator);
+        fourbarTop = new CANTalon(IDs.CAN.fourbarTop);
+        fourbarBottom = new CANTalon(IDs.CAN.fourbarBottom);
 
-
-        frontJackStandMotor = new CANTalon(IDs.frontJackStand);
-        backJackStandMotor = new CANTalon(IDs.backJackStand);
-        jackStandDriveMotor = new CANVictor(IDs.jackStandDrive);
+        frontJackStandMotor = new CANTalon(IDs.CAN.frontJackStand);
+        backJackStandMotor = new CANTalon(IDs.CAN.backJackStand);
+        jackStandDriveMotor = new CANVictor(IDs.CAN.jackStandDrive);
         jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
 
+        cargoIntakeMotor = new CANVictor(IDs.CAN.cargoIntake);
+        hatchHolderMotor = new CANVictor(IDs.CAN.hatchHolder);
         // not yet added, and not CAN-safe
-        cargoIntakeMotor = new CANVictor(IDs.cargoIntake);
-        hatchHolderMotor = new CANVictor(IDs.hatchHolder);
-        // hatchGrabborMotor = new OscarCANTalon(IDs.hatchGrabbor);
+        // hatchGrabborMotor = new OscarCANTalon(IDs.CAN.hatchGrabbor);
 
         hatchHolderPID = new MiniPID(1,0,0);
         hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
@@ -144,7 +146,6 @@ public class RobotMap {
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
             System.out.println("Missing CAN Device(s)!");
-//            return false;
         }
         /** Configuration and Mechanism Creation **/
 
@@ -173,11 +174,6 @@ public class RobotMap {
 
         leftDrive.setNeutralMode(NeutralMode.Brake);
         rightDrive.setNeutralMode(NeutralMode.Brake);
-
-//        canifier.setLedChannels(CANifier.LEDChannel.LEDChannelB, CANifier.LEDChannel.LEDChannelC, CANifier.LEDChannel.LEDChannelA);
-//        canifier.setMaxOutput(1);
-//        canifier.setColor(Color.GREEN);
-//        canifier.setRGB(1, 0, 1);
 
         hatchHolder = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
@@ -226,8 +222,6 @@ public class RobotMap {
 
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPIDF(8, 0, 0, 0);//was 16
-
-
 
         elevatorMotor.setForwardSoftLimit(-375);
         elevatorMotor.setReverseSoftLimit(-705);
