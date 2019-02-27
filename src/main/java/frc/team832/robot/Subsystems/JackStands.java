@@ -67,10 +67,12 @@ public class JackStands extends Subsystem {
     }
 
     public void teleopControl(){
-        if(OI.driverPad.getYButtonPressed()){
+        if(OI.driverPad.getYButton()){
             setPosition("TEST1");
-        }else if(OI.driverPad.getAButtonPressed()){
+        }else if(OI.driverPad.getAButton()){
             setPosition("TEST2");
+        }else{
+            stop();
         }
 
 
@@ -95,15 +97,15 @@ public class JackStands extends Subsystem {
 
     public static class Constants {
         public static final int ENC_MIN_VAL = -76000;
-        public static final int ENC_MAX_VAL = -500 - 8000;
+        public static final int ENC_MAX_VAL = -100;
         public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("TEST1", -8500),
-                new MechanismPosition("TEST2", -78000),
+                new MechanismPosition("TEST1", -1000),
+                new MechanismPosition("TEST2", -70000),
                 new MechanismPosition("Bottom", 0.0 * INCHES_TO_ENC),
                 new MechanismPosition("Middle", 10 * INCHES_TO_ENC),
                 new MechanismPosition("Top", MAX_INCHES * INCHES_TO_ENC),

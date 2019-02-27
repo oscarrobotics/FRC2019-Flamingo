@@ -162,8 +162,9 @@ public class Robot extends TimedRobot {
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.VELOCITY);
 
-        snowBlower.teleopControl();
-//        jackStands.teleopControl();
+//        snowBlower.teleopControl();
+        jackStands.teleopControl();
+
 
         if (OI.driverPad.getBumper(GenericHID.Hand.kRight)) {
             pcm.setOutput(IDs.PCM.lightPort, true);
