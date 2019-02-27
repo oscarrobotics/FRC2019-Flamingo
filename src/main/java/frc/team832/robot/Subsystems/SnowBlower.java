@@ -23,6 +23,8 @@ public class SnowBlower extends Subsystem {
     private CANifier.Ultrasonic _heightUltrasonic;
     private MiniPID _cargoHeightController, _holderPID;
 
+    private double curBallDist = 0;
+
     private double holdorTarget;
 
     private CargoPosition _cargoPosition = CargoPosition.UNKNOWN;
@@ -71,7 +73,7 @@ public class SnowBlower extends Subsystem {
     }
 
     public void pushData() {
-        SmartDashboard.putNumber("BallDist", _heightUltrasonic.getRangeInches());
+        SmartDashboard.putNumber("BallDist", curBallDist);
         SmartDashboard.putString("BallPosition", _cargoPosition.toString());
     }
 
@@ -106,8 +108,7 @@ public class SnowBlower extends Subsystem {
     }
 
     public double getCargoHeight(){
-        _heightUltrasonic.update();
-        return _heightUltrasonic.getRangeInches();
+        return curBallDist;
     }
 
     public void setBallStatus(boolean ballStatus){
@@ -116,11 +117,12 @@ public class SnowBlower extends Subsystem {
 
 
     public double ballPIDPow(){
-       if (getCargoHeight() < Constants.CargoBottom_MinInches && holdBall) {
-           return _cargoHeightController.getOutput(getCargoHeight(), Constants.CargoMiddle_MinInches - Constants.CargoMiddle_MaxInches);
-       } else {
-           return 0.0;
-       }
+        if (curBallDist < Constants.CargoBottom_MinInches &&
+                curBallDist != -1 && holdBall) {
+           return _cargoHeightController.getOutput(curBallDist, Constants.CargoMiddle_MinInches - Constants.CargoMiddle_MaxInches);
+        } else {
+            return 0.0;
+        }
     }
 
     public CargoPosition getCargoPosition() {
@@ -129,16 +131,16 @@ public class SnowBlower extends Subsystem {
 
     private CargoPosition updateCargoPosition() {
         _heightUltrasonic.update();
-        double cargoDist = _heightUltrasonic.getRangeInches();
+        curBallDist = _heightUltrasonic.getRangeInches();
         boolean cargoBottomSensor = false; // TODO: check height and bottom ultrasonic
 
-        if (cargoAtBottom(cargoDist)) {
+        if (cargoAtBottom(curBallDist)) {
             return CargoPosition.BOTTOM;
         }
-        else if (cargoAtMiddle(cargoDist)) {
+        else if (cargoAtMiddle(curBallDist)) {
             return CargoPosition.MIDDLE;
         }
-        else if (cargoAtTop(cargoDist)) {
+        else if (cargoAtTop(curBallDist)) {
             return CargoPosition.TOP;
         }
         else {
