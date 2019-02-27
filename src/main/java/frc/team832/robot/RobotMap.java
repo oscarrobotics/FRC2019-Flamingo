@@ -89,7 +89,7 @@ public class RobotMap {
     static SimpleMechanism cargoIntake;
 
     static CANVictor hatchHolderMotor;
-    static SimplySmartMotor hatchHolder;
+    static SimpleMechanism hatchHolder;
     static MiniPID hatchHolderPID;
 
     static CANTalon hatchGrabborMotor;
@@ -97,6 +97,8 @@ public class RobotMap {
     static RotaryMechanism hatchGrabbor;
 
     static CANifier canifier;
+
+    static NavXMicro navX;
 
     static Solenoid visionLight;
 
@@ -159,8 +161,6 @@ public class RobotMap {
         rightMaster.setOutputRange(-1.0, 1.0);
         rightSlave.setOutputRange(-1.0, 1.0);
 
-        leftMaster.getInstance().getPIDController().setP(0.0005);
-        rightMaster.getInstance().getPIDController().setP(0.0005);
 
 //        leftMaster.setkP(.007);
 //        rightMaster.setkP(.007);
@@ -175,7 +175,7 @@ public class RobotMap {
         leftDrive.setNeutralMode(NeutralMode.Brake);
         rightDrive.setNeutralMode(NeutralMode.Brake);
 
-        hatchHolder = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
+        hatchHolder = new SimpleMechanism(hatchHolderMotor);
 
         fourbarTop.setSensorType(FeedbackDevice.Analog);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
@@ -191,16 +191,16 @@ public class RobotMap {
         backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
         frontJackStandMotor.setInverted(false);
-        backJackStandMotor.setInverted(false);
-        backJackStandMotor.setPeakOutputForward(.8);
-        backJackStandMotor.setPeakOutputReverse(-.8);
-        frontJackStandMotor.setPeakOutputForward(.8);
-        frontJackStandMotor.setPeakOutputReverse(-.8);
+        backJackStandMotor.setInverted(true);
+        backJackStandMotor.setPeakOutputForward(.2);
+        backJackStandMotor.setPeakOutputReverse(-.2);
+        frontJackStandMotor.setPeakOutputForward(.2);
+        frontJackStandMotor.setPeakOutputReverse(-.2);
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
         frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
-        backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL+50000);
+        backJackStandMotor.setReverseSoftLimit(-72000);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
@@ -235,10 +235,16 @@ public class RobotMap {
         frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
         backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
         jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
-        frontJackStand.setPID(1.0, 0,0);
-        backJackStand.setPID(1.0, 0,0);
+        frontJackStand.setPIDF(1.0, 0,0, 0);
+        backJackStand.setPIDF(1.0, 0,0, 0);
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
+
+        leftMaster.setkP(.0005);
+        rightMaster.setkP(.0005);
+
+        navX = new NavXMicro(NavXMicro.NavXPort.I2C_onboard);
+        navX.init();
 
         System.out.println("Finish INIT");
         // If we got this far, we're doing pretty good

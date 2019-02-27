@@ -2,33 +2,32 @@ package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
-import frc.team832.GrouchLib.Motors.SimplySmartMotor;
 import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.OI;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
+@SuppressWarnings("WeakerAccess")
 public class SnowBlower extends Subsystem {
 
     private SimpleMechanism _intake;
     private SimpleMechanism _hatchHoldor;
     private SmartMechanism _hatchGrabbor;
     private CANifier _canifier;
-    private CANifier.Ultrasonic _heightUltrasonic, _centeringUltrasonic;
+    private CANifier.Ultrasonic _heightUltrasonic;
     private MiniPID _cargoHeightController, _holderPID;
 
     private double holdorTarget;
 
-    private CargoPosition _cargoPosition;
+    private CargoPosition _cargoPosition = CargoPosition.UNKNOWN;
 
-    private boolean _open;
-
-    private boolean _holdBall = false;
+    private boolean holdBall = false;
 
     public SnowBlower(SimpleMechanism intake, SimpleMechanism hatchHolder, CANifier canifier, SmartMechanism hatchGrabber){
         _intake = intake;
@@ -36,11 +35,7 @@ public class SnowBlower extends Subsystem {
         _canifier = canifier;
         _hatchGrabbor = hatchGrabber;
 
-        com.ctre.phoenix.CANifier.PWMChannel triggerChannel = com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0;
-
-
         _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel1);
-        _centeringUltrasonic = _canifier.getUltrasonic(com.ctre.phoenix.CANifier.PWMChannel.PWMChannel0, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel2);
 
         _holderPID = new MiniPID(.01, 0,0);
         _cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
@@ -66,39 +61,36 @@ public class SnowBlower extends Subsystem {
         return _canifier.getQuadPosition();
     }
 
+    public void update() {
+        _cargoPosition = updateCargoPosition();
+    }
+
     @Override
     public void periodic() {
-        _cargoPosition = updateCargoPosition();
-        if(_holdBall){
-            _intake.set(ballPIDPow());
-        }
 
     }
 
+    public void pushData() {
+        SmartDashboard.putNumber("BallDist", _heightUltrasonic.getRangeInches());
+        SmartDashboard.putString("BallPosition", _cargoPosition.toString());
+    }
+
     public void teleopControl() {
-
-        intakeSet(OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft));
-/*        if(OI.driverPad.getAButton()){
+        if (OI.driverPad.getAButton()) {
             intakeSet(.5);
-        }else if(OI.driverPad.getXButton()){
+        } else if (OI.driverPad.getXButton()) {
             intakeSet(-.5);
-        }else if(OI.driverPad.getYButton()){
+        } else if (OI.driverPad.getYButton()) {
             intakeSet(-1);
-        }else{
-            intakeSet(0.0);
-        }
-
-        if(OI.operatorBox.getRawButton(9)){
-            setHatchHolderPosition("Open");
-        }else if(OI.operatorBox.getRawButton(10)){
-            setHatchHolderPosition("Closed");
+        } else {
+            intakeSet(ballPIDPow());
         }
 
         if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
             setBallStatus(true);
         }else if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
             setBallStatus(false);
-        }*/
+        }
     }
 
     public enum CargoPosition {
@@ -118,20 +110,18 @@ public class SnowBlower extends Subsystem {
         return _heightUltrasonic.getRangeInches();
     }
 
-    public void setBallStatus(boolean holdBall){
-        _holdBall = holdBall;
+    public void setBallStatus(boolean ballStatus){
+       holdBall = ballStatus;
     }
 
 
     public double ballPIDPow(){
-       if(getCargoHeight() > Constants.CargoBottom_MinInches){
+       if (getCargoHeight() < Constants.CargoBottom_MinInches && holdBall) {
            return _cargoHeightController.getOutput(getCargoHeight(), Constants.CargoMiddle_MinInches - Constants.CargoMiddle_MaxInches);
-       }else{
+       } else {
            return 0.0;
        }
-
     }
-
 
     public CargoPosition getCargoPosition() {
         return _cargoPosition;
@@ -142,7 +132,7 @@ public class SnowBlower extends Subsystem {
         double cargoDist = _heightUltrasonic.getRangeInches();
         boolean cargoBottomSensor = false; // TODO: check height and bottom ultrasonic
 
-        if (cargoBottomSensor) {
+        if (cargoAtBottom(cargoDist)) {
             return CargoPosition.BOTTOM;
         }
         else if (cargoAtMiddle(cargoDist)) {
@@ -164,7 +154,6 @@ public class SnowBlower extends Subsystem {
         holdorTarget = Constants.HolderPositions.getByIndex(index).getTarget();
         _holderPID.setSetpoint(holdorTarget);
         _hatchHoldor.set(_holderPID.getOutput(_canifier.getQuadPosition()));
-        _open = !(index.equals("Closed"));
     }
 
     public void setHatchHolderPosition(double pos){
@@ -189,13 +178,13 @@ public class SnowBlower extends Subsystem {
         return inRange(cargoDistInches, Constants.CargoEnter_LeftInches, Constants.CargoEnter_RightInches);
     }
 
-
+    @SuppressWarnings("WeakerAccess")
     public static class Constants {
 
         public static final double HeightController_kP = 1;
-        public static final double HeightController_kI = 1;
-        public static final double HeightController_kD = 1;
-        public static final double HeightController_kF = 1;
+        public static final double HeightController_kI = 0;
+        public static final double HeightController_kD = 0;
+        public static final double HeightController_kF = 0;
 
         public static final double CargoNominalDiameterInches = 13;
 

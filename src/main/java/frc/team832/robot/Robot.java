@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 import frc.team832.GrouchLib.Sensors.CANifier;
+import frc.team832.GrouchLib.Sensors.NavXMicro;
 import frc.team832.robot.Subsystems.*;
 
 import static com.ctre.phoenix.CANifier.PWMChannel.*;
@@ -44,7 +45,6 @@ public class Robot extends TimedRobot {
     public static OI oi;
 
     public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
-    private static CANifier.Ultrasonic ultrasonic;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -55,7 +55,7 @@ public class Robot extends TimedRobot {
 
         if (!RobotMap.init()) {
             // Oh no!
-            System.out.println("Something went wrong during RobotMap.init()! Look above here for more");
+//            System.out.println("Something went wrong during RobotMap.init()! Look above here for more");
             throw new RuntimeException("Something went wrong during RobotMap.init()! Look above here for more.");
         }
 
@@ -70,32 +70,38 @@ public class Robot extends TimedRobot {
         complexLift = new ComplexLift(RobotMap.complexLiftMech);
 
         theBigOne = new TheBigOne(complexLift, snowBlower);
+        System.out.println("S, C, T INIT");
+
 
         jackStands.resetEncoders();
 
         oi = new OI();
         System.out.println("OI INIT");
 
-        ultrasonic = RobotMap.canifier.getUltrasonic(PWMChannel0, PWMChannel1);
-        ultrasonic.start();
-
         SmartDashboard.putData("Auto choices", chooser);
-
-        drivetrain.setPIDF(.0005, 0, 0, 0);
-
-
+        navX.init();
     }
 
-    @Override
-    public void robotPeriodic() {
+    public void update() {
+        snowBlower.update();
+    }
+
+    private void pushData() {
         SmartDashboard.putData(pdp.getInstance());
         SmartDashboard.putNumber("JoystickForward", OI.driverPad.getY(GenericHID.Hand.kLeft));
+        SmartDashboard.putNumber("Fourbar error: ", fourbarTop.getClosedLoopError());
         drivetrain.pushData();
         elevator.pushData();
         fourbar.pushData();
         jackStands.pushData();
-        SmartDashboard.putNumber("Fourbar error: ", fourbarTop.getClosedLoopError());
+        snowBlower.pushData();
+        SmartDashboard.putNumber("NavX data", navX.getYaw());
+    }
 
+    @Override
+    public void robotPeriodic() {
+        pushData();
+        update();
     }
 
     /**
@@ -137,6 +143,7 @@ public class Robot extends TimedRobot {
     public void teleopInit(){
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
+        jackStands.setBackPosition(0);
         fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
         elevator.setPosition(Elevator.Constants.ElevatorPosition.Middle.getIndex());
 //        jackStands.setPosition("TEST1");
@@ -150,46 +157,21 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
         drivetrain.teleopControl(
-                Math.pow(OI.driverPad.getY(GenericHID.Hand.kLeft), 1),
+                Math.pow(OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft), 1),
                 Math.pow(-OI.driverPad.getX(GenericHID.Hand.kRight), 1),
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.VELOCITY);
 
-        if(OI.driverPad.getYButtonReleased()){
-            //fourbar.testAdjustment(25);
-            jackStands.setFrontPosition(jackStands.getFrontCurrentPosition() + 5000);
-        }else if (OI.driverPad.getAButtonReleased()){
-//            fourbar.testAdjustment(-25);
-            jackStands.setFrontPosition(jackStands.getFrontCurrentPosition() - 5000);
-        }
-
-        if(OI.driverPad.getXButtonReleased()){
-//            elevator.testAdjustment(25);
-            jackStands.setBackPosition(jackStands.getBackCurrentPosition() + 5000);
-        }else if (OI.driverPad.getBButtonReleased()){
-//            elevator.testAdjustment(-25);
-            jackStands.setBackPosition(jackStands.getBackCurrentPosition() - 5000);
-
-        }
-
-        Scheduler.getInstance().run();
         snowBlower.teleopControl();
 //        jackStands.teleopControl();
 
-        if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
-            pcm.setOutput(IDs.lightPort, true);
-        }else{
-            pcm.setOutput(IDs.lightPort, false);
+        if (OI.driverPad.getBumper(GenericHID.Hand.kRight)) {
+            pcm.setOutput(IDs.PCM.lightPort, true);
+        } else {
+            pcm.setOutput(IDs.PCM.lightPort, false);
         }
 
-
-//        fourbar.teleopControl();
-//        elevator.teleopControl();
-//        ultrasonic.update();
-//        double dist = ultrasonic.getRangeInches();
-//        System.out.println("Inches: " + ((dist != 0.0) ? dist : "N/A"));
-//        complexLift.mainLoop();
-//        SmartDashboard.putNumber("UltraSonic inches", ultrasonic.getRangeInches());
+        Scheduler.getInstance().run();
     }
 
     @Override
