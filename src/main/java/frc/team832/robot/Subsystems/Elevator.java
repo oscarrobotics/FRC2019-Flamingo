@@ -99,6 +99,10 @@ public class Elevator extends Subsystem {
     }
 
     public static class Constants {
+
+        public static final int COMP_POT_MIN_VAL = 0;
+        public static final int COMP_POT_MAX_VAL = 0;
+
         public static final int POT_MIN_VAL = -705;
         public static final int POT_MAX_VAL = -370;
         public static final int POT_RANGE = (POT_MAX_VAL - 1023) + 1023 - POT_MIN_VAL;

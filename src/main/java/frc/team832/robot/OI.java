@@ -14,6 +14,9 @@ import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.TheBigOne;
 
+import static frc.team832.robot.Subsystems.Fourbar.Constants.*;
+import static frc.team832.robot.Subsystems.Elevator.Constants.*;
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -56,13 +59,13 @@ public class OI {
 
 		System.out.println("Buttons initialized");
 
-		op1.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketHatch_Low.getIndex(), Elevator.Constants.ElevatorPosition.RocketHatch_Low.getIndex()));
-		op2.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketHatch_Middle.getIndex(), Elevator.Constants.ElevatorPosition.RocketHatch_Middle.getIndex()));
-		op3.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketHatch_High.getIndex(), Elevator.Constants.ElevatorPosition.RocketHatch_High.getIndex()));
-		op4.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketCargo_Low.getIndex(), Elevator.Constants.ElevatorPosition.RocketCargo_Low.getIndex()));
-		op5.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketCargo_Middle.getIndex(), Elevator.Constants.ElevatorPosition.RocketCargo_Middle.getIndex()));
-		op6.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.RocketCargo_High.getIndex(), Elevator.Constants.ElevatorPosition.RocketCargo_High.getIndex()));
-		modeButton2.whenPressed(new MoveComplexLift(Fourbar.Constants.FourbarPosition.IntakeCargo_Floor.getIndex(), Elevator.Constants.ElevatorPosition.IntakeCargo_Floor.getIndex()));
+//		op1.whenPressed(new MoveComplexLift(FourbarPosition.RocketHatch_Low.getIndex(), ElevatorPosition.RocketHatch_Low.getIndex()));
+//		op2.whenPressed(new MoveComplexLift(FourbarPosition.RocketHatch_Middle.getIndex(), ElevatorPosition.RocketHatch_Middle.getIndex()));
+//		op3.whenPressed(new MoveComplexLift(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex()));
+//		op4.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex()));
+//		op5.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex()));
+//		op6.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex()));
+//		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex()));
 
 	}
 

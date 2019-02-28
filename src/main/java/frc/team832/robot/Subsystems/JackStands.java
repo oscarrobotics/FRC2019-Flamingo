@@ -8,6 +8,8 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.robot.OI;
 
+import java.awt.*;
+
 public class JackStands extends Subsystem {
 
     public LinearMechanism _frontStand, _backStand;
@@ -19,6 +21,11 @@ public class JackStands extends Subsystem {
         _frontStand = frontStand;
         _backStand = backStand;
         _drive = drive;
+    }
+
+    public enum JackStand {
+        FRONT,
+        BACK
     }
 
     public double getFrontTargetPosition(){
@@ -44,8 +51,16 @@ public class JackStands extends Subsystem {
         _backStand.setPosition(backPos);
     }
     //WILL CODE
+    public void setFrontPosition(String index) {
+        _frontStand.setPosition(index);
+    }
+
     public void setFrontPosition(double pos) {
         _frontStand.setPosition(pos);
+    }
+
+    public void setBackPosition(String index) {
+        _backStand.setPosition(index);
     }
 
     public void setBackPosition(double pos) {
@@ -91,6 +106,14 @@ public class JackStands extends Subsystem {
     public boolean getAtTarget(){
         return _backStand.getAtTarget() && _frontStand.getAtTarget();
     }
+
+    public boolean getAtTarget(JackStand stand) {
+        return stand.equals(JackStand.FRONT) ? _frontStand.getAtTarget() : _backStand.getAtTarget();
+    }
+
+    public boolean getFrontAtTarget() { return getAtTarget(JackStand.FRONT); }
+
+    public boolean getBackAtTarget() { return getAtTarget(JackStand.BACK); }
 
     @Override
     protected void initDefaultCommand() {}

@@ -54,7 +54,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
 
         if (!RobotMap.init()) {
-            // Oh no!
 //            System.out.println("Something went wrong during RobotMap.init()! Look above here for more");
             throw new RuntimeException("Something went wrong during RobotMap.init()! Look above here for more.");
         }
@@ -79,7 +78,7 @@ public class Robot extends TimedRobot {
         System.out.println("OI INIT");
 
         SmartDashboard.putData("Auto choices", chooser);
-        navX.init();
+        //navX.init();
     }
 
     public void update() {
@@ -155,15 +154,20 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
+//        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
+        double triggerThrottle = OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft);
+        double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
+        double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
+
+
         drivetrain.teleopControl(
-                Math.pow(OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft), 1),
-                Math.pow(-OI.driverPad.getX(GenericHID.Hand.kRight), 1),
+                leftY,
+                rightX,
                 Drivetrain.DriveMode.CURVATURE,
-                SmartDifferentialDrive.LoopMode.VELOCITY);
+                SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
 //        snowBlower.teleopControl();
-        jackStands.teleopControl();
+//        jackStands.teleopControl();
 
 
         if (OI.driverPad.getBumper(GenericHID.Hand.kRight)) {

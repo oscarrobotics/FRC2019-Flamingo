@@ -134,6 +134,11 @@ public class Fourbar extends Subsystem {
     }
 
     public static class Constants {
+        public static final double COMP_TOP_MAX_VAL = 725;
+        public static final double COMP_BOT_MAX_VAL = 5;
+        public static final double COMP_TOP_MIN_VAL = 65;
+        public static final double COMP_BOT_MIN_VAL = 303;
+
         public static final double TOP_MIN_VAL = 200;
         public static final double TOP_MAX_VAL = 661;
         public static final double ARMLENGTH = 30.75;
@@ -203,5 +208,7 @@ public class Fourbar extends Subsystem {
         public static double convertUpperToLower(double upperVal) {
             return (-1.39 * upperVal) + 1044;
         }
+
+        public static double convertCompUpperToLower(double upperVal) {return (-.452 * upperVal) + 332.38;}
     }
 }
