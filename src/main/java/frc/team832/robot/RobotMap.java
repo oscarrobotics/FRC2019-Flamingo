@@ -192,15 +192,15 @@ public class RobotMap {
 
         frontJackStandMotor.setInverted(false);
         backJackStandMotor.setInverted(true);
-        backJackStandMotor.setPeakOutputForward(.2);
-        backJackStandMotor.setPeakOutputReverse(-.2);
-        frontJackStandMotor.setPeakOutputForward(.2);
-        frontJackStandMotor.setPeakOutputReverse(-.2);
+        backJackStandMotor.setPeakOutputForward(.4);
+        backJackStandMotor.setPeakOutputReverse(-.4);
+        frontJackStandMotor.setPeakOutputForward(.4);
+        frontJackStandMotor.setPeakOutputReverse(-.47);
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
-        frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_VAL);
-        backJackStandMotor.setReverseSoftLimit(-72000);
+        frontJackStandMotor.setReverseSoftLimit(-75000);
+        backJackStandMotor.setReverseSoftLimit(-75000);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);

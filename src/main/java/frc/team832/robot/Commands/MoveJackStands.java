@@ -16,7 +16,7 @@ public class MoveJackStands extends Command {
 
     public void initialize(){
 
-        if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
+        if(OI.driverPad.getAButton()){
             Robot.jackStands.setPosition(_index);
         } else {
             end();

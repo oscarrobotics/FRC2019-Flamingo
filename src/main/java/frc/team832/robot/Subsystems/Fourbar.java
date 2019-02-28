@@ -154,6 +154,8 @@ public class Fourbar extends Subsystem {
                 new MechanismPosition("TestTop", 630),
                 new MechanismPosition("TestBottom", 250),
 
+                new MechanismPosition("StorageConfig", 630),
+
                 new MechanismPosition("Bottom", TOP_MIN_VAL),
                 new MechanismPosition("Middle", 430),
                 new MechanismPosition("Top", TOP_MAX_VAL-15),
@@ -175,6 +177,7 @@ public class Fourbar extends Subsystem {
 
         public enum FourbarPosition {
             StartConfig("StartConfig"),
+            StorageConfig("StorageConfig"),
             Bottom("Bottom"),
             Middle("Middle"),
             Top("Top"),

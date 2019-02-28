@@ -5,13 +5,16 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.*;
+import frc.team832.robot.Commands.HatchFunctions.GrabHatch;
 import frc.team832.robot.Commands.HatchFunctions.MoveGrabbor;
+import frc.team832.robot.Commands.HatchFunctions.ReleaseHatch;
 import frc.team832.robot.Commands.TheBigOne.BigOneToStartConfig;
 import frc.team832.robot.Commands.TheBigOne.InitializeBigOne;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
 import frc.team832.robot.Commands.TheBigOne.TeleopBigOneMotionProfiling;
 import frc.team832.robot.Subsystems.Elevator;
 import frc.team832.robot.Subsystems.Fourbar;
+import frc.team832.robot.Subsystems.JackStands;
 import frc.team832.robot.Subsystems.TheBigOne;
 
 import static frc.team832.robot.Subsystems.Fourbar.Constants.*;
@@ -31,7 +34,7 @@ public class OI {
 	public static Joystick operatorBox;
 	private static JoystickButton op1, op2, op3, op4, op5, op6;
 	private static JoystickButton incr, decr;
-	private static JoystickButton modeButton1, modeButton2, modeButton3, standUp, standDown;
+	private static JoystickButton modeButton1, modeButton2, modeButton3, frontStandUp, backStandUp, standDown;
 
 	public static OperatorMode operatorMode;
 
@@ -42,8 +45,9 @@ public class OI {
 
 		operatorBox = new Joystick(1);
 
-		standUp = new JoystickButton(driverPad, 3);
-		standDown = new JoystickButton(driverPad, 1);
+		frontStandUp = new JoystickButton(driverPad, 6);
+		backStandUp = new JoystickButton(driverPad, 5);
+		standDown = new JoystickButton(driverPad, 3);
 
 		op1 = new JoystickButton(operatorBox, 1);
 		op2 = new JoystickButton(operatorBox, 2);
@@ -59,14 +63,25 @@ public class OI {
 
 		System.out.println("Buttons initialized");
 
-//		op1.whenPressed(new MoveComplexLift(FourbarPosition.RocketHatch_Low.getIndex(), ElevatorPosition.RocketHatch_Low.getIndex()));
-//		op2.whenPressed(new MoveComplexLift(FourbarPosition.RocketHatch_Middle.getIndex(), ElevatorPosition.RocketHatch_Middle.getIndex()));
-//		op3.whenPressed(new MoveComplexLift(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex()));
-//		op4.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex()));
-//		op5.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex()));
-//		op6.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex()));
-//		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex()));
 
+		modeButton1.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex()));
+		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex()));
+		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex()));
+		op3.whenPressed(new MoveComplexLift(FourbarPosition.StorageConfig.getIndex(), ElevatorPosition.StorageConfig.getIndex()));
+		op6.whenPressed(new MoveComplexLift(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex()));
+
+		op1.whenPressed(new MoveCargo(.75));
+		op1.whenReleased(new MoveCargo(0.0));
+
+		op4.whenPressed(new MoveCargo(-.75));
+		op4.whenReleased(new MoveCargo(0.0));
+
+		op2.whenPressed(new GrabHatch());
+		op5.whenPressed(new ReleaseHatch());
+
+//		standDown.whenPressed(new MoveJackStands("Bottom"));
+//		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
+//		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
 	}
 
     public enum OperatorMode {

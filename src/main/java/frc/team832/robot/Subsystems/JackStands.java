@@ -83,13 +83,12 @@ public class JackStands extends Subsystem {
 
     public void teleopControl(){
         if(OI.driverPad.getYButton()){
-            setPosition("TEST1");
+            setPosition("Top");
         }else if(OI.driverPad.getAButton()){
-            setPosition("TEST2");
+            setPosition("Bottom");
         }else{
             stop();
         }
-
 
         if(OI.driverPad.getPOV() == 0){
             _drive.set(.5);
@@ -127,17 +126,14 @@ public class JackStands extends Subsystem {
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("TEST1", -1000),
-                new MechanismPosition("TEST2", -70000),
-                new MechanismPosition("Bottom", 0.0 * INCHES_TO_ENC),
-                new MechanismPosition("Middle", 10 * INCHES_TO_ENC),
-                new MechanismPosition("Top", MAX_INCHES * INCHES_TO_ENC),
+                new MechanismPosition("Bottom", -73000),
+                new MechanismPosition("Top", -500)
         };
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
 
         public static double convertBackToFront(double back){
-            return back;
+            return back-1000;
         }
     }
 }

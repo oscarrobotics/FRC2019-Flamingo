@@ -119,6 +119,8 @@ public class Elevator extends Subsystem {
                 new MechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new MechanismPosition("TestTop", POT_MAX_VAL + 50),
 
+                new MechanismPosition("StorageConfig", -630),
+
                 new MechanismPosition("Bottom", -700),
                 new MechanismPosition("Middle", -500),
                 new MechanismPosition("Top", -380),
@@ -139,6 +141,7 @@ public class Elevator extends Subsystem {
 
         public enum ElevatorPosition {
             StartConfig("StartConfig"),
+            StorageConfig("StorageConfig"),
             Bottom("Bottom"),
             Middle("Middle"),
             Top("Top"),

@@ -1,12 +1,13 @@
 plugins {
     id "java"
 	id "idea"
-    id "edu.wpi.first.GradleRIO" version "2019.3.2"
+    id "edu.wpi.first.GradleRIO" version "2019.4.1"
 }
 
 repositories{
     mavenCentral()
     mavenLocal()
+    maven{ url 'https://jitpack.io/'}
 }
 
 def ROBOT_MAIN_CLASS = "frc.team832.robot.Main"
@@ -48,6 +49,7 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     compile project(':GrouchLib')
     testCompile 'junit:junit:4.12'
+    compile 'com.github.Oblarg:Oblog:2.4.1'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

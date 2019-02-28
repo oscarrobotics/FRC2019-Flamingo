@@ -16,6 +16,9 @@ import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Sensors.NavXMicro;
 import frc.team832.robot.Subsystems.*;
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 import static com.ctre.phoenix.CANifier.PWMChannel.*;
 import static frc.team832.robot.RobotMap.*;
@@ -44,7 +47,6 @@ public class Robot extends TimedRobot {
     public static JackStands jackStands;
     public static OI oi;
 
-    public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -79,6 +81,7 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData("Auto choices", chooser);
         //navX.init();
+        Logger.configureLoggingAndConfig(this, false);
     }
 
     public void update() {
@@ -101,6 +104,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         pushData();
         update();
+        Logger.updateEntries();
     }
 
     /**
@@ -167,7 +171,7 @@ public class Robot extends TimedRobot {
                 SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
 //        snowBlower.teleopControl();
-//        jackStands.teleopControl();
+        jackStands.teleopControl();
 
 
         if (OI.driverPad.getBumper(GenericHID.Hand.kRight)) {

@@ -5,13 +5,16 @@ import frc.team832.robot.Robot;
 
 public class MoveCargo extends Command {
 
-    public MoveCargo() {
+    private double _pow;
+
+    public MoveCargo(double pow) {
         requires(Robot.snowBlower);
+        _pow = pow;
     }
 
     @Override
     protected void initialize(){
-        Robot.snowBlower.intakeSet(.5);
+        Robot.snowBlower.intakeSet(_pow);
     }
 
     @Override
