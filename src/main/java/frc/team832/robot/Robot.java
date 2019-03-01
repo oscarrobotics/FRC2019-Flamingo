@@ -20,6 +20,8 @@ import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 
+import java.awt.*;
+
 import static com.ctre.phoenix.CANifier.PWMChannel.*;
 import static frc.team832.robot.RobotMap.*;
 
@@ -47,6 +49,9 @@ public class Robot extends TimedRobot {
     public static JackStands jackStands;
     public static OI oi;
 
+    CANifier.Ultrasonic heightUltrasonic;
+
+    public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -62,7 +67,7 @@ public class Robot extends TimedRobot {
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
         elevator = new Elevator(RobotMap.elevatorMech);
-        fourbar = new Fourbar(RobotMap.fourbarTopMech, RobotMap.fourbarBottomMech);
+        fourbar = new Fourbar(RobotMap.fourbarTopMech);
         jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         System.out.println("D, E, F, J INIT");
 
@@ -82,10 +87,13 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Auto choices", chooser);
         //navX.init();
         Logger.configureLoggingAndConfig(this, false);
+        navX.init();
+
+        heightUltrasonic = canifier.getUltrasonic(PWMChannel0, PWMChannel1);
     }
 
     public void update() {
-        snowBlower.update();
+//        snowBlower.update();
     }
 
     private void pushData() {
@@ -96,8 +104,11 @@ public class Robot extends TimedRobot {
         elevator.pushData();
         fourbar.pushData();
         jackStands.pushData();
-        snowBlower.pushData();
-        SmartDashboard.putNumber("NavX data", navX.getYaw());
+//        snowBlower.pushData();
+        SmartDashboard.putNumber("NavX Yaw", navX.getYaw());
+
+        heightUltrasonic.update();
+        SmartDashboard.putNumber("BallDist", heightUltrasonic.getRangeInches());
     }
 
     @Override
@@ -146,11 +157,10 @@ public class Robot extends TimedRobot {
     public void teleopInit(){
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
-        jackStands.setBackPosition(0);
-        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
-        elevator.setPosition(Elevator.Constants.ElevatorPosition.Middle.getIndex());
+//        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
+//        elevator.setPosition(Elevator.Constants.ElevatorPosition.Middle.getIndex());
 //        jackStands.setPosition("TEST1");
-        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
+//        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
     }
 
     /**
@@ -171,7 +181,7 @@ public class Robot extends TimedRobot {
                 SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
 //        snowBlower.teleopControl();
-        jackStands.teleopControl();
+//        jackStands.teleopControl();
 
 
         if (OI.driverPad.getBumper(GenericHID.Hand.kRight)) {
@@ -193,7 +203,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
-
+        snowBlower.setLED(Color.GREEN);
         jackStands.resetEncoders();
     }
 }

@@ -64,20 +64,24 @@ public class OI {
 		System.out.println("Buttons initialized");
 
 
-		modeButton1.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex()));
-		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex()));
-		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex()));
-		op3.whenPressed(new MoveComplexLift(FourbarPosition.StorageConfig.getIndex(), ElevatorPosition.StorageConfig.getIndex()));
-		op6.whenPressed(new MoveComplexLift(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex()));
+//		standDown.whenPressed(new MoveComplexLift(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex()));
+//		backStandUp.whenPressed(new MoveComplexLift(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex()));
+//		frontStandUp.whenPressed(new MoveComplexLift(FourbarPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex()));
 
-		op1.whenPressed(new MoveCargo(.75));
-		op1.whenReleased(new MoveCargo(0.0));
-
-		op4.whenPressed(new MoveCargo(-.75));
-		op4.whenReleased(new MoveCargo(0.0));
-
-		op2.whenPressed(new GrabHatch());
-		op5.whenPressed(new ReleaseHatch());
+//		modeButton1.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex()));
+//		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex()));
+//		modeButton2.whenPressed(new MoveComplexLift(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex()));
+//		op3.whenPressed(new MoveComplexLift(FourbarPosition.StorageConfig.getIndex(), ElevatorPosition.StorageConfig.getIndex()));
+//		op6.whenPressed(new MoveComplexLift(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex()));
+//
+//		op1.whenPressed(new MoveCargo(.75));
+//		op1.whenReleased(new MoveCargo(0.0));
+//
+//		op4.whenPressed(new MoveCargo(-.75));
+//		op4.whenReleased(new MoveCargo(0.0));
+//
+//		op2.whenPressed(new GrabHatch());
+//		op5.whenPressed(new ReleaseHatch());
 
 //		standDown.whenPressed(new MoveJackStands("Bottom"));
 //		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));

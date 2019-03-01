@@ -3,6 +3,7 @@ package frc.team832.robot;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.Filesystem;
 import frc.team832.GrouchLib.Control.*;
 import frc.team832.GrouchLib.Mechanisms.*;
 import frc.team832.GrouchLib.Motors.*;
@@ -11,6 +12,12 @@ import frc.team832.GrouchLib.CANDevice;
 import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
+
+import java.awt.*;
+import java.io.File;
+import java.nio.file.FileSystem;
+
+import static com.ctre.phoenix.CANifier.LEDChannel.*;
 
 
 /**
@@ -102,6 +109,7 @@ public class RobotMap {
 
     static Solenoid visionLight;
 
+    public static boolean isComp;
     /**
      * Initializes robot hardware
      */
@@ -112,6 +120,16 @@ public class RobotMap {
          * This way we can check for missing devices without WPILib having a fit.
          * Don't worry, we'll have our own fit...
          **/
+        //TODO: make sure this is right!!!
+        File f = new File(String.format("%s/CombBotCheck.txt", Filesystem.getDeployDirectory()));
+
+//        if(f.isFile() && !f.isDirectory()){
+//            isComp = true;
+//        } else {
+//            isComp = false;
+//        }
+
+        isComp = true;
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         pdp = new PDP(IDs.CAN.pdp);
@@ -119,6 +137,11 @@ public class RobotMap {
         pcm = new PCM(IDs.CAN.pcm);
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new CANifier(0);
+
+        canifier.setLEDs(CANifier.LEDMode.STATIC, Color.GREEN);
+        canifier.setLedChannels(LEDChannelB, LEDChannelA, LEDChannelC);
+        canifier.sendColor(Color.GREEN);
+        canifier.startLEDs();
 
         visionLight = new Solenoid(pcm, IDs.PCM.lightPort);
 
@@ -184,6 +207,8 @@ public class RobotMap {
         fourbarBottom.setInverted(false);
         fourbarBottom.setSensorPhase(false);
 
+        fourbarBottom.follow(IDs.CAN.fourbarTop);
+
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
         backJackStandMotor.setNeutralMode(NeutralMode.Brake);
         jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
@@ -213,13 +238,13 @@ public class RobotMap {
         fourbarTop.setForwardSoftLimit((int)Fourbar.Constants.TOP_MAX_VAL);
         fourbarTop.setReverseSoftLimit((int)Fourbar.Constants.TOP_MIN_VAL);
 
-        fourbarBottom.setForwardSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MIN_VAL));
-        fourbarBottom.setReverseSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MAX_VAL));
+//        fourbarBottom.setForwardSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MIN_VAL));
+//        fourbarBottom.setReverseSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MAX_VAL));
 
         fourbarTopMech.setPIDF(8,0.0,0.05, 0);
-        fourbarBottomMech.setPIDF(8, 0.0, 0.05,0);
+//        fourbarBottomMech.setPIDF(8, 0.0, 0.05,0);
 
-        fourbarBottomMech.setIZone(50);
+//        fourbarBottomMech.setIZone(50);
 
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPIDF(8, 0, 0, 0);//was 16

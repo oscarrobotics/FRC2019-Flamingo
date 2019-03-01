@@ -11,6 +11,8 @@ import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.OI;
 
+import java.awt.*;
+
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
 
 @SuppressWarnings("WeakerAccess")
@@ -112,7 +114,8 @@ public class SnowBlower extends Subsystem {
     }
 
     public void setBallStatus(boolean ballStatus){
-       holdBall = ballStatus;
+        setLED(ballStatus? Color.ORANGE : Color.GREEN);
+        holdBall = ballStatus;
     }
 
 
@@ -132,7 +135,6 @@ public class SnowBlower extends Subsystem {
     private CargoPosition updateCargoPosition() {
         _heightUltrasonic.update();
         curBallDist = _heightUltrasonic.getRangeInches();
-        boolean cargoBottomSensor = false; // TODO: check height and bottom ultrasonic
 
         if (cargoAtBottom(curBallDist)) {
             return CargoPosition.BOTTOM;
@@ -178,6 +180,14 @@ public class SnowBlower extends Subsystem {
 
     private boolean cargoEntered(double cargoDistInches) {
         return inRange(cargoDistInches, Constants.CargoEnter_LeftInches, Constants.CargoEnter_RightInches);
+    }
+
+    public void setLED(Color color){
+        setLED(CANifier.LEDMode.STATIC, color);
+    }
+
+    public void setLED(CANifier.LEDMode mode, Color color){
+        _canifier.setLEDs(mode, color);
     }
 
     @SuppressWarnings("WeakerAccess")

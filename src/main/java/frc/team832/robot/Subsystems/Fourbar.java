@@ -11,6 +11,8 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
 
+import static frc.team832.robot.RobotMap.isComp;
+
 
 public class Fourbar extends Subsystem {
 
@@ -18,8 +20,8 @@ public class Fourbar extends Subsystem {
     private MotionProfileStatus topStatus = new MotionProfileStatus();
     private MotionProfileStatus botStatus = new MotionProfileStatus();
 
-    public Fourbar(GeniusMechanism top, GeniusMechanism bottom){
-        _bottom = bottom;
+    public Fourbar(GeniusMechanism top){
+//        _bottom = bottom;
         _top = top;
     }
 
@@ -29,7 +31,7 @@ public class Fourbar extends Subsystem {
 
     public double getBottomTargetPosition(){ return _bottom.getTargetPosition(); }
 
-    public double getBottomCurrentPosition(){ return _bottom.getCurrentPosition(); }
+//    public double getBottomCurrentPosition(){ return _bottom.getCurrentPosition(); }
 
     public boolean atTargetPosition() {
         return (Math.abs(getTopCurrentPosition() - getTopTargetPosition()) < 20);
@@ -54,15 +56,7 @@ public class Fourbar extends Subsystem {
     }
 
     public void teleopControl(){
-        if(OI.operatorBox.getRawButton(1)){
-            setPosition("Bottom");
-        }else if(OI.operatorBox.getRawButton(2)){
-            setPosition("Middle");
-        }else if(OI.operatorBox.getRawButton(3)){
-            setPosition("Top");
-        }else{
 
-        }
     }
 
     @Override
@@ -75,27 +69,27 @@ public class Fourbar extends Subsystem {
 
     public void pushData() {
         SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
-        SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
+//        SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
         SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
     }
 
     public void stop(){
         _top.stop();
-        _bottom.stop();
+//        _bottom.stop();
     }
 
     public void setPosition(String index) {
         MechanismPosition upperPos = Constants.Positions.getByIndex(index);
-        MechanismPosition lowerPos = new MechanismPosition(index, Constants.convertUpperToLower(upperPos.getTarget()));
+//        MechanismPosition lowerPos = new MechanismPosition(index, Constants.convertUpperToLower(upperPos.getTarget()));
         _top.setPosition(upperPos);
-        _bottom.setPosition(lowerPos);
+//        _bottom.setPosition(lowerPos);
     }
 
     public void setPosition(double pos){
         MechanismPosition upperPos = new MechanismPosition("ManualControl", pos);
-        MechanismPosition lowerPos = new MechanismPosition("ManualControl", Constants.convertUpperToLower(upperPos.getTarget()));
+//        MechanismPosition lowerPos = new MechanismPosition("ManualControl", Constants.convertUpperToLower(upperPos.getTarget()));
         _top.setPosition(upperPos);
-        _bottom.setPosition(lowerPos);
+//        _bottom.setPosition(lowerPos);
     }
 
     public void testAdjustment(double adjVal){
@@ -134,10 +128,10 @@ public class Fourbar extends Subsystem {
     }
 
     public static class Constants {
-        public static final double COMP_TOP_MAX_VAL = 725;
+        public static final double COMP_TOP_MAX_VAL = 425;
         public static final double COMP_BOT_MAX_VAL = 5;
-        public static final double COMP_TOP_MIN_VAL = 65;
-        public static final double COMP_BOT_MIN_VAL = 303;
+        public static final double COMP_TOP_MIN_VAL = 41;
+        public static final double COMP_BOT_MIN_VAL = 541;
 
         public static final double TOP_MIN_VAL = 200;
         public static final double TOP_MAX_VAL = 661;
@@ -150,29 +144,26 @@ public class Fourbar extends Subsystem {
         public static final double MININCHES = -29;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("StartConfig", TOP_MIN_VAL),
+                new MechanismPosition("StartConfig", isComp? 0 : TOP_MIN_VAL),
                 new MechanismPosition("TestTop", 630),
                 new MechanismPosition("TestBottom", 250),
 
                 new MechanismPosition("StorageConfig", 630),
 
-                new MechanismPosition("Bottom", TOP_MIN_VAL),
-                new MechanismPosition("Middle", 430),
-                new MechanismPosition("Top", TOP_MAX_VAL-15),
+                new MechanismPosition("Bottom", isComp? 50 : TOP_MIN_VAL),
+                new MechanismPosition("Middle", isComp? 175 : 430),
+                new MechanismPosition("Top", isComp? 425 : TOP_MAX_VAL-15),
 
-                new MechanismPosition("IntakeHatch_HP", 0),
-                new MechanismPosition("IntakeCargo_Floor", 420),
+                new MechanismPosition("IntakeHatch_HP", isComp? 0 : 0),
+                new MechanismPosition("IntakeCargo_Floor", isComp? 0 : 420),
 
-                new MechanismPosition("CargoShip_Hatch", 0),
-                new MechanismPosition("CargoShip_Cargo", 0),
+                               new MechanismPosition("RocketHatch_Low", isComp? 0 : 420),
+                new MechanismPosition("RocketHatch_Middle", isComp? 0 : 460),
+                new MechanismPosition("RocketHatch_High", isComp? 0 : 640),
 
-                new MechanismPosition("RocketHatch_Low", 420),
-                new MechanismPosition("RocketHatch_Middle", 460),
-                new MechanismPosition("RocketHatch_High", 640),
-
-                new MechanismPosition("RocketCargo_Low", 420),
-                new MechanismPosition("RocketCargo_Middle", 460),
-                new MechanismPosition("RocketCargo_High", 640),
+                new MechanismPosition("RocketCargo_Low", isComp? 0 : 420),
+                new MechanismPosition("RocketCargo_Middle", isComp? 0 : 460),
+                new MechanismPosition("RocketCargo_High", isComp? 0 : 640),
         };
 
         public enum FourbarPosition {

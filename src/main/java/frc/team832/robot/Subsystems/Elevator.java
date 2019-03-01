@@ -12,6 +12,8 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
 
+import static frc.team832.robot.RobotMap.isComp;
+
 public class Elevator extends Subsystem {
 
     private GeniusMechanism _elevator;
@@ -100,8 +102,8 @@ public class Elevator extends Subsystem {
 
     public static class Constants {
 
-        public static final int COMP_POT_MIN_VAL = 0;
-        public static final int COMP_POT_MAX_VAL = 0;
+        public static final int COMP_POT_MIN_VAL = 5;
+        public static final int COMP_POT_MAX_VAL = 395;
 
         public static final int POT_MIN_VAL = -705;
         public static final int POT_MAX_VAL = -370;
@@ -115,28 +117,25 @@ public class Elevator extends Subsystem {
         public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_MIN_VAL, POT_MAX_VAL);}
 
         private static final MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("StartConfig", -380),
+                new MechanismPosition("StartConfig", isComp? 0 : -380),
                 new MechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
                 new MechanismPosition("TestTop", POT_MAX_VAL + 50),
 
-                new MechanismPosition("StorageConfig", -630),
+                new MechanismPosition("StorageConfig", isComp? 0 : -630),
 
-                new MechanismPosition("Bottom", -700),
-                new MechanismPosition("Middle", -500),
-                new MechanismPosition("Top", -380),
+                new MechanismPosition("Bottom", isComp? 20 : -700),
+                new MechanismPosition("Middle", isComp? 200 : -500),
+                new MechanismPosition("Top", isComp? 325 : -380),
 
-                new MechanismPosition("IntakeCargo_Floor", -630),
+                new MechanismPosition("IntakeCargo_Floor", isComp? 0 : -630),
 
-                new MechanismPosition("CargoShip_Hatch", InchesToPot(28)),
-                new MechanismPosition("CargoShip_Cargo", InchesToPot(15)),
+                new MechanismPosition("RocketHatch_Low", isComp? 0 : -670),
+                new MechanismPosition("RocketHatch_Middle", isComp? 0 : -400),
+                new MechanismPosition("RocketHatch_High", isComp? 0 : -380),
 
-                new MechanismPosition("RocketHatch_Low", -670),
-                new MechanismPosition("RocketHatch_Middle", -400),
-                new MechanismPosition("RocketHatch_High", -380),
-
-                new MechanismPosition("RocketCargo_Low", -690),
-                new MechanismPosition("RocketCargo_Middle", -420),
-                new MechanismPosition("RocketCargo_High", -400)
+                new MechanismPosition("RocketCargo_Low", isComp? 0 : -690),
+                new MechanismPosition("RocketCargo_Middle", isComp? 0 : -420),
+                new MechanismPosition("RocketCargo_High", isComp? 0 : -400)
         };
 
         public enum ElevatorPosition {

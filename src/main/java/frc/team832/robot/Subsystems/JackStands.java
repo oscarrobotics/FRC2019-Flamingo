@@ -82,13 +82,6 @@ public class JackStands extends Subsystem {
     }
 
     public void teleopControl(){
-        if(OI.driverPad.getYButton()){
-            setPosition("Top");
-        }else if(OI.driverPad.getAButton()){
-            setPosition("Bottom");
-        }else{
-            stop();
-        }
 
         if(OI.driverPad.getPOV() == 0){
             _drive.set(.5);

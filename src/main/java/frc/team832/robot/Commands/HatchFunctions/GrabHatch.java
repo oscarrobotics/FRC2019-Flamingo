@@ -28,6 +28,6 @@ public class GrabHatch extends Command {
 
     @Override
     protected void end(){
-        
+        Robot.snowBlower.setLED(Color.MAGENTA);
     }
 }
