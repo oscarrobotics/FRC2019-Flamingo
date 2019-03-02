@@ -10,6 +10,7 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
+import frc.team832.robot.RobotMap;
 
 import static frc.team832.robot.RobotMap.isComp;
 
@@ -128,10 +129,8 @@ public class Fourbar extends Subsystem {
     }
 
     public static class Constants {
-        public static final double COMP_TOP_MAX_VAL = 425;
-        public static final double COMP_BOT_MAX_VAL = 5;
-        public static final double COMP_TOP_MIN_VAL = 41;
-        public static final double COMP_BOT_MIN_VAL = 541;
+        public static final double COMP_TOP_MAX_VAL = 5030;
+        public static final double COMP_TOP_MIN_VAL = 0;
 
         public static final double TOP_MIN_VAL = 200;
         public static final double TOP_MAX_VAL = 661;
@@ -144,26 +143,26 @@ public class Fourbar extends Subsystem {
         public static final double MININCHES = -29;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("StartConfig", isComp? 0 : TOP_MIN_VAL),
+                new MechanismPosition("StartConfig", RobotMap.isComp? 115 : TOP_MIN_VAL),
                 new MechanismPosition("TestTop", 630),
                 new MechanismPosition("TestBottom", 250),
 
-                new MechanismPosition("StorageConfig", 630),
+                new MechanismPosition("StorageConfig", RobotMap.isComp? 675 : 630),
 
-                new MechanismPosition("Bottom", isComp? 50 : TOP_MIN_VAL),
-                new MechanismPosition("Middle", isComp? 175 : 430),
-                new MechanismPosition("Top", isComp? 425 : TOP_MAX_VAL-15),
+                new MechanismPosition("Bottom", RobotMap.isComp? 300 : TOP_MIN_VAL),
+                new MechanismPosition("Middle", RobotMap.isComp? 2455 : 430),
+                new MechanismPosition("Top", RobotMap.isComp? 4950 : TOP_MAX_VAL-15),
 
-                new MechanismPosition("IntakeHatch_HP", isComp? 0 : 0),
-                new MechanismPosition("IntakeCargo_Floor", isComp? 0 : 420),
+                new MechanismPosition("IntakeHatch_HP", RobotMap.isComp? 361 : 0),
+                new MechanismPosition("IntakeCargo_Floor", RobotMap.isComp? 361 : 420),
 
-                               new MechanismPosition("RocketHatch_Low", isComp? 0 : 420),
-                new MechanismPosition("RocketHatch_Middle", isComp? 0 : 460),
-                new MechanismPosition("RocketHatch_High", isComp? 0 : 640),
+                new MechanismPosition("RocketHatch_Low", RobotMap.isComp? 361 : 420),
+                new MechanismPosition("RocketHatch_Middle", RobotMap.isComp? 361 : 460),
+                new MechanismPosition("RocketHatch_High", RobotMap.isComp? 361 : 640),
 
-                new MechanismPosition("RocketCargo_Low", isComp? 0 : 420),
-                new MechanismPosition("RocketCargo_Middle", isComp? 0 : 460),
-                new MechanismPosition("RocketCargo_High", isComp? 0 : 640),
+                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 361 : 420),
+                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 361 : 460),
+                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 361 : 640),
         };
 
         public enum FourbarPosition {

@@ -81,10 +81,14 @@ public class Robot extends TimedRobot {
 
         jackStands.resetEncoders();
 
+        if(isComp){
+            fourbarTop.resetSensor();
+        }
+
         oi = new OI();
         System.out.println("OI INIT");
 
-        SmartDashboard.putData("Auto choices", chooser);
+//        SmartDashboard.putData("Auto choices", chooser);
         //navX.init();
         Logger.configureLoggingAndConfig(this, false);
         navX.init();
@@ -113,9 +117,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        pushData();
-        update();
-        Logger.updateEntries();
+//        pushData();
+//        update();
+//        Logger.updateEntries();
     }
 
     /**
@@ -157,7 +161,7 @@ public class Robot extends TimedRobot {
     public void teleopInit(){
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
-//        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
+        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
 //        elevator.setPosition(Elevator.Constants.ElevatorPosition.Middle.getIndex());
 //        jackStands.setPosition("TEST1");
 //        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());

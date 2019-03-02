@@ -168,6 +168,9 @@ public class RobotMap {
         hatchHolderPID = new MiniPID(1,0,0);
         hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
+
+        fourbarTop.resetConfig();
+        fourbarBottom.resetConfig();
         // print out all CAN devices
         if (!printCANDeviceStatus()) {
             System.out.println("Missing CAN Device(s)!");
@@ -200,14 +203,21 @@ public class RobotMap {
 
         hatchHolder = new SimpleMechanism(hatchHolderMotor);
 
-        fourbarTop.setSensorType(FeedbackDevice.Analog);
-        fourbarTop.setNeutralMode(NeutralMode.Brake);
-        fourbarBottom.setSensorType(FeedbackDevice.Analog);
-        fourbarBottom.setNeutralMode(NeutralMode.Brake);
-        fourbarBottom.setInverted(false);
-        fourbarBottom.setSensorPhase(false);
+        fourbarBottom.follow(fourbarTop);
 
-        fourbarBottom.follow(IDs.CAN.fourbarTop);
+        fourbarTop.setSensorType(isComp? FeedbackDevice.CTRE_MagEncoder_Relative : FeedbackDevice.Analog);
+        fourbarTop.setNeutralMode(NeutralMode.Brake);
+        fourbarTop.configureContinuousCurrent(40);
+        fourbarBottom.configureContinuousCurrent(40);
+//        fourbarBottom.setSensorType(FeedbackDevice.Analog);
+        fourbarBottom.setNeutralMode(NeutralMode.Brake);
+        fourbarTop.setInverted(false);
+        fourbarTop.setSensorPhase(isComp? true : false);
+        fourbarBottom.setInverted(true);
+        fourbarBottom.setSensorPhase(false);
+        fourbarTop.setClosedLoopRamp(.3);
+
+//        fourbarTop.configMotionMagic(400, 1600);
 
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
         backJackStandMotor.setNeutralMode(NeutralMode.Brake);
@@ -235,13 +245,14 @@ public class RobotMap {
         fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new GeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
-        fourbarTop.setForwardSoftLimit((int)Fourbar.Constants.TOP_MAX_VAL);
-        fourbarTop.setReverseSoftLimit((int)Fourbar.Constants.TOP_MIN_VAL);
+        fourbarTop.setForwardSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MAX_VAL: (int)Fourbar.Constants.TOP_MAX_VAL);
+        fourbarTop.setReverseSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MIN_VAL: (int)Fourbar.Constants.TOP_MIN_VAL);
 
 //        fourbarBottom.setForwardSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MIN_VAL));
 //        fourbarBottom.setReverseSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MAX_VAL));
 
-        fourbarTopMech.setPIDF(8,0.0,0.05, 0);
+        fourbarTopMech.setPIDF(.5,0.0,0.0, .02);
+        //fourbarTopMech.setIZone(500);
 //        fourbarBottomMech.setPIDF(8, 0.0, 0.05,0);
 
 //        fourbarBottomMech.setIZone(50);
