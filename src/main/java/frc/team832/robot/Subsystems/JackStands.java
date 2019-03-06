@@ -7,6 +7,7 @@ import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.robot.OI;
+import frc.team832.robot.RobotMap;
 
 import java.awt.*;
 
@@ -84,10 +85,58 @@ public class JackStands extends Subsystem {
     public void teleopControl(){
 
         if(OI.driverPad.getPOV() == 0){
-            _drive.set(.5);
-        }else{
+            _drive.set(-.9);
+        }else if(OI.driverPad.getPOV() == 180){
+            _drive.set(.9);
+        } else{
             _drive.set(0.0);
         }
+    }
+
+    public int getFrontError(){
+        return _frontStand.getClosedLoopError();
+    }
+
+    public int getBackError(){
+        return _backStand.getClosedLoopError();
+    }
+
+    public double getFrontCorrectionPower() {
+        double multiplier = 0.00005;
+        double power = 0;
+        int error = getBackError() - getFrontError();
+        if (Math.abs(error) > 2000){
+            power = error * multiplier;
+        }
+
+        if (Math.abs(power) > 0.25){
+            power = 0.25 * Math.signum(power);
+        }
+        return power;
+    }
+    //negative power ticks/power means jackstands extend
+    public double getBackCorrectionPower() {
+        double multiplier = 0.00005;
+        double power = 0;
+        int error = getFrontError() - getBackError();
+        //back is below front when error is pos and back requires pos power to correct
+        if (Math.abs(error) > 2000){
+                power = error * multiplier;
+        }
+
+        if (Math.abs(power) > 0.25){
+            power = 0.25 * Math.signum(power);
+        }
+        return power;
+    }
+
+    public boolean runToMax(){
+        //idk how to do it properly but i try
+        
+    }
+
+    public boolean runToMin(){
+        //idk how to do it properly but i try
     }
 
     public void pushData() {
@@ -111,22 +160,22 @@ public class JackStands extends Subsystem {
     protected void initDefaultCommand() {}
 
     public static class Constants {
-        public static final int ENC_MIN_VAL = -76000;
-        public static final int ENC_MAX_VAL = -100;
+        public static final int ENC_MIN_VAL = -75000;
+        public static final int ENC_MAX_VAL = -200;
         public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("Bottom", -73000),
-                new MechanismPosition("Top", -500)
+                new MechanismPosition("Bottom", RobotMap.isComp ? -75000 : -73000),
+                new MechanismPosition("Top", -300)
         };
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
 
         public static double convertBackToFront(double back){
-            return back-1000;
+            return back;
         }
     }
 }

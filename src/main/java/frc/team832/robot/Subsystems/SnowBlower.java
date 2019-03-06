@@ -97,6 +97,10 @@ public class SnowBlower extends Subsystem {
         }
     }
 
+    public void setHatchHolderPower(double pow) {
+        _hatchHoldor.set(pow);
+    }
+
     public enum CargoPosition {
         UNKNOWN,
         BOTTOM,
@@ -183,13 +187,12 @@ public class SnowBlower extends Subsystem {
     }
 
     public void setLED(Color color){
-        setLED(CANifier.LEDMode.STATIC, color);
+        _canifier.sendColor(color);
     }
 
-    public void setLED(CANifier.LEDMode mode, Color color){
-        _canifier.setLEDs(mode, color);
+    public void sendHSB(float hue, float sat, float bri){
+        _canifier.sendHSB(hue, sat, bri);
     }
-
     @SuppressWarnings("WeakerAccess")
     public static class Constants {
 

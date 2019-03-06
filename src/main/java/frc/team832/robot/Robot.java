@@ -7,6 +7,7 @@
 
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -15,10 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Sensors.NavXMicro;
+import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.Subsystems.*;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
+import org.opencv.core.Mat;
 
 import java.awt.*;
 
@@ -48,6 +51,8 @@ public class Robot extends TimedRobot {
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
     public static OI oi;
+    private static int timer = 0;
+    private float rainbowNum = 0;
 
     CANifier.Ultrasonic heightUltrasonic;
 
@@ -135,9 +140,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        autoSelected = chooser.getSelected();
+        //autoSelected = chooser.getSelected();
         // autoSelected = SmartDashboard.getString("Auto Selector",
         // defaultAuto);
+        Scheduler.getInstance().enable();
+        jackStands.resetEncoders();
+        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Bottom.getIndex());
+        elevator.setPosition(Elevator.Constants.ElevatorPosition.Top.getIndex());
         System.out.println("Auto selected: " + autoSelected);
     }
 
@@ -146,23 +155,25 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        switch (autoSelected) {
-            case CUSTOM_AUTO:
-
-                break;
-            case DEFAULT_AUTO:
-            default:
-                // Put default auto code here
-                break;
-        }
+//        switch (autoSelected) {
+//            case CUSTOM_AUTO:
+//
+//                break;
+//            case DEFAULT_AUTO:
+//            default:
+//                // Put default auto code here
+//                break;
+//        }
+        teleopPeriodic();
     }
 
     @Override
     public void teleopInit(){
         Scheduler.getInstance().enable();
-        jackStands.resetEncoders();
-        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Middle.getIndex());
-//        elevator.setPosition(Elevator.Constants.ElevatorPosition.Middle.getIndex());
+        if(!DriverStation.getInstance().isFMSAttached()){
+            autonomousInit();
+        }
+
 //        jackStands.setPosition("TEST1");
 //        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
     }
@@ -172,26 +183,64 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        timer++;
 //        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
         double triggerThrottle = OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft);
         double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
         double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
 
+        double yPower = leftY;
+        double rotation = OscarMath.signumPow(rightX, 2);
 
+        if(timer >= 4500){
+            snowBlower.setLED(Color.MAGENTA);
+        }else {
+            snowBlower.setLED(Color.BLUE);
+//            if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue) {
+//                snowBlower.setLED(Color.BLUE);
+//            } else {
+//                snowBlower.setLED(Color.RED);
+//            }
+        }
         drivetrain.teleopControl(
                 leftY,
-                rightX,
+                rotation,
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
 //        snowBlower.teleopControl();
-//        jackStands.teleopControl();
+        jackStands.teleopControl();
 
+        if(oi.operatorBox.getRawButtonReleased(2)){
+            fourbar.testAdjustment(200);
 
-        if (OI.driverPad.getBumper(GenericHID.Hand.kRight)) {
-            pcm.setOutput(IDs.PCM.lightPort, true);
+        }
+
+        if(OI.operatorBox.getRawButtonReleased(5)){
+            fourbar.testAdjustment(-200);
+        }
+
+        if(OI.operatorBox.getRawButtonReleased(3)){
+            elevator.testAdjustment(-25);
+        }
+
+        if(OI.operatorBox.getRawButtonReleased(6)){
+            elevator.testAdjustment(25);
+        }
+
+        if(OI.driverPad.getAButton()){
+            jackStands.setPosition("Bottom");
+        } else if(OI.driverPad.getXButton()){
+            jackStands.setBackPosition("Bottom");
+        } else if(OI.driverPad.getBButton()){
+            jackStands.setFrontPosition("Bottom");
+        } else if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
+            jackStands.setBackPosition("Top");
+        } else if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
+            jackStands.setFrontPosition("Top");
         } else {
-            pcm.setOutput(IDs.PCM.lightPort, false);
+            jackStands.setBackPosition(jackStands.getBackCurrentPosition());
+            jackStands.setFrontPosition(jackStands.getFrontCurrentPosition());
         }
 
         Scheduler.getInstance().run();
@@ -199,15 +248,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic(){
-        Scheduler.getInstance().removeAll();
-        Scheduler.getInstance().disable();
+        rainbowNum += 0.002f;
+        snowBlower.sendHSB(rainbowNum, 1.0f, 0.5f);
+//        snowBlower.sendHSB(116, 68, 68);
+//        System.out.println("rainbow: " + rainbowNum);
     }
 
     @Override
     public void disabledInit() {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
-        snowBlower.setLED(Color.GREEN);
         jackStands.resetEncoders();
     }
 }

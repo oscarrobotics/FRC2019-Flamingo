@@ -3,6 +3,7 @@ package frc.team832.robot;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.team832.GrouchLib.Control.*;
 import frc.team832.GrouchLib.Mechanisms.*;
@@ -129,6 +130,8 @@ public class RobotMap {
 //            isComp = false;
 //        }
 
+        CameraServer.getInstance().startAutomaticCapture(0);
+
         isComp = true;
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
@@ -230,7 +233,7 @@ public class RobotMap {
         backJackStandMotor.setPeakOutputForward(.4);
         backJackStandMotor.setPeakOutputReverse(-.4);
         frontJackStandMotor.setPeakOutputForward(.4);
-        frontJackStandMotor.setPeakOutputReverse(-.47);
+        frontJackStandMotor.setPeakOutputReverse(-.35);
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
@@ -260,8 +263,8 @@ public class RobotMap {
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPIDF(8, 0, 0, 0);//was 16
 
-        elevatorMotor.setForwardSoftLimit(-375);
-        elevatorMotor.setReverseSoftLimit(-705);
+        elevatorMotor.setForwardSoftLimit(isComp? 0: -375);
+        elevatorMotor.setReverseSoftLimit(isComp? -400 : -705);
 
         cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 

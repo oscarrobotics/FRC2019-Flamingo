@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.team832.robot.Robot;
 import frc.team832.robot.Subsystems.TheBigOne;
 
-public class MoveTheBigOne extends InstantCommand {
+public class  MoveTheBigOne extends InstantCommand {
 
 	private TheBigOne.Action _action;
 

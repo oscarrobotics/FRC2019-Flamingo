@@ -95,7 +95,7 @@ public class Fourbar extends Subsystem {
 
     public void testAdjustment(double adjVal){
         _top.setPosition(new MechanismPosition("AdjControl", getTopTargetPosition()+adjVal));
-        _bottom.setPosition(new MechanismPosition("AdjControl", Constants.convertUpperToLower(getTopTargetPosition()+adjVal)));
+//        _bottom.setPosition(new MechanismPosition("AdjControl", Constants.convertUpperToLower(getTopTargetPosition()+adjVal)));
     }
 
     @Override

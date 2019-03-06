@@ -13,7 +13,7 @@ public class ReleaseHatch extends Command {
     }
 
     public void initialize(){
-        Robot.snowBlower.setHatchHolderPosition("Closed");
+        Robot.snowBlower.setHatchHolderPower(-.75);
     }
 
     public void execute(){
@@ -22,11 +22,11 @@ public class ReleaseHatch extends Command {
 
     @Override
     protected boolean isFinished() {
-        return Math.abs(Robot.snowBlower.getHoldorTargetPosition() - Robot.snowBlower.getHoldorCurrentPosition()) <=20;
+        return true;
     }
 
     @Override
     protected void end(){
-        Robot.snowBlower.setLED(Color.BLUE);
+
     }
 }

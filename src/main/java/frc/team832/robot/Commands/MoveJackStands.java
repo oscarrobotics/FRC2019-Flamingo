@@ -20,11 +20,11 @@ public class MoveJackStands extends Command {
     public void initialize(){
         Robot.snowBlower.setLED(Color.RED);
 
-        if(OI.driverPad.getAButton()){
+//        if(OI.driverPad.getAButton()){
             Robot.jackStands.setPosition(_index);
-        } else {
-            end();
-        }
+//        } else {
+//            end();
+//        }
     }
 
     @Override

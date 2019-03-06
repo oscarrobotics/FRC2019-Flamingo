@@ -1,24 +1,25 @@
 package frc.team832.robot.Commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-
 import frc.team832.robot.Robot;
-import frc.team832.robot.Subsystems.Elevator;
 
 
-public class ElevatorTeleopControl extends Command {
-
-    String _index;
-
-    public ElevatorTeleopControl(String index) {
-        requires(Robot.elevator);
-        _index = index;
+public class StopHatch extends Command {
+    public StopHatch() {
+        // Use requires() here to declare subsystem dependencies
+        requires(Robot.snowBlower);
     }
 
+
+    /**
+     * The initialize method is called just before the first time
+     * this Command is run after being started.
+     */
     @Override
     protected void initialize() {
-        Robot.elevator.setPosition(_index);
+        Robot.snowBlower.setHatchHolderPower(0.0);
     }
+
 
     /**
      * The execute method is called repeatedly when this Command is
@@ -26,8 +27,9 @@ public class ElevatorTeleopControl extends Command {
      */
     @Override
     protected void execute() {
-        //TODO: add buttons and positions
+
     }
+
 
     /**
      * <p>
@@ -48,7 +50,8 @@ public class ElevatorTeleopControl extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return Math.abs(Robot.elevator.getCurrentPosition() - Robot.elevator.getTargetPosition()) >= 20;
+        // TODO: Make this return true when this Command no longer needs to run execute()
+        return false;
     }
 
 
@@ -60,6 +63,7 @@ public class ElevatorTeleopControl extends Command {
      */
     @Override
     protected void end() {
+
     }
 
 
