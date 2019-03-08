@@ -18,7 +18,7 @@ public class MoveJackStands extends Command {
     }
 
     public void initialize(){
-        Robot.snowBlower.setLED(Color.RED);
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.RED);
 
         Robot.jackStands.setPosition(_index);
     }

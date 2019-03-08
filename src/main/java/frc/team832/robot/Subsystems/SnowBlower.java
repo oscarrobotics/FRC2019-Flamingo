@@ -1,6 +1,7 @@
 package frc.team832.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
@@ -9,6 +10,7 @@ import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
 import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
+import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
 
 import java.awt.*;
@@ -25,6 +27,8 @@ public class SnowBlower extends Subsystem {
     private CANifier.Ultrasonic _heightUltrasonic;
     private MiniPID _cargoHeightController, _holderPID;
 
+    private CANifier.LEDRunner sbLeds;
+
     private double curBallDist = 0;
 
     private double holdorTarget;
@@ -38,6 +42,8 @@ public class SnowBlower extends Subsystem {
         _hatchHoldor = hatchHolder;
         _canifier = canifier;
         _hatchGrabbor = hatchGrabber;
+
+        sbLeds = new SBLeds();
 
         _heightUltrasonic = _canifier.getUltrasonic(Constants.UltrasonicTriggerChannel, com.ctre.phoenix.CANifier.PWMChannel.PWMChannel1);
 
@@ -118,7 +124,7 @@ public class SnowBlower extends Subsystem {
     }
 
     public void setBallStatus(boolean ballStatus){
-        setLED(ballStatus? Color.ORANGE : Color.GREEN);
+        sbLeds.setColor(ballStatus? Color.ORANGE : Color.GREEN);
         holdBall = ballStatus;
     }
 
@@ -186,13 +192,134 @@ public class SnowBlower extends Subsystem {
         return inRange(cargoDistInches, Constants.CargoEnter_LeftInches, Constants.CargoEnter_RightInches);
     }
 
-    public void setLED(Color color){
-        _canifier.sendColor(color);
+    public void setLEDs(LEDMode ledMode, Color color){
+        sbLeds.setMode(ledMode);
+        sbLeds.setColor(color);
+    }
+
+    public void setLEDs(LEDMode ledMode) {
+        setLEDs(ledMode, null);
     }
 
     public void sendHSB(float hue, float sat, float bri){
         _canifier.sendHSB(hue, sat, bri);
     }
+
+    public enum LEDMode implements CANifier.LEDMode {
+        STATIC,
+        RAINBOW,
+        CUSTOM_FLASH,
+        CUSTOM_BREATHE,
+        BALL_INTAKE,
+        BALL_HOLD,
+        BALL_OUTTAKE,
+        HATCH_INTAKE,
+        HATCH_HOLD,
+        HATCH_RELEASE,
+        ALTERNATE_ALLIANCE_GREEN,
+        OFF;
+    }
+
+    public class SBLeds extends CANifier.LEDRunner {
+        private LEDMode _ledMode = LEDMode.STATIC;
+        private Timer timer = new Timer();
+        private Color _color;
+        private boolean hold = false;
+        private float holdTime = 0.0f;
+
+        @Override
+        public void setColor(Color color) { _color = color; }
+
+        @Override
+        public void setMode(CANifier.LEDMode ledMode) {
+            _ledMode = (LEDMode) ledMode;
+        }
+
+        @Override
+        public void setOff() {
+            _ledMode = LEDMode.OFF;
+        }
+
+        @Override
+        public void run() {
+            if (hold && timer.hasPeriodPassed(holdTime)) {
+                switch (_ledMode) {
+                    case STATIC:
+                        _canifier.sendColor(_color);
+                        break;
+                    case RAINBOW:
+                        rHue += 0.002f;
+                        _canifier.sendHSB(rHue, 1.0f, 0.5f);
+                        break;
+                    case BALL_INTAKE:
+                        _canifier.sendColor(breathe(Color.ORANGE, 0.01f));
+                        break;
+                    case BALL_HOLD:
+                        _canifier.sendColor(Color.ORANGE);
+                        break;
+                    case BALL_OUTTAKE:
+                        break;
+                    case HATCH_INTAKE:
+                        break;
+                    case HATCH_HOLD:
+                        break;
+                    case HATCH_RELEASE:
+                        _canifier.sendColor(flash(Color.YELLOW, 0.05));
+                        break;
+                    case ALTERNATE_ALLIANCE_GREEN:
+                        break;
+                    case OFF:
+                        _canifier.sendColor(null);
+                        break;
+                }
+            }
+        }
+
+        private float rHue = 0f;
+        private Color rainbow(float speed) {
+            rHue += speed;
+            return new Color(Color.HSBtoRGB(rHue, 1.0f, 0.5f));
+        }
+
+        private Color rainbow() {
+            return rainbow(0.02f);
+        }
+
+        private Color breathe(Color color, float fadeAmount) {
+            float[] hsb = getHSBFromColor(color);
+            if (hsb[2] <= 0.0f) { hsb[2] += fadeAmount; }
+            else if (hsb[2] >= 1.0f) { hsb[2] -= fadeAmount; }
+            return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+        }
+
+        private Color breathe(Color color) {
+            return breathe(color, 0.01f);
+        }
+
+        private Color flashTempColor;
+        private Color flash(Color color, double speed) {
+            if (timer.hasPeriodPassed(speed)) {
+                if (flashTempColor == null) flashTempColor = color;
+                else flashTempColor = null;
+                timer.reset();
+            }
+            return flashTempColor;
+        }
+
+        private float[] getHSBFromColor(Color color) {
+            return Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+        }
+
+        private Color colorBrightness(Color c, int brightness) {
+            double scale = OscarMath.clipMap(brightness, 0, 255, 0, 1);
+            int r = Math.min(255, (int) (c.getRed() * scale));
+            int g = Math.min(255, (int) (c.getGreen() * scale));
+            int b = Math.min(255, (int) (c.getBlue() * scale));
+            return new Color(r, g, b);
+        }
+
+    }
+
     @SuppressWarnings("WeakerAccess")
     public static class Constants {
 

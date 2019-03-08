@@ -141,7 +141,7 @@ public class RobotMap {
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new CANifier(0);
 
-        canifier.setLEDs(CANifier.LEDMode.STATIC, Color.GREEN);
+        canifier.setLEDs(SnowBlower.LEDMode.STATIC, Color.GREEN);
         canifier.setLedChannels(LEDChannelB, LEDChannelA, LEDChannelC);
         canifier.sendColor(Color.GREEN);
         canifier.startLEDs();

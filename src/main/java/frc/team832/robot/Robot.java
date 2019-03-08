@@ -184,7 +184,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        timer++;
+        timer++; // TODO: FIXXX!!! use the WPILib Timer object
 //        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
         double triggerThrottle = OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft);
         double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
@@ -194,9 +194,9 @@ public class Robot extends TimedRobot {
         double rotation = OscarMath.signumPow(rightX, 2);
 
         if(timer >= 4500){
-            snowBlower.setLED(Color.GREEN);
+            snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, Color.GREEN);
         }else {
-            snowBlower.setLED(Color.BLUE);
+            snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, Color.BLUE);
 //            if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue) {
 //                snowBlower.setLED(Color.BLUE);
 //            } else {
@@ -267,8 +267,6 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic(){
         rainbowNum += 0.002f;
         snowBlower.sendHSB(rainbowNum, 1.0f, 0.5f);
-//        snowBlower.sendHSB(116, 68, 68);
-//        System.out.println("rainbow: " + rainbowNum);
     }
 
     @Override
@@ -276,5 +274,6 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
         jackStands.resetEncoders();
+
     }
 }
