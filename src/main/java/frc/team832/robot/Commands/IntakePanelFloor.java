@@ -9,7 +9,7 @@ public class IntakePanelFloor extends CommandGroup {
         addSequential(new ReleaseHatch());
         addSequential(new MoveGrabbor("Floor"));
         addSequential(new MoveGrabbor("Release"));
-        addSequential(new GrabHatch());
+        addSequential(new AutoHatchGrab());
         addSequential(new MoveGrabbor("Initial"));
     }
 }

@@ -1,12 +1,21 @@
-package frc.team832.robot.Commands.AutoJackStand;
+package frc.team832.robot.Commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Robot;
 
+import javax.swing.plaf.synth.SynthLookAndFeel;
 
-public class DriveToPark extends Command {
-    public DriveToPark() {
-       requires(Robot.drivetrain);
+
+public class DriveForTime extends Command {
+
+    private int _vel, _time;
+    private long startTime;
+
+
+    public DriveForTime(int vel, int timeInMs) {
+        requires(Robot.drivetrain);
+        _time = timeInMs;
+        _vel = vel;
     }
 
 
@@ -16,7 +25,7 @@ public class DriveToPark extends Command {
      */
     @Override
     protected void initialize() {
-        Robot.drivetrain.setVelocity(750);
+        startTime = System.currentTimeMillis();
     }
 
 
@@ -26,7 +35,8 @@ public class DriveToPark extends Command {
      */
     @Override
     protected void execute() {
-
+        Robot.drivetrain.setVelocity(_vel);
+        System.out.println("DriveForTime ex");
     }
 
 
@@ -50,7 +60,7 @@ public class DriveToPark extends Command {
     @Override
     protected boolean isFinished() {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return Robot.drivetrain.getOutputCurrent() > 150;
+        return (startTime+_time) <= System.currentTimeMillis();
     }
 
 
@@ -62,7 +72,7 @@ public class DriveToPark extends Command {
      */
     @Override
     protected void end() {
-
+        Robot.drivetrain.setVelocity(0);
     }
 
 

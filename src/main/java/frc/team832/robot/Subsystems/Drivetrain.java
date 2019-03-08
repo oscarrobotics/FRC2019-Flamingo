@@ -29,6 +29,10 @@ public class Drivetrain extends Subsystem {
         _driveSystem.setVelocity(velocity);
     }
 
+    public double getOutputCurrent(){
+        return _driveSystem.getOutputCurrent();
+    }
+
     /**
      *
      * @param pathMode The {@link DriveMode} to run inputs through.

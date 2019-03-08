@@ -1,12 +1,11 @@
-package frc.team832.robot.Commands.AutoJackStand;
+package frc.team832.robot.Commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.team832.robot.Robot;
 
 
-public class DriveToPark extends Command {
-    public DriveToPark() {
-       requires(Robot.drivetrain);
+public class ButtonTest extends Command {
+    public ButtonTest() {
+
     }
 
 
@@ -16,7 +15,7 @@ public class DriveToPark extends Command {
      */
     @Override
     protected void initialize() {
-        Robot.drivetrain.setVelocity(750);
+        System.out.println("button pressed");
     }
 
 
@@ -50,7 +49,7 @@ public class DriveToPark extends Command {
     @Override
     protected boolean isFinished() {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return Robot.drivetrain.getOutputCurrent() > 150;
+        return true;
     }
 
 

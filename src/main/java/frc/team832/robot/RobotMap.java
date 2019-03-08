@@ -279,8 +279,8 @@ public class RobotMap {
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
 
-        leftMaster.setkP(.0005);
-        rightMaster.setkP(.0005);
+        leftMaster.setkP(.0003);
+        rightMaster.setkP(.0003);
 
         navX = new NavXMicro(NavXMicro.NavXPort.I2C_onboard);
         navX.init();

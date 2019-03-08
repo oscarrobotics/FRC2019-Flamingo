@@ -1,24 +1,31 @@
-package frc.team832.robot.Commands.AutoJackStand;
+package frc.team832.robot.Commands.HatchFunctions;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Robot;
+import frc.team832.robot.Subsystems.Elevator;
 
 
-public class DriveToPark extends Command {
-    public DriveToPark() {
-       requires(Robot.drivetrain);
+public class AutoHatchElevator extends Command {
+
+    String _index;
+    double _pos;
+
+    public AutoHatchElevator(String index) {
+        requires(Robot.elevator);
+        _index = index;
+        _pos = Elevator.Constants.Positions.getByIndex(index).getTarget();
     }
 
+    public AutoHatchElevator(double pos) {
+        requires(Robot.elevator);
+        _pos = pos;
+    }
 
-    /**
-     * The initialize method is called just before the first time
-     * this Command is run after being started.
-     */
     @Override
     protected void initialize() {
-        Robot.drivetrain.setVelocity(750);
+        Robot.elevator.setPosition(_pos);
+        Robot.currentHatchState = Robot.AutoHatchState.MovingElevator;
     }
-
 
     /**
      * The execute method is called repeatedly when this Command is
@@ -26,9 +33,8 @@ public class DriveToPark extends Command {
      */
     @Override
     protected void execute() {
-
+        //TODO: add buttons and positions
     }
-
 
     /**
      * <p>
@@ -49,8 +55,8 @@ public class DriveToPark extends Command {
      */
     @Override
     protected boolean isFinished() {
-        // TODO: Make this return true when this Command no longer needs to run execute()
-        return Robot.drivetrain.getOutputCurrent() > 150;
+        return Robot.elevator.atTargetPosition() ||
+                (Robot.interruptedHatchState != Robot.AutoHatchState.None && Robot.interruptedHatchState != Robot.AutoHatchState.MovingElevator);
     }
 
 
@@ -62,7 +68,7 @@ public class DriveToPark extends Command {
      */
     @Override
     protected void end() {
-
+        Robot.currentHatchState = Robot.AutoHatchState.Driving;
     }
 
 
