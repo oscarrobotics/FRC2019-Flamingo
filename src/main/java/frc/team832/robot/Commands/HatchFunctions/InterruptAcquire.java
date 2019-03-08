@@ -19,6 +19,7 @@ public class InterruptAcquire extends Command {
     @Override
     protected void initialize() {
         Robot.interruptedHatchState = Robot.currentHatchState;
+        Robot.currentHatchState = Robot.AutoHatchState.None;
     }
 
 
@@ -51,7 +52,6 @@ public class InterruptAcquire extends Command {
      */
     @Override
     protected boolean isFinished() {
-        // TODO: Make this return true when this Command no longer needs to run execute()
         return true;
     }
 

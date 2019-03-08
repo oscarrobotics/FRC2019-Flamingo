@@ -72,6 +72,9 @@ public class AutoHatchDrive extends Command {
     protected void end() {
         Robot.drivetrain.setVelocity(0);
         Robot.currentHatchState = Robot.AutoHatchState.None;
+        if(Robot.interruptedHatchState == Robot.AutoHatchState.Driving){
+            Robot.interruptedHatchState = Robot.AutoHatchState.None;
+        }
     }
 
 

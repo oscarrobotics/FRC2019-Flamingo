@@ -27,13 +27,15 @@ public class AutoHatchGrab extends Command {
 
     @Override
     protected boolean isFinished() {
-        return startTime+500 <= System.currentTimeMillis() ||
+        return startTime+2000 <= System.currentTimeMillis() ||
                 (Robot.interruptedHatchState != Robot.AutoHatchState.None && Robot.interruptedHatchState != Robot.AutoHatchState.Grabbing);
     }
 
     @Override
     protected void end(){
         Robot.snowBlower.setHatchHolderPower(0.0);
-        Robot.currentHatchState = Robot.AutoHatchState.MovingElevator;
+        if(Robot.interruptedHatchState == Robot.AutoHatchState.Grabbing){
+            Robot.interruptedHatchState = Robot.AutoHatchState.None;
+        }
     }
 }

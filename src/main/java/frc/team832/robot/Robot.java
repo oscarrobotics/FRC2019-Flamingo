@@ -170,7 +170,8 @@ public class Robot extends TimedRobot {
         }
 
 //        jackStands.setPosition("TEST1");
-//        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
+        currentHatchState = AutoHatchState.None;
+        interruptedHatchState = AutoHatchState.None;
     }
 
     /**
@@ -254,6 +255,9 @@ public class Robot extends TimedRobot {
             }
 
         } */
+        System.out.println("Current: " + currentHatchState);
+
+        System.out.println(interruptedHatchState);
 
         Scheduler.getInstance().run();
     }

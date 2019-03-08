@@ -9,6 +9,7 @@ public class AutoHatchElevator extends Command {
 
     String _index;
     double _pos;
+    long startTime;
 
     public AutoHatchElevator(String index) {
         requires(Robot.elevator);
@@ -23,6 +24,7 @@ public class AutoHatchElevator extends Command {
 
     @Override
     protected void initialize() {
+        startTime = System.currentTimeMillis();
         Robot.elevator.setPosition(_pos);
         Robot.currentHatchState = Robot.AutoHatchState.MovingElevator;
     }
@@ -68,7 +70,9 @@ public class AutoHatchElevator extends Command {
      */
     @Override
     protected void end() {
-        Robot.currentHatchState = Robot.AutoHatchState.Driving;
+        if(Robot.interruptedHatchState == Robot.AutoHatchState.MovingElevator){
+            Robot.interruptedHatchState = Robot.AutoHatchState.None;
+        }
     }
 
 
