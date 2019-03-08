@@ -5,20 +5,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.*;
+import frc.team832.robot.Commands.AutoJackStand.JackstandHoldPosition;
+import frc.team832.robot.Commands.AutoJackStand.MoveJackStands;
+import frc.team832.robot.Commands.AutoJackStand.MoveSingleJackStand;
 import frc.team832.robot.Commands.HatchFunctions.GrabHatch;
-import frc.team832.robot.Commands.HatchFunctions.MoveGrabbor;
 import frc.team832.robot.Commands.HatchFunctions.ReleaseHatch;
-import frc.team832.robot.Commands.TheBigOne.BigOneToStartConfig;
-import frc.team832.robot.Commands.TheBigOne.InitializeBigOne;
+import frc.team832.robot.Commands.HatchFunctions.StopHatch;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
-import frc.team832.robot.Commands.TheBigOne.TeleopBigOneMotionProfiling;
-import frc.team832.robot.Subsystems.Elevator;
-import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.JackStands;
 import frc.team832.robot.Subsystems.TheBigOne;
 
 import static frc.team832.robot.Subsystems.Fourbar.Constants.*;
-import static frc.team832.robot.Subsystems.Elevator.Constants.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -34,7 +31,7 @@ public class OI {
 	public static Joystick operatorBox;
 	private static JoystickButton op1, op2, op3, op4, op5, op6;
 	private static JoystickButton incr, decr;
-	private static JoystickButton modeButton1, modeButton2, modeButton3, frontStandUp, backStandUp, standDown;
+	private static JoystickButton modeButton1, modeButton2, modeButton3, frontStandUp, backStandUp, standDown, standUp;
 
 	public static OperatorMode operatorMode;
 
@@ -48,6 +45,7 @@ public class OI {
 		frontStandUp = new JoystickButton(driverPad, 6);
 		backStandUp = new JoystickButton(driverPad, 5);
 		standDown = new JoystickButton(driverPad, 3);
+		standUp = new JoystickButton(driverPad, 4);
 
 		op1 = new JoystickButton(operatorBox, 1);
 		op2 = new JoystickButton(operatorBox, 2);
@@ -60,6 +58,7 @@ public class OI {
 		modeButton1 = new JoystickButton(operatorBox, 9);
 		modeButton2 = new JoystickButton(operatorBox, 10);
 		modeButton3 = new JoystickButton(operatorBox, 11);
+
 
 		System.out.println("Buttons initialized");
 
@@ -89,9 +88,15 @@ public class OI {
 		incr.whenPressed(new ReleaseHatch());
 		incr.whenReleased(new StopHatch());
 
-//		standDown.whenPressed(new MoveJackStands("Bottom"));
-//		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
-//		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
+		standDown.whenPressed(new MoveJackStands("Bottom"));
+		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
+		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
+		standUp.whenPressed(new MoveJackStands("Top"));
+
+		standDown.whenReleased(new JackstandHoldPosition());
+		backStandUp.whenReleased(new JackstandHoldPosition());
+		frontStandUp.whenReleased(new JackstandHoldPosition());
+		standUp.whenReleased(new JackstandHoldPosition());
 	}
 
     public enum OperatorMode {
@@ -100,6 +105,7 @@ public class OI {
 	    Rocket_Hatch,
 	    Rocket_Cargo
     }
+
 
     private static OperatorMode getOperatorMode() {
     	if (modeButton1.get()) return OperatorMode.CargoShip;

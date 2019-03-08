@@ -53,6 +53,7 @@ public class Robot extends TimedRobot {
     public static OI oi;
     private static int timer = 0;
     private float rainbowNum = 0;
+    public static boolean isHolding = false;
 
     CANifier.Ultrasonic heightUltrasonic;
 
@@ -193,7 +194,7 @@ public class Robot extends TimedRobot {
         double rotation = OscarMath.signumPow(rightX, 2);
 
         if(timer >= 4500){
-            snowBlower.setLED(Color.MAGENTA);
+            snowBlower.setLED(Color.GREEN);
         }else {
             snowBlower.setLED(Color.BLUE);
 //            if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue) {
@@ -228,20 +229,36 @@ public class Robot extends TimedRobot {
             elevator.testAdjustment(25);
         }
 
-        if(OI.driverPad.getAButton()){
-            jackStands.setPosition("Bottom");
-        } else if(OI.driverPad.getXButton()){
+       /* if(OI.driverPad.getAButton()){
+            //jackStands.setFrontArbFFPos(jackStands.getFrontCorrectionPower(),"Bottom");
             jackStands.setBackPosition("Bottom");
+            jackStands.setFrontPosition("Bottom");
+            isHolding = false;
+        } else if(OI.driverPad.getXButton()) {
+            jackStands.setBackPosition("Bottom");
+            isHolding = false;
         } else if(OI.driverPad.getBButton()){
             jackStands.setFrontPosition("Bottom");
+            isHolding = false;
+        } else if(OI.driverPad.getYButton()){
+            jackStands.setBackPosition("Top");
+            jackStands.setFrontPosition("Top");
+            //jackStands.setFrontArbFFPos(jackStands.getFrontCorrectionPower(), "Top");
+            isHolding = false;
         } else if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
             jackStands.setBackPosition("Top");
+            isHolding = false;
         } else if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
             jackStands.setFrontPosition("Top");
+            isHolding = false;
         } else {
-            jackStands.setBackPosition(jackStands.getBackCurrentPosition());
-            jackStands.setFrontPosition(jackStands.getFrontCurrentPosition());
-        }
+            if (!isHolding){
+                jackStands.setBackPosition(jackStands.getBackCurrentPosition());
+                jackStands.setFrontPosition(jackStands.getFrontCurrentPosition());
+                isHolding = true;
+            }
+
+        } */
 
         Scheduler.getInstance().run();
     }

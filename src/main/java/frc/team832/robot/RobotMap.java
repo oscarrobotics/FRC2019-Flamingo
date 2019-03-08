@@ -132,7 +132,7 @@ public class RobotMap {
 
         CameraServer.getInstance().startAutomaticCapture(0);
 
-        isComp = true;
+        isComp = false;
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         pdp = new PDP(IDs.CAN.pdp);
@@ -230,10 +230,10 @@ public class RobotMap {
 
         frontJackStandMotor.setInverted(false);
         backJackStandMotor.setInverted(true);
-        backJackStandMotor.setPeakOutputForward(.4);
-        backJackStandMotor.setPeakOutputReverse(-.4);
-        frontJackStandMotor.setPeakOutputForward(.4);
-        frontJackStandMotor.setPeakOutputReverse(-.35);
+        backJackStandMotor.setPeakOutputForward(1);
+        backJackStandMotor.setPeakOutputReverse(-1);
+        frontJackStandMotor.setPeakOutputForward(1);
+        frontJackStandMotor.setPeakOutputReverse(-1);
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
@@ -274,8 +274,8 @@ public class RobotMap {
         frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
         backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
         jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
-        frontJackStand.setPIDF(1.0, 0,0, 0);
-        backJackStand.setPIDF(1.0, 0,0, 0);
+        frontJackStand.setPIDF(.1, 0,0, 0);
+        backJackStand.setPIDF(.1, 0,0, 0);
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
 

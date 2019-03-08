@@ -60,6 +60,21 @@ public class JackStands extends Subsystem {
         _frontStand.setPosition(pos);
     }
 
+    public void setFrontArbFFPos(double arbFF, String index){
+        _frontStand.getMotor().setArbFFPos(arbFF, Constants.Positions.getByIndex(index).getTarget());
+    }
+
+    public void setBackArbFFPos(double arbFF, String index){
+        _backStand.getMotor().setArbFFPos(arbFF, Constants.Positions.getByIndex(index).getTarget());
+    }
+
+    public void setFrontArbFFPos(double arbFF, double pos){
+        _frontStand.getMotor().setArbFFPos(arbFF, pos);
+    }
+
+    public void setBackArbFFPos(double arbFF, double pos){
+        _backStand.getMotor().setArbFFPos(arbFF, pos);
+    }
     public void setBackPosition(String index) {
         _backStand.setPosition(index);
     }
@@ -80,17 +95,18 @@ public class JackStands extends Subsystem {
 
     @Override
     public void periodic() {
+
     }
 
     public void teleopControl(){
-
         if(OI.driverPad.getPOV() == 0){
             _drive.set(-.9);
         }else if(OI.driverPad.getPOV() == 180){
             _drive.set(.9);
-        } else{
+        }else{
             _drive.set(0.0);
         }
+
     }
 
     public int getFrontError(){
@@ -102,40 +118,22 @@ public class JackStands extends Subsystem {
     }
 
     public double getFrontCorrectionPower() {
-        double multiplier = 0.00005;
+        double multiplier = 5;
         double power = 0;
-        int error = getBackError() - getFrontError();
+        int error = (int) (getBackCurrentPosition() - getFrontCurrentPosition());
         if (Math.abs(error) > 2000){
             power = error * multiplier;
         }
 
-        if (Math.abs(power) > 0.25){
-            power = 0.25 * Math.signum(power);
-        }
-        return power;
-    }
-    //negative power ticks/power means jackstands extend
-    public double getBackCorrectionPower() {
-        double multiplier = 0.00005;
-        double power = 0;
-        int error = getFrontError() - getBackError();
-        //back is below front when error is pos and back requires pos power to correct
-        if (Math.abs(error) > 2000){
-                power = error * multiplier;
-        }
-
-        if (Math.abs(power) > 0.25){
-            power = 0.25 * Math.signum(power);
-        }
-        return power;
+        return -power;
     }
 
-    public boolean runToMax(){
+    public void runToMax(){
         //idk how to do it properly but i try
-        
+
     }
 
-    public boolean runToMin(){
+    public void runToMin(){
         //idk how to do it properly but i try
     }
 
@@ -155,6 +153,12 @@ public class JackStands extends Subsystem {
     public boolean getFrontAtTarget() { return getAtTarget(JackStand.FRONT); }
 
     public boolean getBackAtTarget() { return getAtTarget(JackStand.BACK); }
+
+
+    //negative is forward
+    public void setDrivePow(double pow){
+        _drive.set(pow);
+    }
 
     @Override
     protected void initDefaultCommand() {}

@@ -1,4 +1,4 @@
-package frc.team832.robot.Commands;
+package frc.team832.robot.Commands.AutoJackStand;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
@@ -20,15 +20,11 @@ public class MoveJackStands extends Command {
     public void initialize(){
         Robot.snowBlower.setLED(Color.RED);
 
-//        if(OI.driverPad.getAButton()){
-            Robot.jackStands.setPosition(_index);
-//        } else {
-//            end();
-//        }
+        Robot.jackStands.setPosition(_index);
     }
 
     @Override
     protected boolean isFinished() {
-        return Robot.jackStands.getAtTarget();
+        return false;
     }
 }

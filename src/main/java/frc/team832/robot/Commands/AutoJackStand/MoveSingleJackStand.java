@@ -1,4 +1,4 @@
-package frc.team832.robot.Commands;
+package frc.team832.robot.Commands.AutoJackStand;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
@@ -18,18 +18,15 @@ public class MoveSingleJackStand extends Command {
     }
 
     public void initialize(){
-        if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
-            switch (_stand) {
-                case FRONT:
-                    Robot.jackStands.setFrontPosition(_index);
-                    break;
-                case BACK:
-                    Robot.jackStands.setBackPosition(_index);
-                    break;
-            }
-        } else {
-            end();
+       switch (_stand) {
+            case FRONT:
+                Robot.jackStands.setFrontPosition(_index);
+                break;
+            case BACK:
+                Robot.jackStands.setBackPosition(_index);
+                break;
         }
+
     }
 
     @Override

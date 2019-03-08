@@ -1,13 +1,13 @@
-package frc.team832.robot.Commands;
+package frc.team832.robot.Commands.AutoJackStand;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Robot;
 
 
-public class StopHatch extends Command {
-    public StopHatch() {
-        // Use requires() here to declare subsystem dependencies
-        requires(Robot.snowBlower);
+public class DriveOnPlatform extends Command {
+
+    public DriveOnPlatform() {
+        requires(Robot.jackStands);
     }
 
 
@@ -17,7 +17,7 @@ public class StopHatch extends Command {
      */
     @Override
     protected void initialize() {
-        Robot.snowBlower.setHatchHolderPower(0.0);
+        Robot.jackStands.setDrivePow(.9);
     }
 
 
@@ -51,6 +51,7 @@ public class StopHatch extends Command {
     @Override
     protected boolean isFinished() {
         // TODO: Make this return true when this Command no longer needs to run execute()
+        //figure out reflectance sensor logic
         return false;
     }
 
@@ -63,7 +64,7 @@ public class StopHatch extends Command {
      */
     @Override
     protected void end() {
-
+        Robot.jackStands.setDrivePow(0.0);
     }
 
 
