@@ -9,22 +9,15 @@ import frc.team832.robot.Subsystems.Elevator;
 public class ElevatorTeleopControl extends Command {
 
     String _index;
-    double _pos;
 
     public ElevatorTeleopControl(String index) {
         requires(Robot.elevator);
         _index = index;
-        _pos = Elevator.Constants.Positions.getByIndex(index).getTarget();
-    }
-
-    public ElevatorTeleopControl(double pos) {
-        requires(Robot.elevator);
-        _pos = pos;
     }
 
     @Override
     protected void initialize() {
-        Robot.elevator.setPosition(_pos);
+        Robot.elevator.setPosition(_index);
     }
 
     /**
@@ -55,7 +48,7 @@ public class ElevatorTeleopControl extends Command {
      */
     @Override
     protected boolean isFinished() {
-        return Robot.elevator.atTargetPosition();
+        return Math.abs(Robot.elevator.getCurrentPosition() - Robot.elevator.getTargetPosition()) >= 20;
     }
 
 

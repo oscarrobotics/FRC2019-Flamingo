@@ -17,7 +17,6 @@ import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Sensors.NavXMicro;
 import frc.team832.GrouchLib.Util.OscarMath;
-import frc.team832.robot.Commands.HatchFunctions.AcquireHatch;
 import frc.team832.robot.Subsystems.*;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Config;
@@ -56,10 +55,10 @@ public class Robot extends TimedRobot {
     private float rainbowNum = 0;
     public static boolean isHolding = false;
 
-    public static AutoHatchState currentHatchState = AutoHatchState.None;
-    public static AutoHatchState interruptedHatchState = AutoHatchState.None;
-
     CANifier.Ultrasonic heightUltrasonic;
+
+    public double kP = .00025, kI = 0.0, kD = 0.0, kF = 0.0;
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -124,10 +123,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
-        pushData();
+//        pushData();
 //        update();
 //        Logger.updateEntries();
-        SmartDashboard.putNumber("Drivetrain Current: ", drivetrain.getOutputCurrent());
     }
 
     /**
@@ -148,7 +146,6 @@ public class Robot extends TimedRobot {
         // defaultAuto);
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
-//        jackStands.setPosition("Top");
         fourbar.setPosition(Fourbar.Constants.FourbarPosition.Bottom.getIndex());
         elevator.setPosition(Elevator.Constants.ElevatorPosition.Top.getIndex());
         System.out.println("Auto selected: " + autoSelected);
@@ -159,6 +156,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousPeriodic() {
+//        switch (autoSelected) {
+//            case CUSTOM_AUTO:
+//
+//                break;
+//            case DEFAULT_AUTO:
+//            default:
+//                // Put default auto code here
+//                break;
+//        }
         teleopPeriodic();
     }
 
@@ -170,8 +176,7 @@ public class Robot extends TimedRobot {
         }
 
 //        jackStands.setPosition("TEST1");
-        currentHatchState = AutoHatchState.None;
-        interruptedHatchState = AutoHatchState.None;
+//        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
     }
 
     /**
@@ -179,7 +184,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
-        timer++;
+        timer++; // TODO: FIXXX!!! use the WPILib Timer object
 //        snowBlower.setHatchHolderPosition(snowBlower.getHoldorCurrentPosition());
         double triggerThrottle = OI.driverPad.getTriggerAxis(GenericHID.Hand.kRight)- OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft);
         double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
@@ -189,9 +194,9 @@ public class Robot extends TimedRobot {
         double rotation = OscarMath.signumPow(rightX, 2);
 
         if(timer >= 4500){
-            snowBlower.setLED(Color.GREEN);
+            snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, Color.GREEN);
         }else {
-            snowBlower.setLED(Color.BLUE);
+            snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, Color.BLUE);
 //            if (DriverStation.getInstance().getAlliance() == DriverStation.Alliance.Blue) {
 //                snowBlower.setLED(Color.BLUE);
 //            } else {
@@ -202,8 +207,7 @@ public class Robot extends TimedRobot {
                 leftY,
                 rotation,
                 Drivetrain.DriveMode.CURVATURE,
-                SmartDifferentialDrive.LoopMode.VELOCITY);
-
+                SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
 //        snowBlower.teleopControl();
         jackStands.teleopControl();
@@ -255,9 +259,6 @@ public class Robot extends TimedRobot {
             }
 
         } */
-        System.out.println("Current: " + currentHatchState);
-
-        System.out.println(interruptedHatchState);
 
         Scheduler.getInstance().run();
     }
@@ -266,8 +267,6 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic(){
         rainbowNum += 0.002f;
         snowBlower.sendHSB(rainbowNum, 1.0f, 0.5f);
-//        snowBlower.sendHSB(116, 68, 68);
-//        System.out.println("rainbow: " + rainbowNum);
     }
 
     @Override
@@ -275,12 +274,6 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
         jackStands.resetEncoders();
-    }
 
-    public enum AutoHatchState{
-        None,
-        Grabbing,
-        MovingElevator,
-        Driving;
     }
 }

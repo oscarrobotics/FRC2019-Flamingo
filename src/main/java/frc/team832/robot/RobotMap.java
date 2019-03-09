@@ -141,7 +141,7 @@ public class RobotMap {
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new CANifier(0);
 
-        canifier.setLEDs(CANifier.LEDMode.STATIC, Color.GREEN);
+        canifier.setLEDs(SnowBlower.LEDMode.STATIC, Color.GREEN);
         canifier.setLedChannels(LEDChannelB, LEDChannelA, LEDChannelC);
         canifier.sendColor(Color.GREEN);
         canifier.startLEDs();
@@ -279,8 +279,8 @@ public class RobotMap {
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
 
-        leftMaster.setkP(.0003);
-        rightMaster.setkP(.0003);
+        leftMaster.setkP(.0005);
+        rightMaster.setkP(.0005);
 
         navX = new NavXMicro(NavXMicro.NavXPort.I2C_onboard);
         navX.init();

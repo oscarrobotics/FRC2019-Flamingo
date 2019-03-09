@@ -8,10 +8,14 @@ import frc.team832.robot.Commands.*;
 import frc.team832.robot.Commands.AutoJackStand.JackstandHoldPosition;
 import frc.team832.robot.Commands.AutoJackStand.MoveJackStands;
 import frc.team832.robot.Commands.AutoJackStand.MoveSingleJackStand;
-import frc.team832.robot.Commands.HatchFunctions.*;
+import frc.team832.robot.Commands.HatchFunctions.GrabHatch;
+import frc.team832.robot.Commands.HatchFunctions.ReleaseHatch;
+import frc.team832.robot.Commands.HatchFunctions.StopHatch;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
 import frc.team832.robot.Subsystems.JackStands;
 import frc.team832.robot.Subsystems.TheBigOne;
+
+import static frc.team832.robot.Subsystems.Fourbar.Constants.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -27,9 +31,7 @@ public class OI {
 	public static Joystick operatorBox;
 	private static JoystickButton op1, op2, op3, op4, op5, op6;
 	private static JoystickButton incr, decr;
-	private static JoystickButton modeButton1, modeButton2, modeButton3, frontStandUp, backStandUp, standDown, standUp, hatchGrab;
-
-	private static JoystickButton test;
+	private static JoystickButton modeButton1, modeButton2, modeButton3, frontStandUp, backStandUp, standDown, standUp;
 
 	public static OperatorMode operatorMode;
 
@@ -57,13 +59,10 @@ public class OI {
 		modeButton2 = new JoystickButton(operatorBox, 10);
 		modeButton3 = new JoystickButton(operatorBox, 11);
 
-		hatchGrab = new JoystickButton(operatorBox, 13);
-
-		test = new JoystickButton(driverPad, 1);
 
 		System.out.println("Buttons initialized");
 
-/*
+
 		modeButton2.whenPressed(new TeleopControlFourbar(FourbarPosition.Middle.getIndex()));
 		modeButton3.whenPressed(new TeleopControlFourbar(FourbarPosition.Bottom.getIndex()));
 		modeButton1.whenPressed(new TeleopControlFourbar(FourbarPosition.Top.getIndex()));
@@ -84,15 +83,10 @@ public class OI {
 		op4.whenPressed(new MoveCargo(-.75));
 		op4.whenReleased(new MoveCargo(0.0));
 //
-		decr.whenPressed(new AutoHatchGrab());
+		decr.whenPressed(new GrabHatch());
 		decr.whenReleased(new StopHatch());
 		incr.whenPressed(new ReleaseHatch());
 		incr.whenReleased(new StopHatch());
-*/
-
-		hatchGrab.whenPressed(new AcquireHatch());
-		hatchGrab.whenReleased(new InterruptAcquire());
-
 
 		standDown.whenPressed(new MoveJackStands("Bottom"));
 		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
@@ -103,8 +97,6 @@ public class OI {
 		backStandUp.whenReleased(new JackstandHoldPosition());
 		frontStandUp.whenReleased(new JackstandHoldPosition());
 		standUp.whenReleased(new JackstandHoldPosition());
-
-
 	}
 
     public enum OperatorMode {
