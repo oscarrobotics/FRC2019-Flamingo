@@ -114,6 +114,9 @@ public class Drivetrain extends Subsystem {
 //        }
     }
 
+    public double getOutputCurrent() {
+        return _driveSystem.getOutputCurrent();
+    }
 
     @Override
     public void initDefaultCommand() { }

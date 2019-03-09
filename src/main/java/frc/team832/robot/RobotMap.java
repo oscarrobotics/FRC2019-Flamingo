@@ -16,7 +16,6 @@ import frc.team832.robot.Subsystems.*;
 
 import java.awt.*;
 import java.io.File;
-import java.nio.file.FileSystem;
 
 import static com.ctre.phoenix.CANifier.LEDChannel.*;
 
@@ -115,24 +114,23 @@ public class RobotMap {
      * Initializes robot hardware
      */
     static boolean init() {
+        // check which robot we're on...
+        String path = String.format("%s/practice", Filesystem.getOperatingDirectory());
+        try {
+            isComp = new File(path).exists();
+        } catch (Exception e) {
+            isComp = true;
+        }
+
+        CameraServer.getInstance().startAutomaticCapture(0);
+
         /**
          * EXTREMELY IMPORTANT!!!!!!
          * INITIALIZE ALL CAN DEVICES BEFORE ACCESSING THEM
          * This way we can check for missing devices without WPILib having a fit.
          * Don't worry, we'll have our own fit...
-         **/
-        //TODO: make sure this is right!!!
-        File f = new File(String.format("%s/CombBotCheck.txt", Filesystem.getDeployDirectory()));
+         */
 
-//        if(f.isFile() && !f.isDirectory()){
-//            isComp = true;
-//        } else {
-//            isComp = false;
-//        }
-
-        CameraServer.getInstance().startAutomaticCapture(0);
-
-        isComp = false;
 
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         pdp = new PDP(IDs.CAN.pdp);
@@ -141,10 +139,8 @@ public class RobotMap {
         // SHOULD be CAN-safe (shouldn't suicide if not connected)
         canifier = new CANifier(0);
 
-        canifier.setLEDs(SnowBlower.LEDMode.STATIC, Color.GREEN);
         canifier.setLedChannels(LEDChannelB, LEDChannelA, LEDChannelC);
-        canifier.sendColor(Color.GREEN);
-        canifier.startLEDs();
+        canifier.setLedMaxOutput(0.3);
 
         visionLight = new Solenoid(pcm, IDs.PCM.lightPort);
 
