@@ -6,6 +6,7 @@ import frc.team832.GrouchLib.Mechanisms.LinearMechanism;
 import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
+import frc.team832.GrouchLib.Motors.CANTalon;
 import frc.team832.robot.OI;
 import frc.team832.robot.RobotMap;
 
@@ -22,11 +23,13 @@ public class JackStands extends Subsystem {
         _frontStand = frontStand;
         _backStand = backStand;
         _drive = drive;
+
     }
 
     public enum JackStand {
         FRONT,
-        BACK
+        BACK,
+        BOTH,//dont use, only for commands
     }
 
     public double getFrontTargetPosition(){
@@ -46,42 +49,20 @@ public class JackStands extends Subsystem {
     }
 
     public void setPosition(String index) {
-        MechanismPosition backPos = Constants.Positions.getByIndex(index);
-        MechanismPosition frontPos = new MechanismPosition(index, Constants.convertBackToFront(backPos.getTarget()));
-        _frontStand.setPosition(frontPos);
-        _backStand.setPosition(backPos);
+        MechanismPosition backPos = Constants.Positions.getByIndex(index+"Back");
+        MechanismPosition frontPos = Constants.Positions.getByIndex(index+"Front");
+        _frontStand.getMotor().setMotionMagc(frontPos.getTarget());
+        _backStand.getMotor().setMotionMagc(backPos.getTarget());
     }
     //WILL CODE
-    public void setFrontPosition(String index) {
-        _frontStand.setPosition(index);
-    }
 
-    public void setFrontPosition(double pos) {
-        _frontStand.setPosition(pos);
-    }
+   // public void setFrontPosition(String index) { _frontStand.setPosition(index+"Front"); }
+    public void setFrontPosition(double pos) { _frontStand.setPosition(pos); }
+    public void setFrontPosition(String index){_frontStand.getMotor().setMotionMagc(_frontStand.getPresetPosition(index+"Front").getTarget());}
 
-    public void setFrontArbFFPos(double arbFF, String index){
-        _frontStand.getMotor().setArbFFPos(arbFF, Constants.Positions.getByIndex(index).getTarget());
-    }
-
-    public void setBackArbFFPos(double arbFF, String index){
-        _backStand.getMotor().setArbFFPos(arbFF, Constants.Positions.getByIndex(index).getTarget());
-    }
-
-    public void setFrontArbFFPos(double arbFF, double pos){
-        _frontStand.getMotor().setArbFFPos(arbFF, pos);
-    }
-
-    public void setBackArbFFPos(double arbFF, double pos){
-        _backStand.getMotor().setArbFFPos(arbFF, pos);
-    }
-    public void setBackPosition(String index) {
-        _backStand.setPosition(index);
-    }
-
-    public void setBackPosition(double pos) {
-        _backStand.setPosition(pos);
-    }
+    //public void setBackPosition(String index) { _backStand.setPosition(index+"Back"); }
+    public void setBackPosition(double pos) { _backStand.setPosition(pos); }
+    public void setBackPosition(String index){_backStand.getMotor().setMotionMagc(_backStand.getPresetPosition(index+"Front").getTarget());}
 
     public void resetEncoders(){
         _backStand.resetSensor();
@@ -99,9 +80,9 @@ public class JackStands extends Subsystem {
     }
 
     public void teleopControl(){
-        if(OI.driverPad.getPOV() == 0){
+        if(OI.driverPad.getPOV() == 180){
             _drive.set(-.9);
-        }else if(OI.driverPad.getPOV() == 180){
+        }else if(OI.driverPad.getPOV() == 0){
             _drive.set(.9);
         }else{
             _drive.set(0.0);
@@ -172,8 +153,10 @@ public class JackStands extends Subsystem {
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("Bottom", RobotMap.isComp ? -75000 : -73000),
-                new MechanismPosition("Top", -300)
+                new MechanismPosition("BottomBack", RobotMap.isComp ? -75000 : -78000),
+                new MechanismPosition("BottomFront", RobotMap.isComp ? -75000 : -82000),
+                new MechanismPosition("TopBack", -300),
+                new MechanismPosition("TopFront", -300)
         };
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);

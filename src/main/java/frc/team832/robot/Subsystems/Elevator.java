@@ -76,6 +76,14 @@ public class Elevator extends Subsystem {
         }
     }
 
+    public void setMotionPosition(double position){
+        position++;
+        position /= 2;
+        position *= Constants.POT_RANGE;
+        position += -680;
+        _elevator.getMotor().setMotionMagc(position);
+    }
+
     public void bufferTrajectory(MechanismMotionProfile profile) {
         _elevator.bufferTrajectory(profile);
     }
@@ -106,9 +114,9 @@ public class Elevator extends Subsystem {
         public static final int COMP_POT_MIN_VAL = 5;
         public static final int COMP_POT_MAX_VAL = 395;
 
-        public static final int POT_MIN_VAL = -705;
+        public static final int POT_MIN_VAL = -710;
         public static final int POT_MAX_VAL = -370;
-        public static final int POT_RANGE = (POT_MAX_VAL - 1023) + 1023 - POT_MIN_VAL;
+        public static final int POT_RANGE = POT_MAX_VAL - POT_MIN_VAL;
         public static final double POT_TO_INCHES = 44.0 / (double)POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 

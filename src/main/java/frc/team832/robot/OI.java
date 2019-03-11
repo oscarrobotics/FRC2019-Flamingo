@@ -8,6 +8,8 @@ import frc.team832.robot.Commands.*;
 import frc.team832.robot.Commands.AutoJackStand.JackstandHoldPosition;
 import frc.team832.robot.Commands.AutoJackStand.MoveJackStands;
 import frc.team832.robot.Commands.AutoJackStand.MoveSingleJackStand;
+import frc.team832.robot.Commands.Elevator.MoveElevator;
+import frc.team832.robot.Commands.FourBar.MoveFourbar;
 import frc.team832.robot.Commands.HatchFunctions.*;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
 import frc.team832.robot.Subsystems.JackStands;
@@ -23,11 +25,11 @@ public class OI {
 	// Driver
 	public static XboxController driverPad;
 	private static JoystickButton leftStickPress, rightStickPress;
-	private static JoystickButton frontStandUp, backStandUp, standDown, standUp;
+	private static JoystickButton frontStandUp, backStandUp, standDown, standUp, frontStandDown, backStandDown;
 
 	// Operator
 	public static Joystick operatorBox;
-	public static JoystickButton op1, op2, op3, op4, op5, op6;
+	public static JoystickButton op1, op2, op3, op4, op5, op6, mToggle;
 	public static JoystickButton incr, decr;
 	private static JoystickButton modeButton1, modeButton2, modeButton3, hatchGrab;
 
@@ -39,8 +41,10 @@ public class OI {
 		rightStickPress = new JoystickButton(driverPad, 10);
 		frontStandUp = new JoystickButton(driverPad, 6);
 		backStandUp = new JoystickButton(driverPad, 5);
-		standDown = new JoystickButton(driverPad, 3);
+		standDown = new JoystickButton(driverPad, 1);
 		standUp = new JoystickButton(driverPad, 4);
+		frontStandDown = new JoystickButton(driverPad, 3);
+		backStandDown = new JoystickButton(driverPad, 2);
 
 		operatorBox = new Joystick(1);
 
@@ -51,6 +55,7 @@ public class OI {
 		op4 = new JoystickButton(operatorBox, 4);
 		op5 = new JoystickButton(operatorBox, 5);
 		op6 = new JoystickButton(operatorBox, 6);
+		mToggle = new JoystickButton(operatorBox, 19);
 		incr = new JoystickButton(operatorBox, 7);
 		decr = new JoystickButton(operatorBox, 8);
 		modeButton1 = new JoystickButton(operatorBox, 9);
@@ -70,11 +75,16 @@ public class OI {
 		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
 		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
 		standUp.whenPressed(new MoveJackStands("Top"));
+		backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
+		frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
 
-		standDown.whenReleased(new JackstandHoldPosition());
-		backStandUp.whenReleased(new JackstandHoldPosition());
-		frontStandUp.whenReleased(new JackstandHoldPosition());
-		standUp.whenReleased(new JackstandHoldPosition());
+		backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+		frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+		frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+
+		mToggle.whileHeld(new MoveFourbar());
+		mToggle.whileHeld(new MoveElevator());
 
 //		op1.whenPressed(new MoveCargo(.6));
 //		op1.whenReleased(new MoveCargo(0.0));

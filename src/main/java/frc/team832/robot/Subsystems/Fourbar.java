@@ -8,6 +8,7 @@ import frc.team832.GrouchLib.Mechanisms.GeniusMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
+import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
 import frc.team832.robot.RobotMap;
@@ -62,9 +63,6 @@ public class Fourbar extends Subsystem {
 
     @Override
     public void periodic() {
-//        if(Robot.elevator.getTargetPosition() > -350 && getTopTargetPosition() < Constants.Positions.getByIndex("Middle").getTarget()){
-//            setPosition("Middle");
-//        }
 
     }
 
@@ -72,6 +70,7 @@ public class Fourbar extends Subsystem {
         SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
 //        SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
         SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
+        SmartDashboard.putNumber("ArmDeg", armDeg());
     }
 
     public void stop(){
@@ -96,6 +95,19 @@ public class Fourbar extends Subsystem {
     public void testAdjustment(double adjVal){
         _top.setPosition(new MechanismPosition("AdjControl", getTopTargetPosition()+adjVal));
 //        _bottom.setPosition(new MechanismPosition("AdjControl", Constants.convertUpperToLower(getTopTargetPosition()+adjVal)));
+    }
+
+    public void setMotionPosition(double position){
+        //mid = 2725      -65.5 min to 68.5 max
+        double angle =
+        position++;
+        position /= 2;
+        position *= 5100;
+        _top.getMotor().setMotionMagc(position);
+    }
+
+    public double armDeg() {
+        return OscarMath.map(getTopCurrentPosition(), 0, 4900, -65.5, 61  );
     }
 
     @Override
@@ -132,8 +144,8 @@ public class Fourbar extends Subsystem {
         public static final double COMP_TOP_MAX_VAL = 5030;
         public static final double COMP_TOP_MIN_VAL = 0;
 
-        public static final double TOP_MIN_VAL = 200;
-        public static final double TOP_MAX_VAL = 661;
+        public static final double TOP_MIN_VAL = 0;
+        public static final double TOP_MAX_VAL = 5000;
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
         public static final double UPPERPOTOFFSET = 112.66;
@@ -149,9 +161,9 @@ public class Fourbar extends Subsystem {
 
                 new MechanismPosition("StorageConfig", RobotMap.isComp? 675 : 630),
 
-                new MechanismPosition("Bottom", RobotMap.isComp? 300 : TOP_MIN_VAL),
-                new MechanismPosition("Middle", RobotMap.isComp? 2455 : 430),
-                new MechanismPosition("Top", RobotMap.isComp? 4950 : TOP_MAX_VAL-15),
+                new MechanismPosition("Bottom", RobotMap.isComp? 300 : 300),
+                new MechanismPosition("Middle", RobotMap.isComp? 2455 : 2450),
+                new MechanismPosition("Top", RobotMap.isComp? 4950 : 4950),
 
                 new MechanismPosition("IntakeHatch_HP", RobotMap.isComp? 361 : 0),
                 new MechanismPosition("IntakeCargo_Floor", RobotMap.isComp? 361 : 420),

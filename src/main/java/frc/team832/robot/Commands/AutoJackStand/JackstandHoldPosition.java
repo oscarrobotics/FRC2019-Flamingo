@@ -2,11 +2,17 @@ package frc.team832.robot.Commands.AutoJackStand;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Robot;
+import frc.team832.robot.Subsystems.JackStands;
 
+import static frc.team832.robot.Subsystems.JackStands.JackStand.BACK;
+import static frc.team832.robot.Subsystems.JackStands.JackStand.FRONT;
 
 public class JackstandHoldPosition extends Command {
-    public JackstandHoldPosition() {
+    private JackStands.JackStand _stand;
+
+    public JackstandHoldPosition(JackStands.JackStand stand) {
         requires(Robot.jackStands);
+        _stand = stand;
     }
 
 
@@ -16,8 +22,18 @@ public class JackstandHoldPosition extends Command {
      */
     @Override
     protected void initialize() {
-        Robot.jackStands.setBackPosition(Robot.jackStands.getBackCurrentPosition());
-        Robot.jackStands.setFrontPosition(Robot.jackStands.getFrontCurrentPosition());
+        switch ( _stand) {
+            case FRONT:
+                Robot.jackStands.setFrontPosition(Robot.jackStands.getFrontCurrentPosition());
+                break;
+            case BACK:
+                Robot.jackStands.setBackPosition(Robot.jackStands.getBackCurrentPosition());
+                break;
+            case BOTH:
+                Robot.jackStands.setFrontPosition(Robot.jackStands.getFrontCurrentPosition());
+                Robot.jackStands.setBackPosition(Robot.jackStands.getBackCurrentPosition());
+                break;
+        }
     }
 
 

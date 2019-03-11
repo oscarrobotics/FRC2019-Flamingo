@@ -117,7 +117,7 @@ public class RobotMap {
         // check which robot we're on...
         String path = String.format("%s/practice", Filesystem.getOperatingDirectory());
         try {
-            isComp = new File(path).exists();
+            isComp = !(new File(path).exists());
         } catch (Exception e) {
             isComp = true;
         }
@@ -204,19 +204,19 @@ public class RobotMap {
 
         fourbarBottom.follow(fourbarTop);
 
-        fourbarTop.setSensorType(isComp? FeedbackDevice.CTRE_MagEncoder_Relative : FeedbackDevice.Analog);
+        fourbarTop.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
         fourbarTop.setNeutralMode(NeutralMode.Brake);
         fourbarTop.configureContinuousCurrent(40);
         fourbarBottom.configureContinuousCurrent(40);
-//        fourbarBottom.setSensorType(FeedbackDevice.Analog);
         fourbarBottom.setNeutralMode(NeutralMode.Brake);
         fourbarTop.setInverted(false);
-        fourbarTop.setSensorPhase(isComp? true : false);
+        fourbarTop.setSensorPhase(isComp? true : true);
         fourbarBottom.setInverted(true);
         fourbarBottom.setSensorPhase(false);
         fourbarTop.setClosedLoopRamp(.3);
-
-//        fourbarTop.configMotionMagic(400, 1600);
+        fourbarTop.configMotionMagic(1000, 3500);
+        fourbarTop.setForwardSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MAX_VAL: (int)Fourbar.Constants.TOP_MAX_VAL);
+        fourbarTop.setReverseSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MIN_VAL: (int)Fourbar.Constants.TOP_MIN_VAL);
 
         frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
         backJackStandMotor.setNeutralMode(NeutralMode.Brake);
@@ -233,19 +233,18 @@ public class RobotMap {
 
         frontJackStandMotor.setForwardSoftLimit(0);
         backJackStandMotor.setForwardSoftLimit(0);
-        frontJackStandMotor.setReverseSoftLimit(-75000);
-        backJackStandMotor.setReverseSoftLimit(-75000);
+        frontJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -82000);
+        backJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -78000);
 
         elevatorMotor.setSensorType(FeedbackDevice.Analog);
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
         elevatorMotor.setInverted(true);
         elevatorMotor.setSensorPhase(false);
+        elevatorMotor.configMotionMagic(250, 250);
 
         fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new GeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
 
-        fourbarTop.setForwardSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MAX_VAL: (int)Fourbar.Constants.TOP_MAX_VAL);
-        fourbarTop.setReverseSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MIN_VAL: (int)Fourbar.Constants.TOP_MIN_VAL);
 
 //        fourbarBottom.setForwardSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MIN_VAL));
 //        fourbarBottom.setReverseSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MAX_VAL));
@@ -259,8 +258,8 @@ public class RobotMap {
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPIDF(8, 0, 0, 0);//was 16
 
-        elevatorMotor.setForwardSoftLimit(isComp? 0: -375);
-        elevatorMotor.setReverseSoftLimit(isComp? -400 : -705);
+        elevatorMotor.setForwardSoftLimit(isComp? 0: -360);
+        elevatorMotor.setReverseSoftLimit(isComp? -400 : -715);
 
         cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -270,10 +269,14 @@ public class RobotMap {
         frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
         backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
         jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
-        frontJackStand.setPIDF(.1, 0,0, 0);
+        frontJackStand.setPIDF(.11, 0,0, 0);
         backJackStand.setPIDF(.1, 0,0, 0);
+
         frontJackStandMotor.setSensorPhase(true);
         backJackStandMotor.setSensorPhase(true);
+        frontJackStandMotor.configMotionMagic(8000, 3500);
+        backJackStandMotor.configMotionMagic(8000, 3500);
+
 
         leftMaster.setkP(.0005);
         rightMaster.setkP(.0005);

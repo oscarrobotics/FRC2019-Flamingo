@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
 
         jackStands.resetEncoders();
 
-        if(isComp){
+        if(isComp||!isComp){
             fourbarTop.resetSensor();
             navX.init();
         }
@@ -106,7 +106,6 @@ public class Robot extends TimedRobot {
         pushData();
         update();
         Logger.updateEntries();
-        SmartDashboard.putNumber("Drivetrain Current: ", drivetrain.getOutputCurrent());
     }
 
     @Override
@@ -126,9 +125,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit(){
         Scheduler.getInstance().enable();
-        if(!DriverStation.getInstance().isFMSAttached()){
+        //if(!DriverStation.getInstance().isFMSAttached()){
             autonomousInit();
-        }
+        //}
         currentHatchState = AutoHatchState.None;
         interruptedHatchState = AutoHatchState.None;
     }
@@ -139,6 +138,8 @@ public class Robot extends TimedRobot {
         double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
 
         double rotation = OscarMath.signumPow(rightX, 2);
+
+        System.out.println("Operator Y: " + OI.operatorBox.getY());
 
 //        if (matchTimer.hasPeriodPassed(60)) {
 //            snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
@@ -156,26 +157,22 @@ public class Robot extends TimedRobot {
 //        snowBlower.teleopControl();
         jackStands.teleopControl();
 
-        if(OI.op2.get()){
-            fourbar.testAdjustment(200);
-
-        }
-
-        if(OI.operatorBox.getRawButtonReleased(5)){
-            fourbar.testAdjustment(-200);
-        }
-
-        if(OI.operatorBox.getRawButtonReleased(3)){
-            elevator.testAdjustment(-25);
-        }
-
-        if(OI.operatorBox.getRawButtonReleased(6)){
-            elevator.testAdjustment(25);
-        }
-
-        System.out.println("Current: " + currentHatchState);
-
-        System.out.println(interruptedHatchState);
+//        if(OI.op2.get()){
+//            fourbar.testAdjustment(150);
+//
+//        }
+//
+//        if(OI.operatorBox.getRawButtonReleased(5)){
+//            fourbar.testAdjustment(-150);
+//        }
+//
+//        if(OI.operatorBox.getRawButtonReleased(3)){
+//            elevator.testAdjustment(-25);
+//        }
+//
+//        if(OI.operatorBox.getRawButtonReleased(6)){
+//            elevator.testAdjustment(25);
+//        }
 
         Scheduler.getInstance().run();
     }
