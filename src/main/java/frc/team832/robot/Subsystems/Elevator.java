@@ -11,6 +11,7 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
+import frc.team832.robot.Robot;
 import frc.team832.robot.RobotMap;
 
 import static frc.team832.robot.RobotMap.isComp;
@@ -114,8 +115,8 @@ public class Elevator extends Subsystem {
         public static final int COMP_POT_MIN_VAL = 5;
         public static final int COMP_POT_MAX_VAL = 395;
 
-        public static final int POT_MIN_VAL = -710;
-        public static final int POT_MAX_VAL = -370;
+        public static final int POT_MIN_VAL = -700;
+        public static final int POT_MAX_VAL = -360;
         public static final int POT_RANGE = POT_MAX_VAL - POT_MIN_VAL;
         public static final double POT_TO_INCHES = 44.0 / (double)POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
@@ -169,6 +170,7 @@ public class Elevator extends Subsystem {
 
             public String getIndex() { return _index; }
         }
+
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
     }

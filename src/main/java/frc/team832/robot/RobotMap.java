@@ -240,7 +240,7 @@ public class RobotMap {
         elevatorMotor.setNeutralMode(NeutralMode.Brake);
         elevatorMotor.setInverted(true);
         elevatorMotor.setSensorPhase(false);
-        elevatorMotor.configMotionMagic(250, 250);
+        elevatorMotor.configMotionMagic(500, 1500);
 
         fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
         fourbarBottomMech = new GeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
@@ -258,8 +258,8 @@ public class RobotMap {
         elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
         elevatorMech.setPIDF(8, 0, 0, 0);//was 16
 
-        elevatorMotor.setForwardSoftLimit(isComp? 0: -360);
-        elevatorMotor.setReverseSoftLimit(isComp? -400 : -715);
+        elevatorMotor.setForwardSoftLimit(isComp? 0: -355);
+        elevatorMotor.setReverseSoftLimit(isComp? -400 : -710);
 
         cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 

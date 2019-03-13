@@ -3,16 +3,14 @@ package frc.team832.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.*;
-import frc.team832.robot.Commands.AutoJackStand.JackstandHoldPosition;
-import frc.team832.robot.Commands.AutoJackStand.MoveJackStands;
-import frc.team832.robot.Commands.AutoJackStand.MoveSingleJackStand;
-import frc.team832.robot.Commands.Elevator.MoveElevator;
-import frc.team832.robot.Commands.FourBar.MoveFourbar;
+import frc.team832.robot.Commands.Elevator.ManualMoveElevator;
+import frc.team832.robot.Commands.FourBar.ManualMoveFourbar;
 import frc.team832.robot.Commands.HatchFunctions.*;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
-import frc.team832.robot.Subsystems.JackStands;
+import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.TheBigOne;
 
 /**
@@ -29,9 +27,11 @@ public class OI {
 
 	// Operator
 	public static Joystick operatorBox;
-	public static JoystickButton op1, op2, op3, op4, op5, op6, mToggle;
+	public static JoystickButton op1, op2, op3, op4, op5, op6, black1, black2, white1, white2;
 	public static JoystickButton incr, decr;
-	private static JoystickButton modeButton1, modeButton2, modeButton3, hatchGrab;
+	public static JoystickButton modeButton1, modeButton2, modeButton3, hatchGrab;
+
+	public static Trigger mToggle;
 
 	public static OperatorMode operatorMode;
 
@@ -62,29 +62,41 @@ public class OI {
 		modeButton2 = new JoystickButton(operatorBox, 10);
 		modeButton3 = new JoystickButton(operatorBox, 11);
 
-		hatchGrab = new JoystickButton(operatorBox, 13);
+		black1 = new JoystickButton(operatorBox, 12);
+		black2 = new JoystickButton(operatorBox, 13);
+		white1 = new JoystickButton(operatorBox, 14);
+		white2 = new JoystickButton(operatorBox, 15);
 
 		System.out.println("Buttons initialized");
 	}
 
 	static void setupCommands() {
-		hatchGrab.whenPressed(new AcquireHatch());
-		hatchGrab.whenReleased(new InterruptAcquire());
+		mToggle.whenActive(new ManualToggle(new ManualMoveFourbar(), new DoNothing()));
+		mToggle.whenActive(new ManualToggle(new ManualMoveElevator(), new DoNothing()));
 
-		standDown.whenPressed(new MoveJackStands("Bottom"));
-		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
-		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
-		standUp.whenPressed(new MoveJackStands("Top"));
-		backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
-		frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
+		black2.whenPressed(new AcquireHatch());
+		black2.whenReleased(new InterruptAcquire());
 
-		backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-		frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
-		backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-		frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		black1.whenPressed(new TeleopControlFourbar("Middle"));
 
-		mToggle.whileHeld(new MoveFourbar());
-		mToggle.whileHeld(new MoveElevator());
+
+
+//			standDown.whenPressed(new MoveJackStands("Bottom"));
+//			backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
+//			frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
+//			standUp.whenPressed(new MoveJackStands("Top"));
+//			backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
+//			frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
+//
+//			backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+//			frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+//			backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+//			frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+
+
+
+
+
 
 //		op1.whenPressed(new MoveCargo(.6));
 //		op1.whenReleased(new MoveCargo(0.0));

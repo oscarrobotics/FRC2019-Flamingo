@@ -85,21 +85,7 @@ public class SnowBlower extends Subsystem {
 	}
 
 	public void teleopControl() {
-		if (OI.driverPad.getAButton()) {
-			intakeSet(.5);
-		} else if (OI.driverPad.getXButton()) {
-			intakeSet(-.5);
-		} else if (OI.driverPad.getYButton()) {
-			intakeSet(-1);
-		} else {
-			intakeSet(ballPIDPow());
-		}
 
-		if(OI.driverPad.getBumper(GenericHID.Hand.kRight)){
-			setBallStatus(true);
-		}else if(OI.driverPad.getBumper(GenericHID.Hand.kLeft)){
-			setBallStatus(false);
-		}
 	}
 
 	public void setHatchHolderPower(double pow) {

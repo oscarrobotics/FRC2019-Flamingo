@@ -21,6 +21,7 @@ public class Fourbar extends Subsystem {
     private GeniusMechanism _top, _bottom;
     private MotionProfileStatus topStatus = new MotionProfileStatus();
     private MotionProfileStatus botStatus = new MotionProfileStatus();
+    private int targetPos = 0;
 
     public Fourbar(GeniusMechanism top){
 //        _bottom = bottom;
@@ -63,7 +64,12 @@ public class Fourbar extends Subsystem {
 
     @Override
     public void periodic() {
-
+        if (!isSafe()) {
+            _top.getMotor().setMotionMagcArbFF(getMinSafePos(), armFF());
+        }else{
+            _top.getMotor().setMotionMagcArbFF(targetPos, armFF());
+        }
+        System.out.println("Target: " + targetPos);
     }
 
     public void pushData() {
@@ -97,17 +103,23 @@ public class Fourbar extends Subsystem {
 //        _bottom.setPosition(new MechanismPosition("AdjControl", Constants.convertUpperToLower(getTopTargetPosition()+adjVal)));
     }
 
-    public void setMotionPosition(double position){
+    public void setMotionPosition(double position, double arbFF){
         //mid = 2725      -65.5 min to 68.5 max
-        double angle =
+
         position++;
         position /= 2;
         position *= 5100;
-        _top.getMotor().setMotionMagc(position);
+        targetPos = (int)position;
+       // _top.getMotor().setMotionMagcArbFF(position, arbFF);
     }
 
     public double armDeg() {
         return OscarMath.map(getTopCurrentPosition(), 0, 4900, -65.5, 61  );
+    }
+
+    public double armFF(){
+        final double gravFF = .09;
+        return gravFF * Math.cos(Math.toRadians(armDeg()));
     }
 
     @Override
@@ -138,6 +150,27 @@ public class Fourbar extends Subsystem {
 
     public boolean isMPFinished() {
         return _bottom.isMPFinished() && _top.isMPFinished();
+    }
+
+    public int getMinSafePos(){
+        double fourbarMinPos = (-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (22.5 * Robot.elevator.getTargetPosition()) - 5650;
+        if (fourbarMinPos > 2650) {
+            fourbarMinPos = 2650;
+        } else if (fourbarMinPos < 0) {
+            fourbarMinPos = 0;
+        }
+        return (int)fourbarMinPos;
+    }
+
+    public boolean isSafe(){
+        boolean isSafe = false;
+        int fourbarMinPos = getMinSafePos();
+        SmartDashboard.putNumber("Fourbar Safe Min: ", fourbarMinPos);
+
+        isSafe = !(targetPos < fourbarMinPos);
+        SmartDashboard.putBoolean("Is Safe: ", isSafe);
+
+        return isSafe;
     }
 
     public static class Constants {

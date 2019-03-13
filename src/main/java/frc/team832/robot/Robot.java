@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
 
     private Timer matchTimer = new Timer();
     private float rainbowNum = 0;
+    boolean lastToggle;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -83,6 +84,7 @@ public class Robot extends TimedRobot {
         System.out.println("OI INIT");
 
         Logger.configureLoggingAndConfig(this, false);
+        lastToggle = OI.mToggle.get();
     }
 
     private void update() {
@@ -134,12 +136,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+
         double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
         double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
 
         double rotation = OscarMath.signumPow(rightX, 2);
 
-        System.out.println("Operator Y: " + OI.operatorBox.getY());
 
 //        if (matchTimer.hasPeriodPassed(60)) {
 //            snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
@@ -153,28 +155,10 @@ public class Robot extends TimedRobot {
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.VELOCITY);
 
-
-//        snowBlower.teleopControl();
         jackStands.teleopControl();
 
-//        if(OI.op2.get()){
-//            fourbar.testAdjustment(150);
-//
-//        }
-//
-//        if(OI.operatorBox.getRawButtonReleased(5)){
-//            fourbar.testAdjustment(-150);
-//        }
-//
-//        if(OI.operatorBox.getRawButtonReleased(3)){
-//            elevator.testAdjustment(-25);
-//        }
-//
-//        if(OI.operatorBox.getRawButtonReleased(6)){
-//            elevator.testAdjustment(25);
-//        }
-
         Scheduler.getInstance().run();
+        lastToggle = OI.mToggle.get();
     }
 
     @Override

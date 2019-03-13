@@ -5,8 +5,8 @@ import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
 
 
-public class MoveElevator extends Command {
-	public MoveElevator () {
+public class ManualMoveElevator extends Command {
+	public ManualMoveElevator () {
 		requires(Robot.elevator);
 	}
 
