@@ -257,22 +257,22 @@ public class SnowBlower extends Subsystem {
 					_canifier.sendColor(_color);
 					break;
 				case RAINBOW:
-					rHue += 0.002f;
-					_canifier.sendHSB(rHue, 1.0f, 0.5f);
+					rainbow();
 					break;
 				case CUSTOM_FLASH:
 					_canifier.sendColor(flash(_color, 0.1));
 					break;
 				case CUSTOM_BREATHE:
-					_canifier.sendColor(breathe(_color, 0.05f));
+					breathe(_color);
 					break;
 				case BALL_INTAKE:
-					_canifier.sendColor(breathe(Color.ORANGE, 0.01f));
+					breathe(Color.ORANGE, 0.01f);
 					break;
 				case BALL_HOLD:
-					_canifier.sendColor(Color.ORANGE);
+					staticColor(Color.ORANGE);
 					break;
 				case BALL_OUTTAKE:
+				    staticColor(Color.RED);
 					break;
 				case HATCH_INTAKE:
 					break;
@@ -289,29 +289,32 @@ public class SnowBlower extends Subsystem {
 			}
 		}
 
+		private void staticColor(Color color) {
+		    _canifier.sendColor(color);
+        }
+
 		private float rHue = 0f;
-		private Color rainbow(float speed) {
+		private void rainbow(float speed) {
 			rHue += speed;
-			return new Color(Color.HSBtoRGB(rHue, 1.0f, 0.5f));
+			_canifier.sendHSB(rHue, 1.0f, 0.5f);
 		}
 
-		private Color rainbow() {
-			return rainbow(0.02f);
+		private void rainbow() {
+			rainbow(0.02f);
 		}
 
-		private float breatheFadeAmount = 0.0f;
-		private Color breathe(Color color, float fadeAmount) {
-			float[] hsb = getHSBFromColor(color);
-			hsb[2] = (float) ((Math.exp(Math.sin((Timer.getFPGATimestamp()*1000)/2000.0*Math.PI)) - 0.36787944)*108.0);
-			return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
-		}
+		private void breathe(Color color, float breatheFactor) {
+            float[] hsb = getHSBFromColor(color);
+            hsb[2] = (float) ((Math.exp(Math.sin((Timer.getFPGATimestamp()*1000)/2000.0*Math.PI)) - breatheFactor)*108.0);
+            _canifier.sendHSB(hsb[0], hsb[1], hsb[2]);
+        }
 
-		private Color breathe(Color color) {
-			return breathe(color, 0.01f);
-		}
+        private void breathe(Color color) {
+            breathe(color, 0.36787944f);
+        }
 
 		private Color flashTempColor = Color.BLACK;
-		private Color flash(Color color, double speed) {
+        private Color flash(Color color, double speed) {
 			if (timer.hasPeriodPassed(speed)) {
 				if (flashTempColor != color) flashTempColor = color;
 				else flashTempColor = Color.BLACK;
@@ -321,8 +324,19 @@ public class SnowBlower extends Subsystem {
 			return flashTempColor;
 		}
 
+		private Color hsbToColor(float[] hsbVals) {
+		    if (hsbVals.length != 3) return Color.BLACK;
+		    return hsbToColor(hsbVals[0], hsbVals[1], hsbVals[2]);
+        }
+
+		private Color hsbToColor(float hue, float sat, float bri) {
+		    return Color.getHSBColor(hue, sat, bri);
+        }
+
 		private float[] getHSBFromColor(Color color) {
-			return Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+		    float[] hsb = new float[3];
+			Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);
+			return hsb;
 		}
 
 		private Color colorBrightness(Color c, int brightness) {
@@ -332,7 +346,6 @@ public class SnowBlower extends Subsystem {
 			int b = Math.min(255, (int) (c.getBlue() * scale));
 			return new Color(r, g, b);
 		}
-
 	}
 
 
