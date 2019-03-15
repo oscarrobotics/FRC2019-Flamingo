@@ -1,14 +1,12 @@
 package frc.team832.robot.Commands.AutoJackStand;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.command.Command;
-import frc.team832.robot.OI;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.team832.robot.Robot;
 import frc.team832.robot.Subsystems.SnowBlower;
 
 import java.awt.*;
 
-public class MoveJackStands extends Command {
+public class MoveJackStands extends InstantCommand {
 
     private String _index;
 
@@ -19,12 +17,6 @@ public class MoveJackStands extends Command {
 
     public void initialize(){
         Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.RED);
-
         Robot.jackStands.setPosition(_index);
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
     }
 }

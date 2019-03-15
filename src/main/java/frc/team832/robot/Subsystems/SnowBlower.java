@@ -92,6 +92,10 @@ public class SnowBlower extends Subsystem {
 		_hatchHoldor.set(pow);
 	}
 
+	public void stopHatchHolder () {
+		_hatchHoldor.stop();
+	}
+
 	public enum CargoPosition {
 		UNKNOWN,
 		BELOW,

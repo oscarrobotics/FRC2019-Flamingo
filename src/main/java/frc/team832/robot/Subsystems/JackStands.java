@@ -80,11 +80,11 @@ public class JackStands extends Subsystem {
     }
 
     public void teleopControl(){
-        if(OI.driverPad.getPOV() == 180){
+        if (OI.driverPad.getPOV() == 180) {
             _drive.set(-.9);
-        }else if(OI.driverPad.getPOV() == 0){
+        } else if (OI.driverPad.getPOV() == 0) {
             _drive.set(.9);
-        }else{
+        } else {
             _drive.set(0.0);
         }
 

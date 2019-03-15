@@ -6,11 +6,16 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.*;
+import frc.team832.robot.Commands.AutoJackStand.*;
 import frc.team832.robot.Commands.Elevator.ManualMoveElevator;
 import frc.team832.robot.Commands.FourBar.ManualMoveFourbar;
 import frc.team832.robot.Commands.HatchFunctions.*;
 import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
+import frc.team832.robot.Subsystems.Elevator;
+import frc.team832.robot.Subsystems.Elevator.Constants.ElevatorPosition;
 import frc.team832.robot.Subsystems.Fourbar;
+import frc.team832.robot.Subsystems.Fourbar.Constants.FourbarPosition;
+import frc.team832.robot.Subsystems.JackStands;
 import frc.team832.robot.Subsystems.TheBigOne;
 
 /**
@@ -27,7 +32,7 @@ public class OI {
 
 	// Operator
 	public static Joystick operatorBox;
-	public static JoystickButton op1, op2, op3, op4, op5, op6, black1, black2, white1, white2;
+	public static JoystickButton op1, op2, op3, op4, op5, op6, black1, black2, white1, white2, threeSwitchUp, threeSwitchDown, singleSwitch;
 	public static JoystickButton incr, decr;
 	public static JoystickButton modeButton1, modeButton2, modeButton3, hatchGrab;
 
@@ -65,47 +70,54 @@ public class OI {
 		black1 = new JoystickButton(operatorBox, 12);
 		black2 = new JoystickButton(operatorBox, 13);
 		white1 = new JoystickButton(operatorBox, 14);
-		white2 = new JoystickButton(operatorBox, 15);
+		singleSwitch = new JoystickButton(operatorBox, 16);
+		threeSwitchUp = new JoystickButton(operatorBox, 18);
+		threeSwitchDown = new JoystickButton(operatorBox, 17);
 
 		System.out.println("Buttons initialized");
 	}
-
+	//Top Rocket elevator = 420 fourbar =
 	static void setupCommands() {
 		mToggle.whenActive(new ManualToggle(new ManualMoveFourbar(), new DoNothing()));
 		mToggle.whenActive(new ManualToggle(new ManualMoveElevator(), new DoNothing()));
 
-		black2.whenPressed(new AcquireHatch());
-		black2.whenReleased(new InterruptAcquire());
+//		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
+//		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
 
-		black1.whenPressed(new TeleopControlFourbar("Middle"));
+		black1.whenPressed(new MoveCargo(-.75));
+		black1.whenReleased(new MoveCargo(0.0));
 
-
-
-//			standDown.whenPressed(new MoveJackStands("Bottom"));
-//			backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
-//			frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
-//			standUp.whenPressed(new MoveJackStands("Top"));
-//			backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
-//			frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
+		white1.whenPressed(new MoveCargo(.75));
+		white1.whenReleased(new MoveCargo(0.0));
 //
-//			backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-//			frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
-//			backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-//			frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+//		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Middle.getIndex())));
+//		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Top.getIndex())));
+//		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex())));
+//		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex())));
+//		op5.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Bottom.getIndex())));
+//
+		modeButton1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())));
+		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())));
+		modeButton3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
+		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(ElevatorPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex())));
 
+		threeSwitchDown.whileHeld(new GrabHatch());
+		threeSwitchUp.whileHeld(new ReleaseHatch());
 
+		standDown.whenPressed(new MoveJackStands("Bottom"));
+		standUp.whenPressed(new MoveJackStands("Top"));
 
+		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
+		backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
 
+		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
+		frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
 
+		backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
+		backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
 
-//		op1.whenPressed(new MoveCargo(.6));
-//		op1.whenReleased(new MoveCargo(0.0));
-//		op4.whenPressed(new MoveCargo(-.75));
-//		op4.whenReleased(new MoveCargo(0.0));
-//		decr.whenPressed(new AutoHatchGrab());
-//		decr.whenReleased(new StopHatch());
-//		incr.whenPressed(new ReleaseHatch());
-//		incr.whenReleased(new StopHatch());
+		frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
+		frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
 	}
 
     public enum OperatorMode {

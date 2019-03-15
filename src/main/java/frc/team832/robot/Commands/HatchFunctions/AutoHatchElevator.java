@@ -25,7 +25,7 @@ public class AutoHatchElevator extends Command {
     @Override
     protected void initialize() {
         startTime = System.currentTimeMillis();
-        Robot.elevator.setPosition(_pos);
+        Robot.elevator.setMotionPosition(_pos);
         Robot.currentHatchState = Robot.AutoHatchState.MovingElevator;
     }
 

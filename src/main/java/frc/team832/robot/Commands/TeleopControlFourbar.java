@@ -2,6 +2,7 @@ package frc.team832.robot.Commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Robot;
+import frc.team832.robot.Subsystems.Fourbar;
 
 public class TeleopControlFourbar extends Command {
 
@@ -14,7 +15,7 @@ public class TeleopControlFourbar extends Command {
 
     @Override
     protected void initialize() {
-        Robot.fourbar.setPosition(_index);
+        Robot.fourbar.setMotionPosition(Fourbar.Constants.Positions.getByIndex(_index).getTarget(), Robot.fourbar.armFF());
     }
 
     @Override

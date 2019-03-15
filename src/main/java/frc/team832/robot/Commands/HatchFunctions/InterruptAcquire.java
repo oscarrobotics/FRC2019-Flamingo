@@ -16,4 +16,8 @@ public class InterruptAcquire extends InstantCommand {
         Robot.interruptedHatchState = Robot.currentHatchState;
         Robot.currentHatchState = Robot.AutoHatchState.None;
     }
+    @Override
+    protected boolean isFinished(){
+        return true;
+    }
 }

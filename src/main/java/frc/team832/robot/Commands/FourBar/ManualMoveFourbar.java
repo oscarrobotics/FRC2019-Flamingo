@@ -1,29 +1,26 @@
 package frc.team832.robot.Commands.FourBar;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.OI;
-import frc.team832.robot.Robot;
 import frc.team832.robot.Subsystems.Fourbar;
+
+import static frc.team832.robot.Robot.fourbar;
 
 public class ManualMoveFourbar extends Command {
 
-	boolean isSafe = false;
-	final double CONVERSION = 10;
+	private boolean isSafe = false;
+	private final double CONVERSION = 10;
 
 	public ManualMoveFourbar (){
-		requires(Robot.fourbar);
-	}
-
-	public void initialize(){
-
+		requires(fourbar);
 	}
 
 	public void execute(){
-
-
-			Robot.fourbar.setMotionPosition(OI.operatorBox.getX(), Robot.fourbar.armFF());
-
-
+		double input = OI.operatorBox.getX();
+		double realInput = OscarMath.clipMap(input,-1, 1, 0, 1);
+		double pos = OscarMath.map(realInput, 0, 1, Fourbar.Constants.TOP_MIN_VAL, Fourbar.Constants.TOP_MAX_VAL);
+		fourbar.setMotionPosition(pos, fourbar.armFF());
 	}
 
 	@Override

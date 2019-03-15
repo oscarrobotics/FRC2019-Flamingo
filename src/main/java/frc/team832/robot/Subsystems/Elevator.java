@@ -10,11 +10,8 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
-import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
 import frc.team832.robot.RobotMap;
-
-import static frc.team832.robot.RobotMap.isComp;
 
 public class Elevator extends Subsystem {
 
@@ -30,7 +27,9 @@ public class Elevator extends Subsystem {
         return _elevator.getTargetPosition();
     }
 
-    public double getCurrentPosition(){
+    public double
+
+    getCurrentPosition(){
         return _elevator.getCurrentPosition();
     }
 
@@ -55,6 +54,7 @@ public class Elevator extends Subsystem {
 
     public void pushData() {
         SmartDashboard.putNumber("Elevator Position", _elevator.getCurrentPosition());
+        SmartDashboard.putNumber("Elevator Target", _elevator.getTargetPosition());
         SmartDashboard.putNumber("Elevator Velocity", _elevator.getVelocity());
         SmartDashboard.putNumber("Elevator Inches", getCurrentInches());
     }
@@ -66,23 +66,12 @@ public class Elevator extends Subsystem {
     public void initDefaultCommand() { }
 
     public void teleopControl() {
-        if(OI.operatorBox.getRawButton(4)){
-            setPosition("Bottom");
-        }else if(OI.operatorBox.getRawButton(5)){
-            setPosition("Middle");
-        }else if(OI.operatorBox.getRawButton(6)) {
-            setPosition("Top");
-        }else{
 
-        }
     }
 
     public void setMotionPosition(double position){
-        position++;
-        position /= 2;
-        position *= Constants.POT_RANGE;
-        position += -680;
-        _elevator.getMotor().setMotionMagc(position);
+        double arbFF = .3;
+        _elevator.getMotor().setMotionMagcArbFF(position, arbFF);
     }
 
     public void bufferTrajectory(MechanismMotionProfile profile) {
@@ -112,30 +101,33 @@ public class Elevator extends Subsystem {
 
     public static class Constants {
 
-        public static final int COMP_POT_MIN_VAL = 5;
-        public static final int COMP_POT_MAX_VAL = 395;
+        public static final int COMP_POT_BOTTOM_VAL = 35;
+        public static final int COMP_POT_TOP_VAL = 425;
 
-        public static final int POT_MIN_VAL = -700;
-        public static final int POT_MAX_VAL = -360;
-        public static final int POT_RANGE = POT_MAX_VAL - POT_MIN_VAL;
+        public static final int POT_BOTTOM_VALUE = RobotMap.isComp ? 35 : -715;
+        public static final int POT_TOP_VALUE = RobotMap.isComp ? 425 : -375;
+
+        public static final int POT_BOTTOM_VAL = -715;
+        public static final int POT_TOP_VAL = -375;
+        public static final int POT_RANGE = (RobotMap.isComp ? COMP_POT_TOP_VAL : POT_TOP_VAL) - (RobotMap.isComp ? COMP_POT_BOTTOM_VAL : POT_BOTTOM_VAL);
         public static final double POT_TO_INCHES = 44.0 / (double)POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 
         public static double PotToInches(double value) {
-            return OscarMath.map(value, POT_MIN_VAL, POT_MAX_VAL, 0, 30);
+            return OscarMath.map(value, POT_BOTTOM_VAL, POT_TOP_VAL, 0, 30);
         }
-        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_MIN_VAL, POT_MAX_VAL);}
+        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_BOTTOM_VAL, POT_TOP_VAL);}
 
         private static final MechanismPosition[] _positions = new MechanismPosition[]{
                 new MechanismPosition("StartConfig", RobotMap.isComp? 0 : -380),
-                new MechanismPosition("TestMiddle", OscarMath.mid(POT_MAX_VAL, POT_MIN_VAL)),
-                new MechanismPosition("TestTop", POT_MAX_VAL + 50),
+                new MechanismPosition("TestMiddle", OscarMath.mid(POT_TOP_VAL, POT_BOTTOM_VAL)),
+                new MechanismPosition("TestTop", POT_TOP_VAL + 50),
 
-                new MechanismPosition("StorageConfig", RobotMap.isComp? 0 : -630),
+                new MechanismPosition("StorageConfig", RobotMap.isComp? 70 : -630),
 
-                new MechanismPosition("Bottom", RobotMap.isComp? -30: -700),
-                new MechanismPosition("Middle", RobotMap.isComp? -150 : -500),
-                new MechanismPosition("Top", RobotMap.isComp? -390 : -380),
+                new MechanismPosition("Bottom", RobotMap.isComp? 30: -700),
+                new MechanismPosition("Middle", RobotMap.isComp? 150 : -500),
+                new MechanismPosition("Top", RobotMap.isComp? 420 : -380),
 
                 new MechanismPosition("IntakeCargo_Floor", RobotMap.isComp? 0 : -630),
 
@@ -143,9 +135,9 @@ public class Elevator extends Subsystem {
                 new MechanismPosition("RocketHatch_Middle", RobotMap.isComp? 0 : -400),
                 new MechanismPosition("RocketHatch_High", RobotMap.isComp? 0 : -380),
 
-                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 0 : -690),
-                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 0 : -420),
-                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 0 : -400)
+                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 30 : -690),
+                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 295 : -420),
+                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 420 : -400)
         };
 
         public enum ElevatorPosition {

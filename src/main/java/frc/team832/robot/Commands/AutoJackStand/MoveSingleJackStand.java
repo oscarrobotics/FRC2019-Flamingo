@@ -1,8 +1,6 @@
 package frc.team832.robot.Commands.AutoJackStand;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
 import frc.team832.robot.Subsystems.JackStands;
 

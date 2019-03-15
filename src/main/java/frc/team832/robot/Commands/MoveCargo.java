@@ -1,9 +1,9 @@
 package frc.team832.robot.Commands;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.team832.robot.Robot;
 
-public class MoveCargo extends Command {
+public class MoveCargo extends InstantCommand {
 
     private double _pow;
 
@@ -15,10 +15,5 @@ public class MoveCargo extends Command {
     @Override
     protected void initialize(){
         Robot.snowBlower.intakeSet(_pow);
-    }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
     }
 }

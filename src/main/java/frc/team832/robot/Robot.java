@@ -115,6 +115,7 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
 //        jackStands.setPosition("Top");
+        fourbarTop.resetSensor();
         fourbar.setPosition(Fourbar.Constants.FourbarPosition.Bottom.getIndex());
         elevator.setPosition(Elevator.Constants.ElevatorPosition.Top.getIndex());
     }
@@ -127,9 +128,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit(){
         Scheduler.getInstance().enable();
-        //if(!DriverStation.getInstance().isFMSAttached()){
+        if(!DriverStation.getInstance().isFMSAttached()){
             autonomousInit();
-        //}
+        }
         currentHatchState = AutoHatchState.None;
         interruptedHatchState = AutoHatchState.None;
     }
@@ -139,8 +140,12 @@ public class Robot extends TimedRobot {
 
         double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
         double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
-
         double rotation = OscarMath.signumPow(rightX, 2);
+        drivetrain.teleopControl(
+                leftY,
+                rotation,
+                Drivetrain.DriveMode.CURVATURE,
+                SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
 
 //        if (matchTimer.hasPeriodPassed(60)) {
@@ -149,11 +154,6 @@ public class Robot extends TimedRobot {
 //            Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
 //            snowBlower.setLEDs(LEDMode.CUSTOM_BREATHE, allianceColor);
 //        }
-        drivetrain.teleopControl(
-                leftY,
-                rotation,
-                Drivetrain.DriveMode.CURVATURE,
-                SmartDifferentialDrive.LoopMode.VELOCITY);
 
         jackStands.teleopControl();
 

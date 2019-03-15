@@ -58,18 +58,18 @@ public class Fourbar extends Subsystem {
         _bottom.setPIDF(kP, kI, kD, kF);
     }
 
-    public void teleopControl(){
+    public void teleopControl() {
 
     }
 
     @Override
     public void periodic() {
+        System.out.println(getMinSafePos());
         if (!isSafe()) {
             _top.getMotor().setMotionMagcArbFF(getMinSafePos(), armFF());
         }else{
             _top.getMotor().setMotionMagcArbFF(targetPos, armFF());
         }
-        System.out.println("Target: " + targetPos);
     }
 
     public void pushData() {
@@ -105,10 +105,6 @@ public class Fourbar extends Subsystem {
 
     public void setMotionPosition(double position, double arbFF){
         //mid = 2725      -65.5 min to 68.5 max
-
-        position++;
-        position /= 2;
-        position *= 5100;
         targetPos = (int)position;
        // _top.getMotor().setMotionMagcArbFF(position, arbFF);
     }
@@ -117,7 +113,7 @@ public class Fourbar extends Subsystem {
         return OscarMath.map(getTopCurrentPosition(), 0, 4900, -65.5, 61  );
     }
 
-    public double armFF(){
+    public double armFF (){
         final double gravFF = .09;
         return gravFF * Math.cos(Math.toRadians(armDeg()));
     }
@@ -139,7 +135,7 @@ public class Fourbar extends Subsystem {
     }
 
     public void setMPControl(SetValueMotionProfile v) {
-        _top.setMotionProfile( v.value);
+        _top.setMotionProfile(v.value);
         _bottom.setMotionProfile(v.value);
     }
 
@@ -153,17 +149,13 @@ public class Fourbar extends Subsystem {
     }
 
     public int getMinSafePos(){
-        double fourbarMinPos = (-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (22.5 * Robot.elevator.getTargetPosition()) - 5650;
-        if (fourbarMinPos > 2650) {
-            fourbarMinPos = 2650;
-        } else if (fourbarMinPos < 0) {
-            fourbarMinPos = 0;
-        }
+        double fourbarMinPos = (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100;//5800 ish
+        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2650);
         return (int)fourbarMinPos;
     }
 
     public boolean isSafe(){
-        boolean isSafe = false;
+        boolean isSafe;
         int fourbarMinPos = getMinSafePos();
         SmartDashboard.putNumber("Fourbar Safe Min: ", fourbarMinPos);
 
@@ -174,11 +166,11 @@ public class Fourbar extends Subsystem {
     }
 
     public static class Constants {
-        public static final double COMP_TOP_MAX_VAL = 5030;
+        public static final double COMP_TOP_MAX_VAL = 5100;
         public static final double COMP_TOP_MIN_VAL = 0;
 
         public static final double TOP_MIN_VAL = 0;
-        public static final double TOP_MAX_VAL = 5000;
+        public static final double TOP_MAX_VAL = 5100;
         public static final double ARMLENGTH = 30.75;
         public static final double UPPERPOTTOANGLE = .262;
         public static final double UPPERPOTOFFSET = 112.66;
@@ -196,7 +188,7 @@ public class Fourbar extends Subsystem {
 
                 new MechanismPosition("Bottom", RobotMap.isComp? 300 : 300),
                 new MechanismPosition("Middle", RobotMap.isComp? 2455 : 2450),
-                new MechanismPosition("Top", RobotMap.isComp? 4950 : 4950),
+                new MechanismPosition("Top", RobotMap.isComp? 5300 : 4950),
 
                 new MechanismPosition("IntakeHatch_HP", RobotMap.isComp? 361 : 0),
                 new MechanismPosition("IntakeCargo_Floor", RobotMap.isComp? 361 : 420),
@@ -205,9 +197,9 @@ public class Fourbar extends Subsystem {
                 new MechanismPosition("RocketHatch_Middle", RobotMap.isComp? 361 : 460),
                 new MechanismPosition("RocketHatch_High", RobotMap.isComp? 361 : 640),
 
-                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 361 : 420),
-                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 361 : 460),
-                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 361 : 640),
+                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 2500 : 420),
+                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 2950 : 460),
+                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 4675 : 640),
         };
 
         public enum FourbarPosition {
