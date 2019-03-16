@@ -10,9 +10,9 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
-import frc.team832.robot.Robot;
 import frc.team832.robot.RobotMap;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Elevator extends Subsystem {
 
     private GeniusMechanism _elevator;
@@ -59,15 +59,7 @@ public class Elevator extends Subsystem {
         SmartDashboard.putNumber("Elevator Inches", getCurrentInches());
     }
 
-    public void stop(){
-        _elevator.stop();
-    }
-
     public void initDefaultCommand() { }
-
-    public void teleopControl() {
-
-    }
 
     public void setMotionPosition(double position){
         double arbFF = .3;
@@ -96,9 +88,9 @@ public class Elevator extends Subsystem {
 
     public void testAdjustment(int adjVal) {
         _elevator.setPosition(new MechanismPosition("AdjControl", getTargetPosition()+adjVal));
-
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static class Constants {
 
         public static final int COMP_POT_BOTTOM_VAL = 35;
@@ -109,8 +101,8 @@ public class Elevator extends Subsystem {
 
         public static final int POT_BOTTOM_VAL = -715;
         public static final int POT_TOP_VAL = -375;
-        public static final int POT_RANGE = (RobotMap.isComp ? COMP_POT_TOP_VAL : POT_TOP_VAL) - (RobotMap.isComp ? COMP_POT_BOTTOM_VAL : POT_BOTTOM_VAL);
-        public static final double POT_TO_INCHES = 44.0 / (double)POT_RANGE;
+        public static final double POT_RANGE = (RobotMap.isComp ? COMP_POT_TOP_VAL : POT_TOP_VAL) - (RobotMap.isComp ? COMP_POT_BOTTOM_VAL : POT_BOTTOM_VAL);
+        public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 
         public static double PotToInches(double value) {
@@ -136,10 +128,11 @@ public class Elevator extends Subsystem {
                 new MechanismPosition("RocketHatch_High", RobotMap.isComp? 0 : -380),
 
                 new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 30 : -690),
-                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 295 : -420),
+                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 235 : -420),
                 new MechanismPosition("RocketCargo_High", RobotMap.isComp? 420 : -400)
         };
 
+        @SuppressWarnings("unused")
         public enum ElevatorPosition {
             StartConfig("StartConfig"),
             StorageConfig("StorageConfig"),

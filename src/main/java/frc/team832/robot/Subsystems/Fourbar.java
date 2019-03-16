@@ -9,32 +9,23 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismMotionProfile;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Util.OscarMath;
-import frc.team832.robot.OI;
 import frc.team832.robot.Robot;
 import frc.team832.robot.RobotMap;
 
-import static frc.team832.robot.RobotMap.isComp;
-
-
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Fourbar extends Subsystem {
 
-    private GeniusMechanism _top, _bottom;
+    private GeniusMechanism _top;
     private MotionProfileStatus topStatus = new MotionProfileStatus();
-    private MotionProfileStatus botStatus = new MotionProfileStatus();
     private int targetPos = 0;
 
     public Fourbar(GeniusMechanism top){
-//        _bottom = bottom;
         _top = top;
     }
 
     public double getTopTargetPosition(){ return _top.getTargetPosition(); }
 
     public double getTopCurrentPosition(){ return _top.getCurrentPosition(); }
-
-    public double getBottomTargetPosition(){ return _bottom.getTargetPosition(); }
-
-//    public double getBottomCurrentPosition(){ return _bottom.getCurrentPosition(); }
 
     public boolean atTargetPosition() {
         return (Math.abs(getTopCurrentPosition() - getTopTargetPosition()) < 20);
@@ -45,21 +36,8 @@ public class Fourbar extends Subsystem {
         _top.setUpperLimit(upperLimit);
     }
 
-    public void setBottomLimits(int lowerLimit, int upperLimit) {
-        _bottom.setLowerLimit(lowerLimit);
-        _bottom.setUpperLimit(upperLimit);
-    }
-
     public void setTopPIDF(double kP, double kI, double kD, double kF) {
         _top.setPIDF(kP, kI, kD, kF);
-    }
-
-    public void setBottomPIDF(double kP, double kI, double kD, double kF) {
-        _bottom.setPIDF(kP, kI, kD, kF);
-    }
-
-    public void teleopControl() {
-
     }
 
     @Override
@@ -74,33 +52,27 @@ public class Fourbar extends Subsystem {
 
     public void pushData() {
         SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
-//        SmartDashboard.putNumber("Bottom Fourbar", getBottomCurrentPosition());
+        SmartDashboard.putNumber("Fourbar error: ", _top.getMotor().getClosedLoopError());
         SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
         SmartDashboard.putNumber("ArmDeg", armDeg());
     }
 
     public void stop(){
         _top.stop();
-//        _bottom.stop();
     }
 
     public void setPosition(String index) {
         MechanismPosition upperPos = Constants.Positions.getByIndex(index);
-//        MechanismPosition lowerPos = new MechanismPosition(index, Constants.convertUpperToLower(upperPos.getTarget()));
         _top.setPosition(upperPos);
-//        _bottom.setPosition(lowerPos);
     }
 
     public void setPosition(double pos){
         MechanismPosition upperPos = new MechanismPosition("ManualControl", pos);
-//        MechanismPosition lowerPos = new MechanismPosition("ManualControl", Constants.convertUpperToLower(upperPos.getTarget()));
         _top.setPosition(upperPos);
-//        _bottom.setPosition(lowerPos);
     }
 
     public void testAdjustment(double adjVal){
         _top.setPosition(new MechanismPosition("AdjControl", getTopTargetPosition()+adjVal));
-//        _bottom.setPosition(new MechanismPosition("AdjControl", Constants.convertUpperToLower(getTopTargetPosition()+adjVal)));
     }
 
     public void setMotionPosition(double position, double arbFF){
@@ -123,11 +95,6 @@ public class Fourbar extends Subsystem {
 
     public void bufferTrajectories(MechanismMotionProfile topTraj, MechanismMotionProfile botTraj){
         _top.bufferTrajectory(topTraj);
-        _bottom.bufferTrajectory(botTraj);
-    }
-
-    public MotionProfileStatus getBotMpStatus() {
-        return botStatus;
     }
 
     public MotionProfileStatus getTopMpStatus() {
@@ -136,16 +103,14 @@ public class Fourbar extends Subsystem {
 
     public void setMPControl(SetValueMotionProfile v) {
         _top.setMotionProfile(v.value);
-        _bottom.setMotionProfile(v.value);
     }
 
     public void bufferAndSendMP() {
-        _bottom.bufferAndSendMP();
         _top.bufferAndSendMP();
     }
 
     public boolean isMPFinished() {
-        return _bottom.isMPFinished() && _top.isMPFinished();
+        return _top.isMPFinished();
     }
 
     public int getMinSafePos(){
@@ -165,6 +130,7 @@ public class Fourbar extends Subsystem {
         return isSafe;
     }
 
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public static class Constants {
         public static final double COMP_TOP_MAX_VAL = 5100;
         public static final double COMP_TOP_MIN_VAL = 0;
@@ -198,10 +164,11 @@ public class Fourbar extends Subsystem {
                 new MechanismPosition("RocketHatch_High", RobotMap.isComp? 361 : 640),
 
                 new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 2500 : 420),
-                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 2950 : 460),
+                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 2350 : 460),
                 new MechanismPosition("RocketCargo_High", RobotMap.isComp? 4675 : 640),
         };
 
+        @SuppressWarnings("unused")
         public enum FourbarPosition {
             StartConfig("StartConfig"),
             StorageConfig("StorageConfig"),

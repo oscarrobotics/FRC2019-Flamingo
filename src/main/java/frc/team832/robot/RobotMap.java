@@ -28,274 +28,268 @@ import static com.ctre.phoenix.CANifier.LEDChannel.*;
  */
 public class RobotMap {
 
-    static class IDs {
-        static class CAN {
-            public static final int pdp = 0;
-            public static final int pcm = 1;
-            public static final int leftMaster = 22;
-            public static final int leftSlave = 23;
-            public static final int rightMaster = 24;
-            public static final int rightSlave = 25;
-            public static final int elevator = 6;
-            public static final int fourbarTop = 7;
-            public static final int fourbarBottom = 8;
-            public static final int frontJackStand = 9;
-            public static final int backJackStand = 10;
-            public static final int jackStandDrive = 11;
-            public static final int cargoIntake = 12;
-            public static final int hatchHolder = 13;
-            public static final int hatchGrabbor = 14;
-            public static final int canifier = 0;
-        }
-        static class PCM {
-            public static final int lightPort = 0;
-        }
-    }
+	static class IDs {
+		@SuppressWarnings("WeakerAccess")
+		static class CAN {
+			public static final int pdp = 0;
+			public static final int pcm = 1;
+			public static final int leftMaster = 22;
+			public static final int leftSlave = 23;
+			public static final int rightMaster = 24;
+			public static final int rightSlave = 25;
+			public static final int elevator = 6;
+			public static final int fourbarTop = 7;
+			public static final int fourbarBottom = 8;
+			public static final int frontJackStand = 9;
+			public static final int backJackStand = 10;
+			public static final int jackStandDrive = 11;
+			public static final int cargoIntake = 12;
+			public static final int hatchHolder = 13;
+			public static final int hatchGrabbor = 14;
+			public static final int canifier = 0;
+		}
 
-    // Keep organized by subsystem
+		static class PCM {
+			public static final int lightPort = 0;
+		}
+	}
 
-    static PDP pdp;
-    static PCM pcm;
+	// Keep organized by subsystem
 
-    /** Drivetrain **/
-    public static CANSparkMax leftMaster;
-    public static CANSparkMax leftSlave;
-    public static CANSparkMax rightMaster;
-    public static CANSparkMax rightSlave;
+	public static PDP pdp;
+	public static PCM pcm;
 
-    static CANSmartMotorGroup leftDrive;
-    static CANSmartMotorGroup rightDrive;
+	/** Drivetrain **/
+	public static CANSparkMax leftMaster;
+	public static CANSparkMax leftSlave;
+	public static CANSparkMax rightMaster;
+	public static CANSparkMax rightSlave;
 
-    static SmartDifferentialDrive diffDrive;
+	public static CANSmartMotorGroup leftDrive;
+	public static CANSmartMotorGroup rightDrive;
 
-    /** Jackstands **/
-    static CANTalon frontJackStandMotor;
-    static CANTalon backJackStandMotor;
-    static LinearMechanism frontJackStand;
-    static LinearMechanism backJackStand;
+	public static SmartDifferentialDrive diffDrive;
 
-    static CANVictor jackStandDriveMotor;
-    static SimpleMechanism jackStandDrive;
+	/** Jackstands **/
+	public static CANTalon frontJackStandMotor;
+	public static CANTalon backJackStandMotor;
+	public static LinearMechanism frontJackStand;
+	public static LinearMechanism backJackStand;
 
-    /** Elevator **/
-    static CANTalon elevatorMotor;
-    static GeniusMechanism elevatorMech;
+	public static CANVictor jackStandDriveMotor;
+	public static SimpleMechanism jackStandDrive;
 
-    /** Fourbars **/
-    static CANTalon fourbarTop;
-    static CANTalon fourbarBottom;
-    // TODO: make combo mech!!!
-    static GeniusMechanism fourbarTopMech;
-    static GeniusMechanism fourbarBottomMech;
+	/** Elevator **/
+	public static CANTalon elevatorMotor;
+	public static GeniusMechanism elevatorMech;
 
-    /** ComplexLift **/
-    static GeniusComplexMechanism complexLiftMech;
+	/** Fourbars **/
+	public static CANTalon fourbarTop;
+	public static CANTalon fourbarBottom;
+	public static GeniusMechanism fourbarTopMech;
 
-    /** Snowblower **/
-    public static CANVictor cargoIntakeMotor;
-    static SimpleMechanism cargoIntake;
+	/** ComplexLift **/
+	static GeniusComplexMechanism complexLiftMech;
 
-    static CANVictor hatchHolderMotor;
-    static SimpleMechanism hatchHolder;
-    static MiniPID hatchHolderPID;
+	/** Snowblower **/
+	public static CANVictor cargoIntakeMotor;
+	static SimpleMechanism cargoIntake;
 
-    static CANTalon hatchGrabborMotor;
-    static SimplySmartMotor hatchHolderSmartMotor;
-    static RotaryMechanism hatchGrabbor;
+	static CANVictor hatchHolderMotor;
+	static SimpleMechanism hatchHolder;
+	static MiniPID hatchHolderPID;
 
-    static CANifier canifier;
+	static CANTalon hatchGrabborMotor;
+	static SimplySmartMotor hatchHolderSmartMotor;
+	static RotaryMechanism hatchGrabbor;
 
-    static NavXMicro navX;
+	static CANifier canifier;
 
-    static Solenoid visionLight;
+	static NavXMicro navX;
 
-    public static boolean isComp;
-    /**
-     * Initializes robot hardware
-     */
-    static boolean init() {
-        // check which robot we're on...
-        String path = String.format("%s/practice", Filesystem.getOperatingDirectory());
-        try {
-            isComp = !(new File(path).exists());
-        } catch (Exception e) {
-            isComp = true;
-        }
+	static Solenoid visionLight;
 
-        CameraServer.getInstance().startAutomaticCapture(0);
+	public static boolean isComp;
 
-        /**
-         * EXTREMELY IMPORTANT!!!!!!
-         * INITIALIZE ALL CAN DEVICES BEFORE ACCESSING THEM
-         * This way we can check for missing devices without WPILib having a fit.
-         * Don't worry, we'll have our own fit...
-         */
+	/**
+	 * Initializes robot hardware
+	 */
+	static boolean init () {
+		// check which robot we're on...
+		String path = String.format("%s/practice", Filesystem.getOperatingDirectory());
+		try {
+			isComp = !(new File(path).exists());
+		} catch (Exception e) {
+			isComp = true;
+		}
 
+		CameraServer.getInstance().startAutomaticCapture(0);
 
-        // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pdp = new PDP(IDs.CAN.pdp);
-        // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        pcm = new PCM(IDs.CAN.pcm);
-        // SHOULD be CAN-safe (shouldn't suicide if not connected)
-        canifier = new CANifier(0);
+		/**
+		 * EXTREMELY IMPORTANT!!!!!!
+		 * INITIALIZE ALL CAN DEVICES BEFORE ACCESSING THEM
+		 * This way we can check for missing devices without WPILib having a fit.
+		 * Don't worry, we'll have our own fit...
+		 */
 
-        canifier.setLedChannels(LEDChannelB, LEDChannelA, LEDChannelC);
-        canifier.setLedMaxOutput(0.3);
+		// SHOULD be CAN-safe (shouldn't suicide if not connected)
+		pdp = new PDP(IDs.CAN.pdp);
+		// SHOULD be CAN-safe (shouldn't suicide if not connected) lol you wish
+//		pcm = new PCM(IDs.CAN.pcm);
+		// SHOULD be CAN-safe (shouldn't suicide if not connected)
+		canifier = new CANifier(0);
 
-        visionLight = new Solenoid(pcm, IDs.PCM.lightPort);
+		canifier.setLedChannels(LEDChannelC, LEDChannelB, LEDChannelA);
+		canifier.setLedMaxOutput(0.3);
 
-        CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
-        leftMaster = new CANSparkMax(IDs.CAN.leftMaster, driveMotorType);
-        leftSlave = new CANSparkMax(IDs.CAN.leftSlave, driveMotorType);
-        rightMaster = new CANSparkMax(IDs.CAN.rightMaster, driveMotorType);
-        rightSlave = new CANSparkMax(IDs.CAN.rightSlave, driveMotorType);
+		// NO PCM
+//		visionLight = new Solenoid(pcm, IDs.PCM.lightPort);
 
-        elevatorMotor = new CANTalon(IDs.CAN.elevator);
-        fourbarTop = new CANTalon(IDs.CAN.fourbarTop);
-        fourbarBottom = new CANTalon(IDs.CAN.fourbarBottom);
+		CANSparkMaxLowLevel.MotorType driveMotorType = CANSparkMaxLowLevel.MotorType.kBrushless;
+		leftMaster = new CANSparkMax(IDs.CAN.leftMaster, driveMotorType);
+		leftSlave = new CANSparkMax(IDs.CAN.leftSlave, driveMotorType);
+		rightMaster = new CANSparkMax(IDs.CAN.rightMaster, driveMotorType);
+		rightSlave = new CANSparkMax(IDs.CAN.rightSlave, driveMotorType);
 
-        frontJackStandMotor = new CANTalon(IDs.CAN.frontJackStand);
-        backJackStandMotor = new CANTalon(IDs.CAN.backJackStand);
-        jackStandDriveMotor = new CANVictor(IDs.CAN.jackStandDrive);
-        jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
+		elevatorMotor = new CANTalon(IDs.CAN.elevator);
+		fourbarTop = new CANTalon(IDs.CAN.fourbarTop);
+		fourbarBottom = new CANTalon(IDs.CAN.fourbarBottom);
 
-        cargoIntakeMotor = new CANVictor(IDs.CAN.cargoIntake);
-        hatchHolderMotor = new CANVictor(IDs.CAN.hatchHolder);
-        // not yet added, and not CAN-safe
-        // hatchGrabborMotor = new OscarCANTalon(IDs.CAN.hatchGrabbor);
+		frontJackStandMotor = new CANTalon(IDs.CAN.frontJackStand);
+		backJackStandMotor = new CANTalon(IDs.CAN.backJackStand);
+		jackStandDriveMotor = new CANVictor(IDs.CAN.jackStandDrive);
+		jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
 
-        hatchHolderPID = new MiniPID(1,0,0);
-        hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
+		cargoIntakeMotor = new CANVictor(IDs.CAN.cargoIntake);
+		hatchHolderMotor = new CANVictor(IDs.CAN.hatchHolder);
+		// not yet added, and not CAN-safe
+		// hatchGrabborMotor = new OscarCANTalon(IDs.CAN.hatchGrabbor);
 
-
-        fourbarTop.resetConfig();
-        fourbarBottom.resetConfig();
-        // print out all CAN devices
-        if (!printCANDeviceStatus()) {
-            System.out.println("Missing CAN Device(s)!");
-        }
-        /** Configuration and Mechanism Creation **/
-
-        leftSlave.setFollowType(com.revrobotics.CANSparkMax.ExternalFollower.kFollowerSparkMax);
-        rightSlave.setFollowType(com.revrobotics.CANSparkMax.ExternalFollower.kFollowerSparkMax);
-        leftSlave.getInstance().follow(leftMaster.getInstance());
-        rightSlave.getInstance().follow(rightMaster.getInstance());
-
-        leftMaster.setOutputRange(-1.0, 1.0);
-        leftSlave.setOutputRange(-1.0, 1.0);
-        rightMaster.setOutputRange(-1.0, 1.0);
-        rightSlave.setOutputRange(-1.0, 1.0);
+		hatchHolderPID = new MiniPID(1, 0, 0);
+		hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
 
-//        leftMaster.setkP(.007);
-//        rightMaster.setkP(.007);
+		fourbarTop.resetConfig();
+		fourbarBottom.resetConfig();
+		// print out all CAN devices
+		if (!printCANDeviceStatus()) {
+			System.out.println("Missing CAN Device(s)!");
+		}
+		/** Configuration and Mechanism Creation **/
 
-        leftDrive = new CANSmartMotorGroup(leftMaster, leftSlave);
-        rightDrive = new CANSmartMotorGroup(rightMaster, rightSlave);
-        diffDrive = new SmartDifferentialDrive(leftDrive, rightDrive, 5500);
+		leftSlave.setFollowType(com.revrobotics.CANSparkMax.ExternalFollower.kFollowerSparkMax);
+		rightSlave.setFollowType(com.revrobotics.CANSparkMax.ExternalFollower.kFollowerSparkMax);
+		leftSlave.getInstance().follow(leftMaster.getInstance());
+		rightSlave.getInstance().follow(rightMaster.getInstance());
 
-//        leftDrive.setClosedLoopRamp(0.0);
-//        rightDrive.setClosedLoopRamp(0.0);
+		leftMaster.setOutputRange(-1.0, 1.0);
+		leftSlave.setOutputRange(-1.0, 1.0);
+		rightMaster.setOutputRange(-1.0, 1.0);
+		rightSlave.setOutputRange(-1.0, 1.0);
 
-        leftDrive.setNeutralMode(NeutralMode.Brake);
-        rightDrive.setNeutralMode(NeutralMode.Brake);
+		leftMaster.setkP(.00025);
+		rightMaster.setkP(.00025);
 
-        hatchHolder = new SimpleMechanism(hatchHolderMotor);
+		leftDrive = new CANSmartMotorGroup(leftMaster, leftSlave);
+		rightDrive = new CANSmartMotorGroup(rightMaster, rightSlave);
 
-        fourbarBottom.follow(fourbarTop);
+		leftDrive.setNeutralMode(NeutralMode.Brake);
+		rightDrive.setNeutralMode(NeutralMode.Brake);
 
-        fourbarTop.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
-        fourbarTop.setNeutralMode(NeutralMode.Brake);
-        fourbarTop.configureContinuousCurrent(40);
-        fourbarBottom.configureContinuousCurrent(40);
-        fourbarBottom.setNeutralMode(NeutralMode.Brake);
-        fourbarTop.setInverted(false);
-        fourbarTop.setSensorPhase(isComp? true : true);
-        fourbarBottom.setInverted(true);
-        fourbarBottom.setSensorPhase(false);
-        fourbarTop.setClosedLoopRamp(.3);
-        fourbarTop.configMotionMagic(1000, 3500);
-        fourbarTop.setForwardSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MAX_VAL: (int)Fourbar.Constants.TOP_MAX_VAL);
-        fourbarTop.setReverseSoftLimit(isComp? (int)Fourbar.Constants.COMP_TOP_MIN_VAL: (int)Fourbar.Constants.TOP_MIN_VAL);
+		diffDrive = new SmartDifferentialDrive(leftDrive, rightDrive, 5500);
 
-        frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
-        backJackStandMotor.setNeutralMode(NeutralMode.Brake);
-        jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
-        frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
-        backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+		hatchHolder = new SimpleMechanism(hatchHolderMotor);
 
-        frontJackStandMotor.setInverted(false);
-        backJackStandMotor.setInverted(true);
-        backJackStandMotor.setPeakOutputForward(1);
-        backJackStandMotor.setPeakOutputReverse(-1);
-        frontJackStandMotor.setPeakOutputForward(1);
-        frontJackStandMotor.setPeakOutputReverse(-1);
+		fourbarBottom.follow(fourbarTop);
 
-        frontJackStandMotor.setForwardSoftLimit(0);
-        backJackStandMotor.setForwardSoftLimit(0);
-        frontJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -82000);
-        backJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -78000);
+		fourbarTop.setInverted(false);
+		fourbarBottom.setInverted(true);
 
-        elevatorMotor.setSensorType(FeedbackDevice.Analog);
-        elevatorMotor.setNeutralMode(NeutralMode.Brake);
-        elevatorMotor.setInverted(isComp? false : true);
-        elevatorMotor.setSensorPhase(isComp ? false : false);
-        elevatorMotor.configMotionMagic(500, 1500);
+		fourbarTop.setSensorPhase(isComp ? true : true);
+		fourbarBottom.setSensorPhase(false);
 
-        fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
-        fourbarBottomMech = new GeniusMechanism(fourbarBottom, Fourbar.Constants.Positions);
+		fourbarTop.configureContinuousCurrent(40);
+		fourbarBottom.configureContinuousCurrent(40);
 
+		fourbarTop.setNeutralMode(NeutralMode.Brake);
+		fourbarBottom.setNeutralMode(NeutralMode.Brake);
 
-//        fourbarBottom.setForwardSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MIN_VAL));
-//        fourbarBottom.setReverseSoftLimit((int)Fourbar.Constants.convertUpperToLower(Fourbar.Constants.TOP_MAX_VAL));
+		fourbarTop.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+		fourbarTop.setClosedLoopRamp(.3);
+		fourbarTop.configMotionMagic(1000, 3500);
+		fourbarTop.setForwardSoftLimit(isComp ? (int) Fourbar.Constants.COMP_TOP_MAX_VAL : (int) Fourbar.Constants.TOP_MAX_VAL);
+		fourbarTop.setReverseSoftLimit(isComp ? (int) Fourbar.Constants.COMP_TOP_MIN_VAL : (int) Fourbar.Constants.TOP_MIN_VAL);
 
-        fourbarTopMech.setPIDF(.5,0.0,0.0, .02);
-        //fourbarTopMech.setIZone(500);
-//        fourbarBottomMech.setPIDF(8, 0.0, 0.05,0);
+		frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
+		backJackStandMotor.setNeutralMode(NeutralMode.Brake);
+		jackStandDriveMotor.setNeutralMode(NeutralMode.Coast);
 
-//        fourbarBottomMech.setIZone(50);
+		frontJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+		backJackStandMotor.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-        elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
-        elevatorMech.setPIDF(8, 0, 0, 0);//was 16
+		frontJackStandMotor.setInverted(false);
+		backJackStandMotor.setInverted(true);
 
-        elevatorMotor.setForwardSoftLimit(isComp? 430 : -365);
-        elevatorMotor.setReverseSoftLimit(isComp? 30 : -720);
+		frontJackStandMotor.setPeakOutputForward(1);
+		backJackStandMotor.setPeakOutputForward(1);
 
-        cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
+		frontJackStandMotor.setPeakOutputReverse(-1);
+		backJackStandMotor.setPeakOutputReverse(-1);
 
-        cargoIntake = new SimpleMechanism(cargoIntakeMotor);
+		frontJackStandMotor.setForwardSoftLimit(0);
+		backJackStandMotor.setForwardSoftLimit(0);
 
-        complexLiftMech = new GeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
-        frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
-        backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
-        jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
-        frontJackStand.setPIDF(.11, 0,0, 0);
-        backJackStand.setPIDF(.1, 0,0, 0);
+		frontJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -82000);
+		backJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -78000);
 
-        frontJackStandMotor.setSensorPhase(true);
-        backJackStandMotor.setSensorPhase(true);
-        frontJackStandMotor.configMotionMagic(8000, 3500);
-        backJackStandMotor.configMotionMagic(8000, 3500);
+		frontJackStandMotor.setSensorPhase(true);
+		backJackStandMotor.setSensorPhase(true);
+		frontJackStandMotor.configMotionMagic(8000, 3500);
+		backJackStandMotor.configMotionMagic(8000, 3500);
 
+		elevatorMotor.setSensorType(FeedbackDevice.Analog);
+		elevatorMotor.setNeutralMode(NeutralMode.Brake);
+		elevatorMotor.setInverted(isComp ? false : true);
+		elevatorMotor.setSensorPhase(isComp ? false : false);
+		elevatorMotor.configMotionMagic(500, 1500);
 
-        leftMaster.setkP(.0005);
-        rightMaster.setkP(.0005);
+		fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
+		fourbarTopMech.setPIDF(.5, 0.0, 0.0, .02);
 
-        navX = new NavXMicro(NavXMicro.NavXPort.I2C_onboard);
-        navX.init();
+		elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
+		elevatorMech.setPIDF(8, 0, 0, 0);//was 16
+		// TODO: Actually tune this heckin thing!!
 
-        System.out.println("Finish INIT");
-        // If we got this far, we're doing pretty good
-        return true;
-    }
+		elevatorMotor.setForwardSoftLimit(isComp ? 430 : -365);
+		elevatorMotor.setReverseSoftLimit(isComp ? 30 : -720);
 
-    private static boolean printCANDeviceStatus() {
-        StringBuilder deviceList = new StringBuilder("CAN Device Statuses:\n");
-        for (CANDevice canDevice : CANDevice.getDevices()) {
-            String str = "\t" + canDevice.toString() + "\n";
-            deviceList.append(str);
-        }
-        System.out.println(deviceList.toString());
-        return CANDevice.hasMissingDevices();
-    }
+		cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
+
+		cargoIntake = new SimpleMechanism(cargoIntakeMotor);
+
+		complexLiftMech = new GeniusComplexMechanism(elevatorMech, fourbarTopMech, ComplexLift.Constants.Positions);
+		frontJackStand = new LinearMechanism(frontJackStandMotor, JackStands.Constants.Positions);
+		backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
+		jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
+
+		frontJackStand.setPIDF(.11, 0, 0, 0);
+		backJackStand.setPIDF(.1, 0, 0, 0);
+
+		navX = new NavXMicro(NavXMicro.NavXPort.I2C_onboard);
+		navX.init();
+
+		System.out.println("Finish INIT");
+		// If we got this far, we're doing pretty good
+		return true;
+	}
+
+	private static boolean printCANDeviceStatus () {
+		StringBuilder deviceList = new StringBuilder("CAN Device Statuses:\n");
+		for (CANDevice canDevice : CANDevice.getDevices()) {
+			String str = "\t" + canDevice.toString() + "\n";
+			deviceList.append(str);
+		}
+		System.out.println(deviceList.toString());
+		return CANDevice.hasMissingDevices();
+	}
 }

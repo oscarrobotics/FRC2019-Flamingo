@@ -22,11 +22,11 @@ public class ReleaseHatch extends Command {
 
     @Override
     protected boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override
     protected void end(){
-
+        Robot.snowBlower.stopHatchHolder();
     }
 }

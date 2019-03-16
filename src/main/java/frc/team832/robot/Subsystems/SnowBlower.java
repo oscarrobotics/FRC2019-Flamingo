@@ -213,7 +213,7 @@ public class SnowBlower extends Subsystem {
 		HATCH_HOLD,
 		HATCH_RELEASE,
 		ALTERNATE_ALLIANCE_GREEN,
-		OFF;
+		OFF
 	}
 	public class SBLeds extends CANifier.LEDRunner {
 		private LEDMode _ledMode = LEDMode.STATIC;
@@ -250,7 +250,7 @@ public class SnowBlower extends Subsystem {
 					rainbow();
 					break;
 				case CUSTOM_FLASH:
-					_canifier.sendColor(flash(_color, 0.1));
+					flash(_color, 0.1);
 					break;
 				case CUSTOM_BREATHE:
 					breathe(_color);
@@ -269,7 +269,7 @@ public class SnowBlower extends Subsystem {
 				case HATCH_HOLD:
 					break;
 				case HATCH_RELEASE:
-					_canifier.sendColor(flash(Color.YELLOW, 0.05));
+					flash(Color.YELLOW, 0.05);
 					break;
 				case ALTERNATE_ALLIANCE_GREEN:
 					break;
@@ -290,28 +290,30 @@ public class SnowBlower extends Subsystem {
 		}
 
 		private void rainbow() {
-			rainbow(0.02f);
+			rainbow(0.005f);
 		}
 
+		private float breatheBrightness = 0f;
 		private void breathe(Color color, float breatheFactor) {
-            float[] hsb = getHSBFromColor(color);
-            hsb[2] = (float) ((Math.exp(Math.sin((Timer.getFPGATimestamp()*1000)/2000.0*Math.PI)) - breatheFactor)*108.0);
-            _canifier.sendHSB(hsb[0], hsb[1], hsb[2]);
-        }
+			boolean changeDir = breatheBrightness >= 1.0f || breatheBrightness <= 0.0f;
+			float[] hsb = getHSBFromColor(color);
+			breatheBrightness *= changeDir ? -1 : 1;
+			hsb[2] = breatheBrightness;
+			_canifier.sendHSB(hsb);
+		}
 
         private void breathe(Color color) {
-            breathe(color, 0.36787944f);
+            breathe(color, 0.02f);
         }
 
 		private Color flashTempColor = Color.BLACK;
-        private Color flash(Color color, double speed) {
-			if (timer.hasPeriodPassed(speed)) {
-				if (flashTempColor != color) flashTempColor = color;
-				else flashTempColor = Color.BLACK;
-				timer.reset();
-				timer.start();
-			}
-			return flashTempColor;
+		private long lastMillis;
+        private void flash(Color color, double speed) {
+        	double millis = Timer.getFPGATimestamp() / 1000;
+        	boolean goBlack = (millis - lastMillis) >= speed;
+			float[] hsb = getHSBFromColor(color);
+			hsb[2] = goBlack ? 0 : hsb[2];
+			_canifier.sendHSB(hsb);
 		}
 
 		private Color hsbToColor(float[] hsbVals) {

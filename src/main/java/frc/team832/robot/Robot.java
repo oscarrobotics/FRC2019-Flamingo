@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,8 +38,6 @@ public class Robot extends TimedRobot {
     public static AutoHatchState interruptedHatchState = AutoHatchState.None;
 
     private Timer matchTimer = new Timer();
-    private float rainbowNum = 0;
-    boolean lastToggle;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -72,10 +63,12 @@ public class Robot extends TimedRobot {
         System.out.println("S, C, T INIT");
 
         jackStands.resetEncoders();
+        fourbarTop.resetSensor();
 
-        if(isComp||!isComp){
-            fourbarTop.resetSensor();
-            navX.init();
+        if (isComp) {
+            if (!navX.init()) {
+                System.out.println("NavX Failed to Init!!!");
+            }
         }
 
         OI.init();
@@ -84,7 +77,6 @@ public class Robot extends TimedRobot {
         System.out.println("OI INIT");
 
         Logger.configureLoggingAndConfig(this, false);
-        lastToggle = OI.mToggle.get();
     }
 
     private void update() {
@@ -92,15 +84,14 @@ public class Robot extends TimedRobot {
     }
 
     private void pushData() {
-        SmartDashboard.putData(pdp.getInstance());
-        SmartDashboard.putNumber("JoystickForward", OI.driverPad.getY(GenericHID.Hand.kLeft));
-        SmartDashboard.putNumber("Fourbar error: ", fourbarTop.getClosedLoopError());
+        if (pdp.isOnBus()) {
+            SmartDashboard.putData(pdp.getInstance());
+        }
         drivetrain.pushData();
         elevator.pushData();
         fourbar.pushData();
         jackStands.pushData();
         snowBlower.pushData();
-        SmartDashboard.putNumber("NavX Yaw", navX.getYaw());
     }
 
     @Override
@@ -114,7 +105,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         Scheduler.getInstance().enable();
         jackStands.resetEncoders();
-//        jackStands.setPosition("Top");
         fourbarTop.resetSensor();
         fourbar.setPosition(Fourbar.Constants.FourbarPosition.Bottom.getIndex());
         elevator.setPosition(Elevator.Constants.ElevatorPosition.Top.getIndex());
@@ -137,28 +127,39 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-
         double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
         double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
         double rotation = OscarMath.signumPow(rightX, 2);
-        drivetrain.teleopControl(
-                leftY,
-                rotation,
-                Drivetrain.DriveMode.CURVATURE,
-                SmartDifferentialDrive.LoopMode.PERCENTAGE);
 
+        if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
+            drivetrain.teleopControl(
+                    leftY,
+                    rotation,
+                    Drivetrain.DriveMode.CURVATURE,
+                    SmartDifferentialDrive.LoopMode.VELOCITY);
+        } else {
+            drivetrain.teleopControl(
+                    leftY,
+                    rotation,
+                    Drivetrain.DriveMode.CURVATURE,
+                    SmartDifferentialDrive.LoopMode.PERCENTAGE);
+        }
 
-//        if (matchTimer.hasPeriodPassed(60)) {
-//            snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
-//        } else {
-//            Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
-//            snowBlower.setLEDs(LEDMode.CUSTOM_BREATHE, allianceColor);
-//        }
+        Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
+
+        if (DriverStation.getInstance().isOperatorControl()) {
+            if (matchTimer.hasPeriodPassed(60)) {
+                snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
+            } else {
+                snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
+            }
+        } else {
+            snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
+        }
 
         jackStands.teleopControl();
 
         Scheduler.getInstance().run();
-        lastToggle = OI.mToggle.get();
     }
 
     @Override
@@ -170,7 +171,8 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
         jackStands.resetEncoders();
-        snowBlower.setLEDs(LEDMode.CUSTOM_FLASH, Color.GREEN);
+        Color forestGreen = new Color(24, 200, 0);
+        snowBlower.setLEDs(LEDMode.STATIC, forestGreen);
     }
 
     public enum AutoHatchState{
