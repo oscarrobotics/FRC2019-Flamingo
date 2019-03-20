@@ -156,7 +156,7 @@ public class JackStands extends Subsystem {
                 new MechanismPosition("BottomBack", RobotMap.isComp ? -75000 : -78000),
                 new MechanismPosition("BottomFront", RobotMap.isComp ? -75000 : -82000),
                 new MechanismPosition("TopBack", -300),
-                new MechanismPosition("TopFront", -300)
+                new MechanismPosition("TopFront", 0)
         };
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);

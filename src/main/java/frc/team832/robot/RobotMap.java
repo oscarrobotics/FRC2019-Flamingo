@@ -57,6 +57,32 @@ public class RobotMap {
 	// Keep organized by subsystem
 
 	public static PDP pdp;
+	/*
+	SLOT ASSIGNMENTS
+
+		COMP
+							0        15
+							1        14
+							2        13
+							3        12
+							4        11
+							5        10
+							6        9
+							7        8
+		PRAC
+				LeftDrive1	0        15	RightDrive1
+				LeftDrive2	1        14	RightDrive2
+			 BackJackstand	2        13
+					   N/A  3        12
+							4        11
+							5        10
+							6        9
+							7        8
+
+
+	 */
+
+
 	public static PCM pcm;
 
 	/** Drivetrain **/

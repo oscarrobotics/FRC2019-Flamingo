@@ -127,39 +127,45 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
-        double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
-        double rotation = OscarMath.signumPow(rightX, 2);
+		Scheduler.getInstance().run();
+		double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
+		double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
+		double rotation;
 
-        if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
-            drivetrain.teleopControl(
+		if (diffDrive.isQuickTurning()) {
+			rotation = rightX * 0.5;
+		} else {
+			rotation = OscarMath.signumPow(rightX, 2);
+		}
+
+		if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
+			drivetrain.teleopControl(
                     leftY,
                     rotation,
                     Drivetrain.DriveMode.CURVATURE,
                     SmartDifferentialDrive.LoopMode.VELOCITY);
-        } else {
-            drivetrain.teleopControl(
+		} else {
+			drivetrain.teleopControl(
                     leftY,
                     rotation,
                     Drivetrain.DriveMode.CURVATURE,
                     SmartDifferentialDrive.LoopMode.PERCENTAGE);
-        }
+		}
 
-        Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
+		Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
 
-        if (DriverStation.getInstance().isOperatorControl()) {
-            if (matchTimer.hasPeriodPassed(60)) {
-                snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
-            } else {
-                snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
-            }
-        } else {
-            snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
-        }
+		if (DriverStation.getInstance().isOperatorControl()) {
+			if (matchTimer.hasPeriodPassed(60)) {
+				snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
+			} else {
+				snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
+			}
+		} else {
+			snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
+		}
 
-        jackStands.teleopControl();
+		jackStands.teleopControl();
 
-        Scheduler.getInstance().run();
     }
 
     @Override
