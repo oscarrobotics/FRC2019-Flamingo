@@ -84,7 +84,7 @@ public class OI {
 //		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
 //		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
 
-		black1.whenPressed(new MoveCargo(-.75));
+		black1.whenPressed(new MoveCargo(-1.0));
 		black1.whenReleased(new MoveCargo(0.0));
 
 		white1.whenPressed(new MoveCargo(.75));

@@ -1,5 +1,6 @@
 package frc.team832.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -98,7 +99,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         pushData();
         update();
-        Logger.updateEntries();
+        //Logger.updateEntries();
     }
 
     @Override
@@ -176,6 +177,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         Scheduler.getInstance().removeAll();
         Scheduler.getInstance().disable();
+        fourbarTop.setNeutralMode(NeutralMode.Coast);
         jackStands.resetEncoders();
         Color forestGreen = new Color(24, 200, 0);
         snowBlower.setLEDs(LEDMode.STATIC, forestGreen);

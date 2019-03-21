@@ -42,7 +42,6 @@ public class Fourbar extends Subsystem {
 
     @Override
     public void periodic() {
-        System.out.println(getMinSafePos());
         if (!isSafe()) {
             _top.getMotor().setMotionMagcArbFF(getMinSafePos(), armFF());
         }else{
@@ -114,8 +113,9 @@ public class Fourbar extends Subsystem {
     }
 
     public int getMinSafePos(){
-        double fourbarMinPos = (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100;//5800 ish
-        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2650);
+        double fourbarMinPos = RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100 : (-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (24.5 * Robot.elevator.getTargetPosition()) - 6559;//5800 ish
+        SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
+        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2675);
         return (int)fourbarMinPos;
     }
 

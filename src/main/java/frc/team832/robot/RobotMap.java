@@ -135,7 +135,7 @@ public class RobotMap {
 
 	static Solenoid visionLight;
 
-	public static boolean isComp;
+	public static boolean isComp = false;
 
 	/**
 	 * Initializes robot hardware
@@ -208,6 +208,17 @@ public class RobotMap {
 		leftSlave.getInstance().follow(leftMaster.getInstance());
 		rightSlave.getInstance().follow(rightMaster.getInstance());
 
+		int stallCurrent = 60;
+		int freeCurrent = 40;
+
+		leftMaster.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
+		leftSlave.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
+		rightMaster.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
+		rightSlave.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
+
+
+
+
 		leftMaster.setOutputRange(-1.0, 1.0);
 		leftSlave.setOutputRange(-1.0, 1.0);
 		rightMaster.setOutputRange(-1.0, 1.0);
@@ -270,8 +281,8 @@ public class RobotMap {
 
 		frontJackStandMotor.setSensorPhase(true);
 		backJackStandMotor.setSensorPhase(true);
-		frontJackStandMotor.configMotionMagic(8000, 3500);
-		backJackStandMotor.configMotionMagic(8000, 3500);
+		frontJackStandMotor.configMotionMagic(12000, 8000);
+		backJackStandMotor.configMotionMagic(12000, 8000);
 
 		elevatorMotor.setSensorType(FeedbackDevice.Analog);
 		elevatorMotor.setNeutralMode(NeutralMode.Brake);
@@ -301,7 +312,7 @@ public class RobotMap {
 		frontJackStand.setPIDF(.11, 0, 0, 0);
 		backJackStand.setPIDF(.1, 0, 0, 0);
 
-		navX = new NavXMicro(NavXMicro.NavXPort.I2C_onboard);
+		navX = new NavXMicro(NavXMicro.NavXPort.USB_onboard);
 		navX.init();
 
 		System.out.println("Finish INIT");
