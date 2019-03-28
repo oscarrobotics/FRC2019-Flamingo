@@ -131,7 +131,7 @@ public class RobotMap {
 
 	static CANifier canifier;
 
-	static NavXMicro navX;
+	public static NavXMicro navX;
 
 	static Solenoid visionLight;
 
@@ -281,8 +281,8 @@ public class RobotMap {
 
 		frontJackStandMotor.setSensorPhase(true);
 		backJackStandMotor.setSensorPhase(true);
-		frontJackStandMotor.configMotionMagic(12000, 8000);
-		backJackStandMotor.configMotionMagic(12000, 8000);
+		frontJackStandMotor.configMotionMagic(12000, 12000);
+		backJackStandMotor.configMotionMagic(12000, 12000);
 
 		elevatorMotor.setSensorType(FeedbackDevice.Analog);
 		elevatorMotor.setNeutralMode(NeutralMode.Brake);
@@ -309,12 +309,11 @@ public class RobotMap {
 		backJackStand = new LinearMechanism(backJackStandMotor, JackStands.Constants.Positions);
 		jackStandDrive = new SimpleMechanism(jackStandDriveMotor);
 
-		frontJackStand.setPIDF(.11, 0, 0, 0);
+		frontJackStand.setPIDF(.1, 0, 0, 0);
 		backJackStand.setPIDF(.1, 0, 0, 0);
 
 		navX = new NavXMicro(NavXMicro.NavXPort.USB_onboard);
 		navX.init();
-
 		System.out.println("Finish INIT");
 		// If we got this far, we're doing pretty good
 		return true;

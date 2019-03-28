@@ -7,7 +7,7 @@ public class GrabHatch extends Command {
 
     public void initialize(){
         Robot.interruptedHatchState = Robot.AutoHatchState.None;
-        Robot.snowBlower.setHatchHolderPower(.75);
+        Robot.snowBlower.setHatchHolderPower(1.0);
     }
 
     @Override

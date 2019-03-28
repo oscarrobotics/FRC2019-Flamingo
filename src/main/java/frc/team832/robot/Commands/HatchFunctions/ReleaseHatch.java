@@ -17,7 +17,7 @@ public class ReleaseHatch extends Command {
     }
 
     public void execute(){
-        Robot.snowBlower.setHatchHolderPower(-.75);
+        Robot.snowBlower.setHatchHolderPower(-1.0);
     }
 
     @Override

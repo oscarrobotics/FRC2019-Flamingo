@@ -1,16 +1,24 @@
 package frc.team832.robot.Subsystems;
 
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
+import frc.team832.GrouchLib.Util.OscarMath;
+import frc.team832.robot.Commands.Drivetrain.DrivetrainTeleop;
+import frc.team832.robot.OI;
 import frc.team832.robot.RobotMap;
+
+import static frc.team832.robot.Robot.drivetrain;
+import static frc.team832.robot.RobotMap.diffDrive;
 
 public class Drivetrain extends Subsystem {
 
     private SmartDifferentialDrive _driveSystem;
 
     private double _kP = .007, _kI, _kD, _kF;
+    private static double gyroHeading = 0;
 
    /**
      * Defines different Drive control methods for teleop stick control
@@ -36,7 +44,7 @@ public class Drivetrain extends Subsystem {
      * @param stick1 X-Axis translation for Arcade and Curvature, left side for Tank.
      * @param stick2 Z-Axis rotation for Arcade and Curvature, right side for Tank.
      */
-    public void teleopControl(double stick1, double stick2, DriveMode pathMode, SmartDifferentialDrive.LoopMode loopMode) {
+    public void joystickDrive (double stick1, double stick2, DriveMode pathMode, SmartDifferentialDrive.LoopMode loopMode) {
         switch(pathMode) {
             case ARCADE:
                 _driveSystem.arcadeDrive(stick1, stick2, false, loopMode);
@@ -65,6 +73,20 @@ public class Drivetrain extends Subsystem {
 //        _kF = kF;
     }
 
+    public static double turnAngleError(double heading){
+        gyroHeading = RobotMap.navX.getYaw();
+        return heading - gyroHeading;
+    }
+
+    public static double gyroCorrectionOutput(double heading) {
+        double output = Constants.gyrokP * turnAngleError(heading);
+        return OscarMath.clip(output, -1.0, 1.0);
+    }
+
+
+    //public boolean turnToHeading(double heading){
+
+    //}
 
     public void pushData() {
         SmartDashboard.putNumber("Left Drive output", _driveSystem.getLeftOutput());
@@ -80,6 +102,32 @@ public class Drivetrain extends Subsystem {
         SmartDashboard.putNumber("Drive kF", _kF);
 
         //pullData();
+    }
+
+    public static void teleopControl (){
+        double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
+        double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
+        double rotation;
+
+        if (diffDrive.isQuickTurning()) {
+            rotation = rightX * 0.4;
+        } else {
+            rotation = OscarMath.signumPow(rightX, 3);
+        }
+
+        if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
+            drivetrain.joystickDrive(
+                    leftY,
+                    rotation,
+                    Drivetrain.DriveMode.CURVATURE,
+                    SmartDifferentialDrive.LoopMode.VELOCITY);
+        } else {
+            drivetrain.joystickDrive(
+                    leftY,
+                    rotation,
+                    Drivetrain.DriveMode.CURVATURE,
+                    SmartDifferentialDrive.LoopMode.PERCENTAGE);
+        }
     }
 
     public void pullData() {
@@ -114,11 +162,17 @@ public class Drivetrain extends Subsystem {
 //        }
     }
 
+    public static class Constants {
+        public static final double gyrokP = 0.00175;
+    }
+
     public double getOutputCurrent() {
         return _driveSystem.getOutputCurrent();
     }
 
     @Override
-    public void initDefaultCommand() { }
+    public void initDefaultCommand() {
+        setDefaultCommand(new DrivetrainTeleop());
+    }
 }
 

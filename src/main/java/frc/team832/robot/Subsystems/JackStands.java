@@ -9,8 +9,9 @@ import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
 import frc.team832.GrouchLib.Motors.CANTalon;
 import frc.team832.robot.OI;
 import frc.team832.robot.RobotMap;
-
 import java.awt.*;
+
+import static frc.team832.robot.RobotMap.frontJackStandMotor;
 
 public class JackStands extends Subsystem {
 
@@ -98,24 +99,13 @@ public class JackStands extends Subsystem {
         return _backStand.getClosedLoopError();
     }
 
-    public double getFrontCorrectionPower() {
-        double multiplier = 5;
-        double power = 0;
-        int error = (int) (getBackCurrentPosition() - getFrontCurrentPosition());
-        if (Math.abs(error) > 2000){
-            power = error * multiplier;
-        }
-
-        return -power;
+    public double jackstandPitch(){
+        double kP = 0.01, pitch = RobotMap.navX.getPitch();
+        return pitch * kP;
     }
 
-    public void runToMax(){
-        //idk how to do it properly but i try
-
-    }
-
-    public void runToMin(){
-        //idk how to do it properly but i try
+    public void extend(double error){
+        frontJackStandMotor.configMotionMagic(12000, 12000);
     }
 
     public void pushData() {

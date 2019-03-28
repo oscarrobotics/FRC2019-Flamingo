@@ -99,6 +99,9 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         pushData();
         update();
+        SmartDashboard.putNumber("Yaw", navX.getYaw());
+        SmartDashboard.putNumber("Pitch", navX.getPitch());
+        SmartDashboard.putNumber("Roll", navX.getRoll());
         //Logger.updateEntries();
     }
 
@@ -129,29 +132,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
-		double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
-		double rotation;
-
-		if (diffDrive.isQuickTurning()) {
-			rotation = rightX * 0.5;
-		} else {
-			rotation = OscarMath.signumPow(rightX, 2);
-		}
-
-		if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
-			drivetrain.teleopControl(
-                    leftY,
-                    rotation,
-                    Drivetrain.DriveMode.CURVATURE,
-                    SmartDifferentialDrive.LoopMode.VELOCITY);
-		} else {
-			drivetrain.teleopControl(
-                    leftY,
-                    rotation,
-                    Drivetrain.DriveMode.CURVATURE,
-                    SmartDifferentialDrive.LoopMode.PERCENTAGE);
-		}
 
 		Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
 
@@ -181,6 +161,7 @@ public class Robot extends TimedRobot {
         jackStands.resetEncoders();
         Color forestGreen = new Color(24, 200, 0);
         snowBlower.setLEDs(LEDMode.STATIC, forestGreen);
+        navX.zero();
     }
 
     public enum AutoHatchState{

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Commands.*;
 import frc.team832.robot.Commands.AutoJackStand.*;
+import frc.team832.robot.Commands.Drivetrain.TurnToHeading;
 import frc.team832.robot.Commands.Elevator.ManualMoveElevator;
 import frc.team832.robot.Commands.FourBar.ManualMoveFourbar;
 import frc.team832.robot.Commands.HatchFunctions.*;
@@ -76,7 +77,7 @@ public class OI {
 
 		System.out.println("Buttons initialized");
 	}
-	//Top Rocket elevator = 420 fourbar =
+
 	static void setupCommands() {
 		mToggle.whenActive(new ManualToggle(new ManualMoveFourbar(), new DoNothing()));
 		mToggle.whenActive(new ManualToggle(new ManualMoveElevator(), new DoNothing()));
@@ -84,22 +85,23 @@ public class OI {
 //		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
 //		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
 
+		black2.toggleWhenPressed(new TurnToHeading(90));
+
 		black1.whenPressed(new MoveCargo(-1.0));
 		black1.whenReleased(new MoveCargo(0.0));
 
 		white1.whenPressed(new MoveCargo(.75));
 		white1.whenReleased(new MoveCargo(0.0));
-//
-//		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Middle.getIndex())));
-//		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Top.getIndex())));
-//		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex())));
-//		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex())));
-//		op5.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Bottom.getIndex())));
-//
+
+		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Bottom.getIndex())));
+		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex())));
+		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Top.getIndex())));
+		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Middle.getIndex())));
+		op5.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex())));
+
 		modeButton1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())));
 		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())));
 		modeButton3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
-		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(ElevatorPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex())));
 
 		threeSwitchDown.whileHeld(new GrabHatch());
 		threeSwitchUp.whileHeld(new ReleaseHatch());
@@ -142,12 +144,20 @@ public class OI {
 
     	switch (operatorMode = getOperatorMode()) {
 		    case Intake:
+				opCommands[0] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Bottom.getIndex()));
+				opCommands[1] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex()));
+				opCommands[2] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Top.getIndex()));
+				opCommands[3] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Middle.getIndex()));
+				opCommands[4] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex()));
+
+				/*
 				opCommands[0] = new MoveTheBigOne(TheBigOne.Action.INTAKE_FLOOR_CARGO); // button 1 command
 			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_HATCH); // button 2 command
 			    opCommands[2] = new DoNothing(); // button 3 command
 			    opCommands[3] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_CARGO); // button 4 command
 			    opCommands[4] = new DoNothing(); // button 5 command
 			    opCommands[5] = new DoNothing(); // button 6 command
+			    */
 			    break;
 		    case CargoShip:
 			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.CARGO_SHIP_CARGO); // button 1 command

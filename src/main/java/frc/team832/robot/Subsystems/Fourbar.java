@@ -111,11 +111,11 @@ public class Fourbar extends Subsystem {
     public boolean isMPFinished() {
         return _top.isMPFinished();
     }
-
+//fourbar3000 elevatormin
     public int getMinSafePos(){
-        double fourbarMinPos = RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100 : (-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (24.5 * Robot.elevator.getTargetPosition()) - 6559;//5800 ish
+        double fourbarMinPos = RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6859;//5800 ish
         SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
-        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2675);
+        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2650);
         return (int)fourbarMinPos;
     }
 
@@ -153,7 +153,7 @@ public class Fourbar extends Subsystem {
                 new MechanismPosition("StorageConfig", RobotMap.isComp? 675 : 630),
 
                 new MechanismPosition("Bottom", RobotMap.isComp? 300 : 300),
-                new MechanismPosition("Middle", RobotMap.isComp? 2455 : 2450),
+                new MechanismPosition("Middle", RobotMap.isComp? 2455 : 2550),
                 new MechanismPosition("Top", RobotMap.isComp? 5300 : 4950),
 
                 new MechanismPosition("IntakeHatch_HP", RobotMap.isComp? 361 : 0),
