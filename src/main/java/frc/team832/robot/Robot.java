@@ -99,9 +99,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         pushData();
         update();
-        SmartDashboard.putNumber("Yaw", navX.getYaw());
-        SmartDashboard.putNumber("Pitch", navX.getPitch());
-        SmartDashboard.putNumber("Roll", navX.getRoll());
+        SmartDashboard.putNumber("Yaw", navX.getYeet());
         //Logger.updateEntries();
     }
 

@@ -25,6 +25,7 @@ import frc.team832.robot.Subsystems.TheBigOne;
  */
 @SuppressWarnings({"WeakerAccess", "FieldCanBeLocal", "unused"})
 public class OI {
+	public static int angle = 0;
 
 	// Driver
 	public static XboxController driverPad;
@@ -85,7 +86,7 @@ public class OI {
 //		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
 //		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
 
-		black2.toggleWhenPressed(new TurnToHeading(90));
+		black2.toggleWhenPressed(new TurnToHeading(angle));
 
 		black1.whenPressed(new MoveCargo(-1.0));
 		black1.whenReleased(new MoveCargo(0.0));

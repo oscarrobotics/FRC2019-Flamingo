@@ -15,9 +15,11 @@ public class TurnToHeading extends Command {
 		_heading = heading;
 	}
 
+	public void initialize(){
+		OI.angle += 45;
+	}
 
 	public void execute(){
-
 		drivetrain.joystickDrive(
 				Drivetrain.gyroCorrectionOutput(_heading),
 				0,
@@ -28,6 +30,6 @@ public class TurnToHeading extends Command {
 
 	@Override
 	protected boolean isFinished () {
-		return false;
+		return Drivetrain.turnAngleError(_heading) < Drivetrain.Constants.epsilon;
 	}
 }

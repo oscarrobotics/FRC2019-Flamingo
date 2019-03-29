@@ -12,11 +12,16 @@ public class DrivetrainTeleop extends Command {
 	}
 
 	public void execute(){
-		Drivetrain.teleopControl();
+		Robot.drivetrain.teleopControl();
 	}
 
 	@Override
 	protected boolean isFinished () {
 		return false;
+	}
+
+	@Override
+	protected void end(){
+		Robot.drivetrain.stop();
 	}
 }

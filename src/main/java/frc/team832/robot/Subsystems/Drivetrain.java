@@ -162,8 +162,13 @@ public class Drivetrain extends Subsystem {
 //        }
     }
 
+    public void stop(){
+        diffDrive.stopMotor();
+    }
+
     public static class Constants {
         public static final double gyrokP = 0.00175;
+        public static final double epsilon = 3.0;
     }
 
     public double getOutputCurrent() {
