@@ -118,7 +118,7 @@ public class Drivetrain extends Subsystem {
         if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
             drivetrain.joystickDrive(
                     leftY,
-                    rotation,
+                    rotation * Constants.sensitiveTurnMultiplier,
                     Drivetrain.DriveMode.CURVATURE,
                     SmartDifferentialDrive.LoopMode.VELOCITY);
         } else {
@@ -169,6 +169,7 @@ public class Drivetrain extends Subsystem {
     public static class Constants {
         public static final double gyrokP = 0.00175;
         public static final double epsilon = 3.0;
+        public static final double sensitiveTurnMultiplier = 0.3;
     }
 
     public double getOutputCurrent() {

@@ -115,7 +115,7 @@ public class Fourbar extends Subsystem {
     public int getMinSafePos(){
         double fourbarMinPos = RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6859;//5800 ish
         SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
-        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2650);
+        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2700);
         return (int)fourbarMinPos;
     }
 

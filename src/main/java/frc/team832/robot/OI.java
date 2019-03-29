@@ -72,6 +72,7 @@ public class OI {
 		black1 = new JoystickButton(operatorBox, 12);
 		black2 = new JoystickButton(operatorBox, 13);
 		white1 = new JoystickButton(operatorBox, 14);
+		white2 = new JoystickButton(operatorBox, 15);
 		singleSwitch = new JoystickButton(operatorBox, 16);
 		threeSwitchUp = new JoystickButton(operatorBox, 18);
 		threeSwitchDown = new JoystickButton(operatorBox, 17);
@@ -86,7 +87,7 @@ public class OI {
 //		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
 //		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
 
-		black2.toggleWhenPressed(new TurnToHeading(angle));
+//		black2.toggleWhenPressed(new TurnToHeading(angle));
 
 		black1.whenPressed(new MoveCargo(-1.0));
 		black1.whenReleased(new MoveCargo(0.0));
@@ -104,8 +105,8 @@ public class OI {
 		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())));
 		modeButton3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
 
-		threeSwitchDown.whileHeld(new GrabHatch());
-		threeSwitchUp.whileHeld(new ReleaseHatch());
+		white2.whileHeld(new GrabHatch());
+		black2.whileHeld(new ReleaseHatch());
 
 		standDown.whenPressed(new MoveJackStands("Bottom"));
 		standUp.whenPressed(new MoveJackStands("Top"));

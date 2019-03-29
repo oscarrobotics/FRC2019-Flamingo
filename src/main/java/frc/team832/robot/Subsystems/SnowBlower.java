@@ -16,6 +16,7 @@ import frc.team832.robot.OI;
 import java.awt.*;
 
 import static frc.team832.GrouchLib.Util.OscarMath.inRange;
+import static frc.team832.robot.RobotMap.pdp;
 
 @SuppressWarnings({"WeakerAccess", "SpellCheckingInspection", "unused"})
 public class SnowBlower extends Subsystem {
@@ -29,7 +30,7 @@ public class SnowBlower extends Subsystem {
 	private CANifier.LEDRunner sbLeds;
 
 	private double curBallDist = 0;
-
+	private static int stallCounter = 0;
 	private double holdorTarget;
 
 	private CargoPosition _cargoPosition = CargoPosition.UNKNOWN;
@@ -279,6 +280,8 @@ public class SnowBlower extends Subsystem {
 			}
 		}
 
+
+
 		private void staticColor(Color color) {
 		    _canifier.sendColor(color);
         }
@@ -340,6 +343,19 @@ public class SnowBlower extends Subsystem {
 		}
 	}
 
+	public boolean isMotorStall(int PDPSlot, double stallCurrent, double stallSec){
+		int stallLoops = (int) stallSec * 20;
+		double motorCurrent = pdp.getChannelCurrent(PDPSlot);
+		if (stallCounter > stallLoops) {
+			stallCounter = 0;
+			return true;
+		}
+		if (motorCurrent > stallCurrent)
+			stallCounter++;
+		else if (motorCurrent < stallCurrent)
+			stallCounter--;
+		return false;
+	}
 
 	@SuppressWarnings("WeakerAccess")
 	public static class Constants {

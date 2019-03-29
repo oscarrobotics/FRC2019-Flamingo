@@ -118,7 +118,7 @@ public class Elevator extends Subsystem {
 
                 new MechanismPosition("StorageConfig", RobotMap.isComp? 70 : -630),
 
-                new MechanismPosition("Bottom", RobotMap.isComp? 30: -700),
+                new MechanismPosition("Bottom", RobotMap.isComp? 30: -710),
                 new MechanismPosition("Middle", RobotMap.isComp? 150 : -500),
                 new MechanismPosition("Top", RobotMap.isComp? 420 : -380),
 
