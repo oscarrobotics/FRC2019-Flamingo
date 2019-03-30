@@ -18,7 +18,7 @@ public class GrabHatch extends Command {
 
     @Override
     protected boolean isFinished() {
-        if (Robot.snowBlower.isMotorStall(6,15.0,1))
+        if (Robot.snowBlower.isMotorStall(6,11.0,1))
             return true;
         return false;
     }

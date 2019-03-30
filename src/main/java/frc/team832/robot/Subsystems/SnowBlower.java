@@ -350,10 +350,16 @@ public class SnowBlower extends Subsystem {
 			stallCounter = 0;
 			return true;
 		}
-		if (motorCurrent > stallCurrent)
+		System.out.println("Stall Count" + stallCounter);
+		System.out.println("Stall Loops" + stallLoops);
+		if (motorCurrent > stallCurrent) {
 			stallCounter++;
-		else if (motorCurrent < stallCurrent)
+			OscarMath.clip(stallCounter, 0, stallLoops);
+		}
+		else if (motorCurrent < stallCurrent) {
 			stallCounter--;
+			OscarMath.clip(stallCounter, 0, stallLoops);
+		}
 		return false;
 	}
 
