@@ -5,19 +5,24 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
-import frc.team832.robot.Commands.*;
-import frc.team832.robot.Commands.AutoJackStand.*;
-import frc.team832.robot.Commands.Drivetrain.TurnToHeading;
+import edu.wpi.first.wpilibj.command.OperatorModeCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team832.robot.Commands.AutoJackStand.JackstandHoldPosition;
+import frc.team832.robot.Commands.AutoJackStand.MoveJackStands;
+import frc.team832.robot.Commands.AutoJackStand.MoveSingleJackStand;
+import frc.team832.robot.Commands.DoNothing;
 import frc.team832.robot.Commands.Elevator.ManualMoveElevator;
 import frc.team832.robot.Commands.FourBar.ManualMoveFourbar;
-import frc.team832.robot.Commands.HatchFunctions.*;
-import frc.team832.robot.Commands.TheBigOne.MoveTheBigOne;
-import frc.team832.robot.Subsystems.Elevator;
+import frc.team832.robot.Commands.HatchFunctions.GrabHatch;
+import frc.team832.robot.Commands.HatchFunctions.ReleaseHatch;
+import frc.team832.robot.Commands.ManualToggle;
+import frc.team832.robot.Commands.MoveCargo;
+import frc.team832.robot.Commands.MoveComplexLiftWithAdjust;
+import frc.team832.robot.Commands.TheBigOne.DefaultPosition;
 import frc.team832.robot.Subsystems.Elevator.Constants.ElevatorPosition;
-import frc.team832.robot.Subsystems.Fourbar;
 import frc.team832.robot.Subsystems.Fourbar.Constants.FourbarPosition;
 import frc.team832.robot.Subsystems.JackStands;
-import frc.team832.robot.Subsystems.TheBigOne;
+import frc.team832.robot.Subsystems.SnowBlower;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -25,24 +30,27 @@ import frc.team832.robot.Subsystems.TheBigOne;
  */
 @SuppressWarnings({"WeakerAccess", "FieldCanBeLocal", "unused"})
 public class OI {
-	public static int angle = 0;
 
 	// Driver
 	public static XboxController driverPad;
-	private static JoystickButton leftStickPress, rightStickPress;
 	private static JoystickButton frontStandUp, backStandUp, standDown, standUp, frontStandDown, backStandDown;
+	private static JoystickButton leftStickPress, rightStickPress;
 
 	// Operator
 	public static Joystick operatorBox;
-	public static JoystickButton op1, op2, op3, op4, op5, op6, black1, black2, white1, white2, threeSwitchUp, threeSwitchDown, singleSwitch;
+
+	public static JoystickButton op1, op2, op3, op4, op5, op6;
+	public static JoystickButton modeButton1, modeButton2, modeButton3;
 	public static JoystickButton incr, decr;
-	public static JoystickButton modeButton1, modeButton2, modeButton3, hatchGrab;
+
+	public static JoystickButton black1, black2, white1, white2;
+	public static JoystickButton threeSwitchUp, threeSwitchDown, singleSwitch;
+	public static JoystickButton hatchGrab;
 
 	public static Trigger mToggle;
+	public static OperatorMode operatorMode = OperatorMode.Intake;
 
-	public static OperatorMode operatorMode;
-
-	static void init() {
+	static void init () {
 		driverPad = new XboxController(0);
 		leftStickPress = new JoystickButton(driverPad, 9);
 		rightStickPress = new JoystickButton(driverPad, 10);
@@ -69,6 +77,7 @@ public class OI {
 		modeButton2 = new JoystickButton(operatorBox, 10);
 		modeButton3 = new JoystickButton(operatorBox, 11);
 
+
 		black1 = new JoystickButton(operatorBox, 12);
 		black2 = new JoystickButton(operatorBox, 13);
 		white1 = new JoystickButton(operatorBox, 14);
@@ -80,30 +89,18 @@ public class OI {
 		System.out.println("Buttons initialized");
 	}
 
-	static void setupCommands() {
+	static void setupCommands () {
 		mToggle.whenActive(new ManualToggle(new ManualMoveFourbar(), new DoNothing()));
 		mToggle.whenActive(new ManualToggle(new ManualMoveElevator(), new DoNothing()));
 
 //		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
 //		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
 
-//		black2.toggleWhenPressed(new TurnToHeading(angle));
-
 		black1.whenPressed(new MoveCargo(-1.0));
 		black1.whenReleased(new MoveCargo(0.0));
 
 		white1.whenPressed(new MoveCargo(.75));
 		white1.whenReleased(new MoveCargo(0.0));
-
-		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Bottom.getIndex())));
-		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex())));
-		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Top.getIndex())));
-		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Middle.getIndex())));
-		op5.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex())));
-
-		modeButton1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())));
-		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())));
-		modeButton3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
 
 		white2.whileHeld(new GrabHatch());
 		black2.whileHeld(new ReleaseHatch());
@@ -113,87 +110,135 @@ public class OI {
 
 		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
 		backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-
 		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
 		frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
-
 		backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
 		backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-
 		frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
 		frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		handleControls();
 	}
 
-    public enum OperatorMode {
-    	Intake,
-	    CargoShip,
-	    Rocket_Hatch,
-	    Rocket_Cargo
-    }
+	public static ThreeSwitchPos getThreeSwitch () {
+		if (threeSwitchUp.get())
+			return ThreeSwitchPos.UP;
+		else if (threeSwitchDown.get())
+			return ThreeSwitchPos.DOWN;
+		else
+			return ThreeSwitchPos.OFF;
+	}
 
-    private static OperatorMode getOperatorMode() {
-    	if (modeButton1.get()) return OperatorMode.CargoShip;
-    	else if (modeButton2.get()) return OperatorMode.Rocket_Hatch;
-    	else if (modeButton3.get()) return OperatorMode.Rocket_Cargo;
-    	else return OperatorMode.Intake;
-    }
+	private static OperatorMode getOperatorMode () {
+		if (modeButton1.get()) return OperatorMode.CargoShip;
+		else if (modeButton2.get()) return OperatorMode.Rocket_Hatch;
+		else if (modeButton3.get()) return OperatorMode.Rocket_Cargo;
+		else return OperatorMode.Intake;
+	}
+
+	private static void runLED(){
+		if (modeButton1.get() || modeButton2.get() || modeButton3.get())
+			Robot.snowBlower.setLEDs(SnowBlower.LEDMode.PREPARE_INTAKE);
+		else if (op1.get() || op2.get() || op3.get() || incr.get())
+			Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_HOLD);
+		else if (op4.get() || op5.get() || op6.get() || decr.get())
+			Robot.snowBlower.setLEDs(SnowBlower.LEDMode.BALL_HOLD);
+
+	}
 
 	/**
 	 * Manages which commands get run based on different modifier buttons.
 	 */
-	public static void handleControls() {
-    	Command[] opCommands = new Command[6];
+	public static void handleControls () {
+		/*
+		op1.whenPressed(new ModeCommand(
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex())),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Low.getIndex(), ElevatorPosition.RocketHatch_Low.getIndex()))
+		));
 
-    	switch (operatorMode = getOperatorMode()) {
-		    case Intake:
-				opCommands[0] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Bottom.getIndex()));
-				opCommands[1] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Middle.getIndex()));
-				opCommands[2] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Middle.getIndex(), ElevatorPosition.Top.getIndex()));
-				opCommands[3] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Middle.getIndex()));
-				opCommands[4] = new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Top.getIndex()));
+		op2.whenPressed(new ModeCommand(
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeHatch_HP.getIndex(), ElevatorPosition.IntakeHatch_HP.getIndex())),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Middle.getIndex(), ElevatorPosition.RocketHatch_Middle.getIndex()))
+		));
 
-				/*
-				opCommands[0] = new MoveTheBigOne(TheBigOne.Action.INTAKE_FLOOR_CARGO); // button 1 command
-			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_HATCH); // button 2 command
-			    opCommands[2] = new DoNothing(); // button 3 command
-			    opCommands[3] = new MoveTheBigOne(TheBigOne.Action.INTAKE_HP_CARGO); // button 4 command
-			    opCommands[4] = new DoNothing(); // button 5 command
-			    opCommands[5] = new DoNothing(); // button 6 command
-			    */
-			    break;
-		    case CargoShip:
-			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.CARGO_SHIP_CARGO); // button 1 command
-			    opCommands[1] = new DoNothing(); // button 2 command
-			    opCommands[2] = new MoveTheBigOne(TheBigOne.Action.CARGO_SHIP_HATCH); // button 3 command
-			    opCommands[3] = new DoNothing(); // button 4 command
-			    opCommands[4] = new DoNothing(); // button 5 command
-			    opCommands[5] = new DoNothing(); // button 6 command
-			    break;
-		    case Rocket_Hatch:
-			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.ROCKET_HATCH_HIGH); // button 1 command
-			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.ROCKET_HATCH_MID); // button 2 command
-			    opCommands[2] = new MoveTheBigOne(TheBigOne.Action.ROCKET_HATCH_LOW); // button 3 command
-			    opCommands[3] = new DoNothing(); // button 4 command
-			    opCommands[4] = new DoNothing(); // button 5 command
-			    opCommands[5] = new DoNothing(); // button 6 command
-			    break;
-		    case Rocket_Cargo:
-			    opCommands[0] = new MoveTheBigOne(TheBigOne.Action.ROCKET_CARGO_HIGH); // button 1 command
-			    opCommands[1] = new MoveTheBigOne(TheBigOne.Action.ROCKET_CARGO_MID); // button 2 command
-			    opCommands[2] = new MoveTheBigOne(TheBigOne.Action.ROCKET_CARGO_LOW); // button 3 command
-			    opCommands[3] = new DoNothing(); // button 4 command
-			    opCommands[4] = new DoNothing(); // button 5 command
-			    opCommands[5] = new DoNothing(); // button 6 command
-			    break;
-	    }
+		op3.whenPressed(new ModeCommand(
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex())),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex()))
+		));
 
-	    op1.whenPressed(opCommands[0]);
-		op2.whenPressed(opCommands[1]);
-		op3.whenPressed(opCommands[2]);
-		op4.whenPressed(opCommands[3]);
-		op5.whenPressed(opCommands[4]);
-		op6.whenPressed(opCommands[5]);
-		incr.whenPressed(new DoNothing());
-		decr.whenPressed(new DoNothing());
-    }
+		op4.whenPressed(new ModeCommand(
+				new DoNothing(),
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Cargo.getIndex(), ElevatorPosition.CargoShip_Cargo.getIndex())),
+				new DoNothing()
+		));
+
+		op5.whenPressed(new ModeCommand(
+				new DoNothing(),
+				new DoNothing(),
+				new DoNothing()
+		));
+
+		op6.whenPressed(new ModeCommand(
+				new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Bottom.getIndex(), ElevatorPosition.Top.getIndex())),
+				new DoNothing(),
+				new DoNothing()
+		));
+		*/
+
+		modeButton1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex())));
+		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeHatch_HP.getIndex(), ElevatorPosition.IntakeHatch_HP.getIndex())));
+		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex())));
+
+		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Low.getIndex(), ElevatorPosition.RocketHatch_Low.getIndex())));
+		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Middle.getIndex(), ElevatorPosition.RocketHatch_Middle.getIndex())));
+		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex())));
+		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
+		op5.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())));
+		op6.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())));
+		incr.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Hatch.getIndex(), ElevatorPosition.CargoShip_Hatch.getIndex())));
+		decr.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Cargo.getIndex(), ElevatorPosition.CargoShip_Cargo.getIndex())));
+
+		op1.whenReleased(new DefaultPosition(true));
+		op2.whenReleased(new DefaultPosition(false));
+		op3.whenReleased(new DefaultPosition(false));
+		op4.whenReleased(new DefaultPosition(false));
+		op5.whenReleased(new DefaultPosition(false));
+		op6.whenReleased(new DefaultPosition(false));
+		incr.whenReleased(new DefaultPosition(true));
+		decr.whenReleased(new DefaultPosition(false));
+
+	}
+
+	public enum OperatorMode {
+		Intake,
+		CargoShip,
+		Rocket_Hatch,
+		Rocket_Cargo
+	}
+
+	public enum ThreeSwitchPos {
+		UP,
+		DOWN,
+		OFF,//dont use, only for commands
+	}
+
+	private static  class ModeCommand extends OperatorModeCommand {
+
+		public ModeCommand(Command onDefault, Command onState1, Command onState2) {
+			super(onDefault, onState1, onState2, new DoNothing());
+		}
+
+		public ModeCommand (Command onDefault, Command onState1, Command onState2, Command onState3) {
+			super(onDefault, onState1, onState2, onState3);
+		}
+
+		@Override
+		protected OperatorMode condition () {
+			OperatorMode mode = getOperatorMode();
+			SmartDashboard.putString("OperatorMode", mode.toString());
+			return mode;
+		}
+	}
 }

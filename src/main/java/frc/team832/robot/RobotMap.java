@@ -235,6 +235,8 @@ public class RobotMap {
 
 		diffDrive = new SmartDifferentialDrive(leftDrive, rightDrive, 5500);
 
+		hatchHolderMotor.setNeutralMode(NeutralMode.Brake);
+
 		hatchHolder = new SimpleMechanism(hatchHolderMotor);
 
 		fourbarBottom.follow(fourbarTop);
@@ -253,9 +255,9 @@ public class RobotMap {
 
 		fourbarTop.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 		fourbarTop.setClosedLoopRamp(.3);
-		fourbarTop.configMotionMagic(1000, 3500);
-		fourbarTop.setForwardSoftLimit(isComp ? (int) Fourbar.Constants.COMP_TOP_MAX_VAL : (int) Fourbar.Constants.TOP_MAX_VAL);
-		fourbarTop.setReverseSoftLimit(isComp ? (int) Fourbar.Constants.COMP_TOP_MIN_VAL : (int) Fourbar.Constants.TOP_MIN_VAL);
+		fourbarTop.configMotionMagic(Fourbar.Constants.MOTION_MAGIC_VEL, Fourbar.Constants.MOTION_MAGIC_ACC);
+		fourbarTop.setForwardSoftLimit((int) Fourbar.Constants.TOP_MAX_VAL);
+		fourbarTop.setReverseSoftLimit((int) Fourbar.Constants.TOP_MIN_VAL);
 
 		frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
 		backJackStandMotor.setNeutralMode(NeutralMode.Brake);
@@ -276,18 +278,18 @@ public class RobotMap {
 		frontJackStandMotor.setForwardSoftLimit(0);
 		backJackStandMotor.setForwardSoftLimit(0);
 
-		frontJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -82000);
-		backJackStandMotor.setReverseSoftLimit(RobotMap.isComp ? -75000 : -78000);
+		frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_FRONT_VAL);
+		backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_BACK_VAL);
 
 		frontJackStandMotor.setSensorPhase(true);
 		backJackStandMotor.setSensorPhase(true);
-		frontJackStandMotor.configMotionMagic(12000, 12000);
-		backJackStandMotor.configMotionMagic(12000, 12000);
+		frontJackStandMotor.configMotionMagic(JackStands.Constants.FRONT_MAGIC_VEL, JackStands.Constants.FRONT_MAGIC_ACC);
+		backJackStandMotor.configMotionMagic(JackStands.Constants.BACK_MAGIC_VEL, JackStands.Constants.BACK_MAGIC_ACC);
 
 		elevatorMotor.setSensorType(FeedbackDevice.Analog);
 		elevatorMotor.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor.setInverted(isComp ? false : true);
-		elevatorMotor.setSensorPhase(isComp ? false : false);
+		elevatorMotor.setSensorPhase(false);
 		elevatorMotor.configMotionMagic(500, 1500);
 
 		fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);

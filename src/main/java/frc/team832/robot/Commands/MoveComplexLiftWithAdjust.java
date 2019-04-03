@@ -42,7 +42,7 @@ public class MoveComplexLiftWithAdjust extends Command {
 
 	@Override
 	protected boolean isFinished () {
-		return false;
+		return Robot.elevator.atTargetPosition() && Robot.fourbar.atTargetPosition();
 	}
 
 	@Override

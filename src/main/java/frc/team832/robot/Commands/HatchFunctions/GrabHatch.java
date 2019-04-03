@@ -7,7 +7,7 @@ import frc.team832.robot.Subsystems.SnowBlower;
 public class GrabHatch extends Command {
 
     public void initialize(){
-
+        Robot.snowBlower.resetStall();
         Robot.interruptedHatchState = Robot.AutoHatchState.None;
         Robot.snowBlower.setHatchHolderPower(1.0);
     }
@@ -18,8 +18,6 @@ public class GrabHatch extends Command {
 
     @Override
     protected boolean isFinished() {
-        if (Robot.snowBlower.isMotorStall(6,11.0,1))
-            return true;
         return false;
     }
 

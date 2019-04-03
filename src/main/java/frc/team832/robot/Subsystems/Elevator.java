@@ -63,7 +63,7 @@ public class Elevator extends Subsystem {
     public void initDefaultCommand() { }
 
     public void setMotionPosition(double position){
-        double arbFF = .3;
+        double arbFF = .2;
         _elevator.getMotor().setMotionMagcArbFF(position, arbFF);
     }
 
@@ -94,43 +94,41 @@ public class Elevator extends Subsystem {
     @SuppressWarnings("WeakerAccess")
     public static class Constants {
 
-        public static final int COMP_POT_BOTTOM_VAL = 35;
-        public static final int COMP_POT_TOP_VAL = 425;
-
-        public static final int POT_BOTTOM_VALUE = RobotMap.isComp ? 35 : -715;
+        public static final int POT_BOTTOM_VALUE = RobotMap.isComp ? 35 : -685;
+        public static final int POT_MID_VALUE = RobotMap.isComp ? 195 : -545;
         public static final int POT_TOP_VALUE = RobotMap.isComp ? 425 : -375;
 
-        public static final int POT_BOTTOM_VAL = -715;
-        public static final int POT_TOP_VAL = -375;
-        public static final double POT_RANGE = (RobotMap.isComp ? COMP_POT_TOP_VAL : POT_TOP_VAL) - (RobotMap.isComp ? COMP_POT_BOTTOM_VAL : POT_BOTTOM_VAL);
+        public static final double POT_RANGE = (POT_TOP_VALUE) - (POT_BOTTOM_VALUE);
         public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 
         public static double PotToInches(double value) {
-            return OscarMath.map(value, POT_BOTTOM_VAL, POT_TOP_VAL, 0, 30);
+            return OscarMath.map(value, POT_BOTTOM_VALUE, POT_TOP_VALUE, 0, 30);
         }
-        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_BOTTOM_VAL, POT_TOP_VAL);}
+        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_BOTTOM_VALUE, POT_TOP_VALUE);}
 
         private static final MechanismPosition[] _positions = new MechanismPosition[]{
                 new MechanismPosition("StartConfig", RobotMap.isComp? 0 : -380),
-                new MechanismPosition("TestMiddle", OscarMath.mid(POT_TOP_VAL, POT_BOTTOM_VAL)),
-                new MechanismPosition("TestTop", POT_TOP_VAL + 50),
+                new MechanismPosition("TestMiddle", OscarMath.mid(POT_TOP_VALUE, POT_BOTTOM_VALUE)),
+                new MechanismPosition("TestTop", POT_TOP_VALUE),
 
-                new MechanismPosition("StorageConfig", RobotMap.isComp? 70 : -630),
+                new MechanismPosition("Bottom", POT_BOTTOM_VALUE),
+                new MechanismPosition("Middle", POT_MID_VALUE),
+                new MechanismPosition("Top", POT_TOP_VALUE),
 
-                new MechanismPosition("Bottom", RobotMap.isComp? 30: -710),
-                new MechanismPosition("Middle", RobotMap.isComp? 150 : -500),
-                new MechanismPosition("Top", RobotMap.isComp? 420 : -380),
+                new MechanismPosition("IntakeCargo_Floor", POT_BOTTOM_VALUE),
+                new MechanismPosition("IntakeHatch_HP",POT_TOP_VALUE ),//RobotMap.isComp? 410 : -380
 
-                new MechanismPosition("IntakeCargo_Floor", RobotMap.isComp? 0 : -630),
+                new MechanismPosition("CargoShip_Hatch", POT_TOP_VALUE),
+                new MechanismPosition("CargoShip_Cargo", POT_BOTTOM_VALUE),
 
-                new MechanismPosition("RocketHatch_Low", RobotMap.isComp? 0 : -670),
-                new MechanismPosition("RocketHatch_Middle", RobotMap.isComp? 0 : -400),
-                new MechanismPosition("RocketHatch_High", RobotMap.isComp? 0 : -380),
+                new MechanismPosition("RocketHatch_Low", POT_TOP_VALUE),
+                new MechanismPosition("RocketHatch_Middle", RobotMap.isComp? 150 : -675),
+                new MechanismPosition("RocketHatch_High", POT_TOP_VALUE),
 
-                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 30 : -690),
-                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 235 : -420),
-                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 420 : -400)
+                new MechanismPosition("RocketCargo_Low", POT_BOTTOM_VALUE),
+                new MechanismPosition("RocketCargo_Middle",POT_BOTTOM_VALUE),
+                new MechanismPosition("RocketCargo_High", POT_TOP_VALUE)
         };
 
         @SuppressWarnings("unused")
@@ -141,6 +139,7 @@ public class Elevator extends Subsystem {
             Middle("Middle"),
             Top("Top"),
             IntakeCargo_Floor("IntakeCargo_Floor"),
+            IntakeHatch_HP("IntakeHatch_HP"),
             CargoShip_Hatch("CargoShip_Hatch"),
             CargoShip_Cargo("CargoShip_Cargo"),
             RocketHatch_Low("RocketHatch_Low"),

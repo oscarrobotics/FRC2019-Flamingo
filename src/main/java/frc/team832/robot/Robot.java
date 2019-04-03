@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
+import frc.team832.GrouchLib.Sensors.NavXMicro;
 import frc.team832.GrouchLib.Util.OscarMath;
 import frc.team832.robot.Subsystems.*;
 import frc.team832.robot.Subsystems.SnowBlower.LEDMode;
@@ -34,6 +35,8 @@ public class Robot extends TimedRobot {
     public static SnowBlower snowBlower;
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
+
+    public static OI.ThreeSwitchPos ThreeSwitchPos = OI.ThreeSwitchPos.OFF;
 
     public static AutoHatchState currentHatchState = AutoHatchState.None;
     public static AutoHatchState interruptedHatchState = AutoHatchState.None;
@@ -99,7 +102,9 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         pushData();
         update();
-        SmartDashboard.putNumber("Yaw", navX.getYeet());
+        ThreeSwitchPos = OI.getThreeSwitch();
+        navX.pushData();
+        //jackStands.jackstandGyroCorrection();
         //Logger.updateEntries();
     }
 
@@ -123,6 +128,19 @@ public class Robot extends TimedRobot {
         if(!DriverStation.getInstance().isFMSAttached()){
             autonomousInit();
         }
+
+        Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
+
+        if (DriverStation.getInstance().isOperatorControl()) {
+            if (matchTimer.hasPeriodPassed(60)) {
+                snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
+            } else {
+                snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
+            }
+        } else {
+            snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
+        }
+
         currentHatchState = AutoHatchState.None;
         interruptedHatchState = AutoHatchState.None;
     }
@@ -130,19 +148,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-
-		Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
-
-		if (DriverStation.getInstance().isOperatorControl()) {
-			if (matchTimer.hasPeriodPassed(60)) {
-				snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
-			} else {
-				snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
-			}
-		} else {
-			snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
-		}
-
 		jackStands.teleopControl();
 
     }

@@ -88,7 +88,6 @@ public class JackStands extends Subsystem {
         } else {
             _drive.set(0.0);
         }
-
     }
 
     public int getFrontError(){
@@ -99,18 +98,20 @@ public class JackStands extends Subsystem {
         return _backStand.getClosedLoopError();
     }
 
-    public double jackstandPitch(){
-        double kP = 0.01, pitch = RobotMap.navX.getPitch();
-        return pitch * kP;
-    }
-
-    public void extend(double error){
-        frontJackStandMotor.configMotionMagic(12000, 12000);
+    public void jackstandGyroCorrection(){
+        double kP = 1000;
+        double pitch = RobotMap.navX.getPitch();
+        int velocity = (int)(pitch * kP);
+        int frontVelocity = -velocity + Constants.FRONT_MAGIC_VEL;
+        int backVelocity = velocity + Constants.BACK_MAGIC_VEL;
+        frontJackStandMotor.configMotionMagic(frontVelocity, Constants.FRONT_MAGIC_ACC);
+        frontJackStandMotor.configMotionMagic(backVelocity, Constants.BACK_MAGIC_ACC);
     }
 
     public void pushData() {
         SmartDashboard.putNumber("Front Jack Stand", getFrontCurrentPosition());
         SmartDashboard.putNumber("Back Jack Stand", getBackCurrentPosition());
+
     }
 
     public boolean getAtTarget(){
@@ -121,11 +122,6 @@ public class JackStands extends Subsystem {
         return stand.equals(JackStand.FRONT) ? _frontStand.getAtTarget() : _backStand.getAtTarget();
     }
 
-    public boolean getFrontAtTarget() { return getAtTarget(JackStand.FRONT); }
-
-    public boolean getBackAtTarget() { return getAtTarget(JackStand.BACK); }
-
-
     //negative is forward
     public void setDrivePow(double pow){
         _drive.set(pow);
@@ -135,18 +131,23 @@ public class JackStands extends Subsystem {
     protected void initDefaultCommand() {}
 
     public static class Constants {
-        public static final int ENC_MIN_VAL = -75000;
-        public static final int ENC_MAX_VAL = -200;
-        public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_VAL;
+        public static final int ENC_MIN_FRONT_VAL = RobotMap.isComp ? -75000 : -79000;
+        public static final int ENC_MIN_BACK_VAL = RobotMap.isComp ? -75000 : -81000;
+        public static final int ENC_MAX_VAL = 0;
+        public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_BACK_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
+        public static final int FRONT_MAGIC_VEL = RobotMap.isComp ? 12000 : 12000;
+        public static final int FRONT_MAGIC_ACC = RobotMap.isComp ? 12000 : 12000;
+        public static final int BACK_MAGIC_VEL = RobotMap.isComp ? 12000 : 12000;
+        public static final int BACK_MAGIC_ACC = RobotMap.isComp ? 12000 : 12000;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("BottomBack", RobotMap.isComp ? -75000 : -78000),
-                new MechanismPosition("BottomFront", RobotMap.isComp ? -75000 : -82000),
-                new MechanismPosition("TopBack", -300),
-                new MechanismPosition("TopFront", 0)
+                new MechanismPosition("BottomBack", ENC_MIN_BACK_VAL),
+                new MechanismPosition("BottomFront", ENC_MIN_FRONT_VAL),
+                new MechanismPosition("TopBack", ENC_MAX_VAL),
+                new MechanismPosition("TopFront", ENC_MAX_VAL)
         };
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);

@@ -15,10 +15,6 @@ public class TurnToHeading extends Command {
 		_heading = heading;
 	}
 
-	public void initialize(){
-		OI.angle += 45;
-	}
-
 	public void execute(){
 		drivetrain.joystickDrive(
 				Drivetrain.gyroCorrectionOutput(_heading),

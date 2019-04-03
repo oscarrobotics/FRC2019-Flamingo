@@ -15,197 +15,232 @@ import frc.team832.robot.RobotMap;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Fourbar extends Subsystem {
 
-    private GeniusMechanism _top;
-    private MotionProfileStatus topStatus = new MotionProfileStatus();
-    private int targetPos = 0;
+	private GeniusMechanism _top;
+	private MotionProfileStatus topStatus = new MotionProfileStatus();
+	private int targetPos = 0;
 
-    public Fourbar(GeniusMechanism top){
-        _top = top;
-    }
+	public Fourbar (GeniusMechanism top) {
+		_top = top;
+	}
 
-    public double getTopTargetPosition(){ return _top.getTargetPosition(); }
+	public double getTopTargetPosition () {
+		return _top.getTargetPosition();
+	}
 
-    public double getTopCurrentPosition(){ return _top.getCurrentPosition(); }
+	public double getTopCurrentPosition () {
+		return _top.getCurrentPosition();
+	}
 
-    public boolean atTargetPosition() {
-        return (Math.abs(getTopCurrentPosition() - getTopTargetPosition()) < 20);
-    }
+	public boolean atTargetPosition () {
+		return (Math.abs(getTopCurrentPosition() - getTopTargetPosition()) < 20);
+	}
 
-    public void setTopLimits(int lowerLimit, int upperLimit) {
-        _top.setLowerLimit(lowerLimit);
-        _top.setUpperLimit(upperLimit);
-    }
+	public void setTopLimits (int lowerLimit, int upperLimit) {
+		_top.setLowerLimit(lowerLimit);
+		_top.setUpperLimit(upperLimit);
+	}
 
-    public void setTopPIDF(double kP, double kI, double kD, double kF) {
-        _top.setPIDF(kP, kI, kD, kF);
-    }
+	public void setTopPIDF (double kP, double kI, double kD, double kF) {
+		_top.setPIDF(kP, kI, kD, kF);
+	}
 
-    @Override
-    public void periodic() {
-        if (!isSafe()) {
-            _top.getMotor().setMotionMagcArbFF(getMinSafePos(), armFF());
-        }else{
-            _top.getMotor().setMotionMagcArbFF(targetPos, armFF());
-        }
-    }
+	@Override
+	public void periodic () {
+		if (!isSafe()) {
+			_top.getMotor().setMotionMagcArbFF(getMinSafePos(), armFF());
+		} else {
+			_top.getMotor().setMotionMagcArbFF(targetPos, armFF());
+		}
 
-    public void pushData() {
-        SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
-        SmartDashboard.putNumber("Fourbar error: ", _top.getMotor().getClosedLoopError());
-        SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
-        SmartDashboard.putNumber("ArmDeg", armDeg());
-    }
+		if (isMovingDown()){
+			_top.getMotor().configMotionMagic(Constants.MOTION_MAGIC_VEL / 2,Constants.MOTION_MAGIC_ACC / 2);
+		} else {
+			_top.getMotor().configMotionMagic(Constants.MOTION_MAGIC_VEL,Constants.MOTION_MAGIC_ACC);
+		}
+	}
 
-    public void stop(){
-        _top.stop();
-    }
+	public void pushData () {
+		SmartDashboard.putNumber("Top Fourbar", getTopCurrentPosition());
+		SmartDashboard.putNumber("Fourbar error: ", _top.getMotor().getClosedLoopError());
+		SmartDashboard.putNumber("Bottom Adj", Constants.convertUpperToLower(getTopCurrentPosition()));
+		SmartDashboard.putNumber("ArmDeg", armDeg());
+	}
 
-    public void setPosition(String index) {
-        MechanismPosition upperPos = Constants.Positions.getByIndex(index);
-        _top.setPosition(upperPos);
-    }
+	public void stop () {
+		_top.stop();
+	}
 
-    public void setPosition(double pos){
-        MechanismPosition upperPos = new MechanismPosition("ManualControl", pos);
-        _top.setPosition(upperPos);
-    }
+	public void setPosition (String index) {
+		MechanismPosition upperPos = Constants.Positions.getByIndex(index);
+		_top.setPosition(upperPos);
+	}
 
-    public void testAdjustment(double adjVal){
-        _top.setPosition(new MechanismPosition("AdjControl", getTopTargetPosition()+adjVal));
-    }
+	public void setPosition (double pos) {
+		MechanismPosition upperPos = new MechanismPosition("ManualControl", pos);
+		_top.setPosition(upperPos);
+	}
 
-    public void setMotionPosition(double position, double arbFF){
-        //mid = 2725      -65.5 min to 68.5 max
-        targetPos = (int)position;
-       // _top.getMotor().setMotionMagcArbFF(position, arbFF);
-    }
+	public void testAdjustment (double adjVal) {
+		_top.setPosition(new MechanismPosition("AdjControl", getTopTargetPosition() + adjVal));
+	}
 
-    public double armDeg() {
-        return OscarMath.map(getTopCurrentPosition(), 0, 4900, -65.5, 61  );
-    }
+	public void setMotionPosition (double position, double arbFF) {
+		//mid = 2725      -65.5 min to 68.5 max
+		targetPos = (int) position;
+	}
 
-    public double armFF (){
-        final double gravFF = .09;
-        return gravFF * Math.cos(Math.toRadians(armDeg()));
-    }
+	public double armDeg () {
+		return OscarMath.map(getTopCurrentPosition(), 0, Constants.TOP_MAX_VAL, -65.5, 61);
+	}
 
-    @Override
-    public void initDefaultCommand() { }
+	public double armFF () {
+		final double gravFF = .10;
+		return gravFF * Math.cos(Math.toRadians(armDeg()));
+	}
 
-    public void bufferTrajectories(MechanismMotionProfile topTraj, MechanismMotionProfile botTraj){
-        _top.bufferTrajectory(topTraj);
-    }
+	@Override
+	public void initDefaultCommand () {
+	}
 
-    public MotionProfileStatus getTopMpStatus() {
-        return topStatus;
-    }
+	public void bufferTrajectories (MechanismMotionProfile topTraj, MechanismMotionProfile botTraj) {
+		_top.bufferTrajectory(topTraj);
+	}
 
-    public void setMPControl(SetValueMotionProfile v) {
-        _top.setMotionProfile(v.value);
-    }
+	public MotionProfileStatus getTopMpStatus () {
+		return topStatus;
+	}
 
-    public void bufferAndSendMP() {
-        _top.bufferAndSendMP();
-    }
+	public void setMPControl (SetValueMotionProfile v) {
+		_top.setMotionProfile(v.value);
+	}
 
-    public boolean isMPFinished() {
-        return _top.isMPFinished();
-    }
-//fourbar3000 elevatormin
-    public int getMinSafePos(){
-        double fourbarMinPos = RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000))/2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6859;//5800 ish
-        SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
-        fourbarMinPos = OscarMath.clip(fourbarMinPos, 0, 2700);
-        return (int)fourbarMinPos;
-    }
+	public void bufferAndSendMP () {
+		_top.bufferAndSendMP();
+	}
 
-    public boolean isSafe(){
-        boolean isSafe;
-        int fourbarMinPos = getMinSafePos();
-        SmartDashboard.putNumber("Fourbar Safe Min: ", fourbarMinPos);
+	public boolean isMPFinished () {
+		return _top.isMPFinished();
+	}
 
-        isSafe = !(targetPos < fourbarMinPos);
-        SmartDashboard.putBoolean("Is Safe: ", isSafe);
+	//fourbar3000 elevatormin
+	public int getMinSafePos () {
+		//2700cos(x/210)
+		int offset;
+		double fourbarMinAngle = (65.5 * (Math.cos((Robot.elevator.getTargetPosition() + 715)/(216.456))) - 65.5);
+		if (Robot.fourbar.getTopCurrentPosition() < 1000){
+			offset = 600;
+		} else if (Robot.fourbar.getTopCurrentPosition() < 1500){
+			offset = 300;
+		} else if (Robot.fourbar.getTopCurrentPosition() < 2000){
+			offset = 0;
+		} else{
+			offset = -300;
+		}
 
-        return isSafe;
-    }
+		double fourbarMinPos = OscarMath.map(fourbarMinAngle, -65.5, 0, 0, Constants.TOP_MID_VAL) + offset;//RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6950;//5800 ish
+		SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
+		return (int) fourbarMinPos;
+	}
 
-    @SuppressWarnings({"unused", "WeakerAccess"})
-    public static class Constants {
-        public static final double COMP_TOP_MAX_VAL = 5100;
-        public static final double COMP_TOP_MIN_VAL = 0;
+	public boolean isMovingDown(){
+		return getTopCurrentPosition() > getTopTargetPosition();
+	}
 
-        public static final double TOP_MIN_VAL = 0;
-        public static final double TOP_MAX_VAL = 5100;
-        public static final double ARMLENGTH = 30.75;
-        public static final double UPPERPOTTOANGLE = .262;
-        public static final double UPPERPOTOFFSET = 112.66;
-        public static final double HEIGHTOFFSET = 2;
+	public boolean isSafe () {
+		boolean isSafe;
+		int fourbarMinPos = getMinSafePos();
+		SmartDashboard.putNumber("Fourbar Safe Min: ", fourbarMinPos);
 
-        public static final double MAXINCHES = 27;
-        public static final double MININCHES = -29;
+		isSafe = !(targetPos < fourbarMinPos);
+		SmartDashboard.putBoolean("Is Safe: ", isSafe);
 
-        private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("StartConfig", RobotMap.isComp? 115 : TOP_MIN_VAL),
-                new MechanismPosition("TestTop", 630),
-                new MechanismPosition("TestBottom", 250),
+		return isSafe;
+	}
 
-                new MechanismPosition("StorageConfig", RobotMap.isComp? 675 : 630),
+	@SuppressWarnings({"unused", "WeakerAccess"})
+	public static class Constants {
 
-                new MechanismPosition("Bottom", RobotMap.isComp? 300 : 300),
-                new MechanismPosition("Middle", RobotMap.isComp? 2455 : 2550),
-                new MechanismPosition("Top", RobotMap.isComp? 5300 : 4950),
+		public static final double TOP_MIN_VAL = 0;
+		public static final double TOP_MID_VAL = 2600;
+		public static final double TOP_MAX_VAL = 5000;
+		public static final double ARMLENGTH = 30.75;
+		public static final double UPPERPOTTOANGLE = .262;
+		public static final double UPPERPOTOFFSET = 112.66;
+		public static final double HEIGHTOFFSET = 2;
 
-                new MechanismPosition("IntakeHatch_HP", RobotMap.isComp? 361 : 0),
-                new MechanismPosition("IntakeCargo_Floor", RobotMap.isComp? 361 : 420),
+		public static final int MOTION_MAGIC_VEL = 1000;
+		public static final int MOTION_MAGIC_ACC = 1000;
 
-                new MechanismPosition("RocketHatch_Low", RobotMap.isComp? 361 : 420),
-                new MechanismPosition("RocketHatch_Middle", RobotMap.isComp? 361 : 460),
-                new MechanismPosition("RocketHatch_High", RobotMap.isComp? 361 : 640),
+		public static final double MAXINCHES = 27;
+		public static final double MININCHES = -29;
 
-                new MechanismPosition("RocketCargo_Low", RobotMap.isComp? 2500 : 420),
-                new MechanismPosition("RocketCargo_Middle", RobotMap.isComp? 2350 : 460),
-                new MechanismPosition("RocketCargo_High", RobotMap.isComp? 4675 : 640),
-        };
+		private static MechanismPosition[] _positions = new MechanismPosition[]{
+				new MechanismPosition("StartConfig", TOP_MIN_VAL),
 
-        @SuppressWarnings("unused")
-        public enum FourbarPosition {
-            StartConfig("StartConfig"),
-            StorageConfig("StorageConfig"),
-            Bottom("Bottom"),
-            Middle("Middle"),
-            Top("Top"),
-            IntakeCargo_Floor("IntakeCargo_Floor"),
-            CargoShip_Hatch("CargoShip_Hatch"),
-            CargoShip_Cargo("CargoShip_Cargo"),
-            RocketHatch_Low("RocketHatch_Low"),
-            RocketHatch_Middle("RocketHatch_Middle"),
-            RocketHatch_High("RocketHatch_High"),
-            RocketCargo_Low ("RocketCargo_Low"),
-            RocketCargo_Middle("RocketCargo_Middle"),
-            RocketCargo_High("RocketCargo_High");
+				new MechanismPosition("Bottom", TOP_MIN_VAL),
+				new MechanismPosition("Middle", TOP_MID_VAL),
+				new MechanismPosition("Top", TOP_MAX_VAL),
 
-            String _index;
+				new MechanismPosition("IntakeHatch_HP", TOP_MIN_VAL),
+				new MechanismPosition("IntakeCargo_Floor", TOP_MID_VAL),
 
-            FourbarPosition(String index) { _index = index; }
+				new MechanismPosition("CargoShip_Hatch", TOP_MIN_VAL),
+				new MechanismPosition("CargoShip_Cargo", 3200),
 
-            public String getIndex() { return _index; }
-        }
+				new MechanismPosition("RocketHatch_Low", TOP_MIN_VAL),
+				new MechanismPosition("RocketHatch_Middle", TOP_MAX_VAL),
+				new MechanismPosition("RocketHatch_High", TOP_MAX_VAL),
 
-        public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
+				new MechanismPosition("RocketCargo_Low", TOP_MID_VAL),
+				new MechanismPosition("RocketCargo_Middle", 4400),
+				new MechanismPosition("RocketCargo_High", TOP_MAX_VAL),
+		};
 
-        public static double inchToPotTick(double inches){
-            return (Math.toDegrees(Math.asin(inches/ARMLENGTH)) + UPPERPOTOFFSET)/UPPERPOTTOANGLE;
-        }
+		@SuppressWarnings("unused")
+		public enum FourbarPosition {
+			StartConfig("StartConfig"),
+			StorageConfig("StorageConfig"),
+			Bottom("Bottom"),
+			Middle("Middle"),
+			Top("Top"),
+			IntakeCargo_Floor("IntakeCargo_Floor"),
+			IntakeHatch_HP("IntakeHatch_HP"),
+			CargoShip_Hatch("CargoShip_Hatch"),
+			CargoShip_Cargo("CargoShip_Cargo"),
+			RocketHatch_Low("RocketHatch_Low"),
+			RocketHatch_Middle("RocketHatch_Middle"),
+			RocketHatch_High("RocketHatch_High"),
+			RocketCargo_Low("RocketCargo_Low"),
+			RocketCargo_Middle("RocketCargo_Middle"),
+			RocketCargo_High("RocketCargo_High");
 
-        public static double potTickToInchTop(double potTick){
-            return Math.sin(Math.toRadians((potTick*UPPERPOTTOANGLE)-UPPERPOTOFFSET))*ARMLENGTH;
-        }
+			String _index;
 
-        public static double convertUpperToLower(double upperVal) {
-            return (-1.39 * upperVal) + 1044;
-        }
+			FourbarPosition (String index) {
+				_index = index;
+			}
 
-        public static double convertCompUpperToLower(double upperVal) {return (-.452 * upperVal) + 332.38;}
-    }
+			public String getIndex () {
+				return _index;
+			}
+		}
+
+		public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
+
+		public static double inchToPotTick (double inches) {
+			return (Math.toDegrees(Math.asin(inches / ARMLENGTH)) + UPPERPOTOFFSET) / UPPERPOTTOANGLE;
+		}
+
+		public static double potTickToInchTop (double potTick) {
+			return Math.sin(Math.toRadians((potTick * UPPERPOTTOANGLE) - UPPERPOTOFFSET)) * ARMLENGTH;
+		}
+
+		public static double convertUpperToLower (double upperVal) {
+			return (-1.39 * upperVal) + 1044;
+		}
+
+		public static double convertCompUpperToLower (double upperVal) {
+			return (-.452 * upperVal) + 332.38;
+		}
+	}
 }
