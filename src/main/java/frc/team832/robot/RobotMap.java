@@ -14,7 +14,6 @@ import frc.team832.GrouchLib.Sensors.*;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
 
-import java.awt.*;
 import java.io.File;
 
 import static com.ctre.phoenix.CANifier.LEDChannel.*;
@@ -278,8 +277,8 @@ public class RobotMap {
 		frontJackStandMotor.setForwardSoftLimit(0);
 		backJackStandMotor.setForwardSoftLimit(0);
 
-		frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_FRONT_VAL);
-		backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_MIN_BACK_VAL);
+		frontJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_LVL3_FRONT_VAL);
+		backJackStandMotor.setReverseSoftLimit(JackStands.Constants.ENC_LVL3_BACK_VAL);
 
 		frontJackStandMotor.setSensorPhase(true);
 		backJackStandMotor.setSensorPhase(true);

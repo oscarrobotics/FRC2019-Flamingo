@@ -16,7 +16,7 @@ public class MoveJackStands extends InstantCommand {
     }
 
     public void initialize(){
-        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.RED);
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.GREEN);
         Robot.jackStands.setPosition(_index);
     }
 }

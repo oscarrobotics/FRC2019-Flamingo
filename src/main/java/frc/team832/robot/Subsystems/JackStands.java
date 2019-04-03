@@ -6,10 +6,8 @@ import frc.team832.GrouchLib.Mechanisms.LinearMechanism;
 import frc.team832.GrouchLib.Mechanisms.SimpleMechanism;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPosition;
 import frc.team832.GrouchLib.Mechanisms.Positions.MechanismPositionList;
-import frc.team832.GrouchLib.Motors.CANTalon;
 import frc.team832.robot.OI;
 import frc.team832.robot.RobotMap;
-import java.awt.*;
 
 import static frc.team832.robot.RobotMap.frontJackStandMotor;
 
@@ -50,8 +48,8 @@ public class JackStands extends Subsystem {
     }
 
     public void setPosition(String index) {
-        MechanismPosition backPos = Constants.Positions.getByIndex(index+"Back");
-        MechanismPosition frontPos = Constants.Positions.getByIndex(index+"Front");
+        MechanismPosition backPos = Constants.Positions.getByIndex("Back"+index);
+        MechanismPosition frontPos = Constants.Positions.getByIndex("Front"+index);
         _frontStand.getMotor().setMotionMagc(frontPos.getTarget());
         _backStand.getMotor().setMotionMagc(backPos.getTarget());
     }
@@ -131,10 +129,12 @@ public class JackStands extends Subsystem {
     protected void initDefaultCommand() {}
 
     public static class Constants {
-        public static final int ENC_MIN_FRONT_VAL = RobotMap.isComp ? -75000 : -79000;
-        public static final int ENC_MIN_BACK_VAL = RobotMap.isComp ? -75000 : -81000;
-        public static final int ENC_MAX_VAL = 0;
-        public static final int ENC_RANGE = ENC_MAX_VAL  - ENC_MIN_BACK_VAL;
+        public static final int ENC_LVL3_FRONT_VAL = RobotMap.isComp ? -75000 : -79000;
+        public static final int ENC_LVL3_BACK_VAL = RobotMap.isComp ? -75000 : -81000;
+        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -20000 : -21000;
+        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -20000 : -23000;
+        public static final int ENC_RETRACT_VAL = 0;
+        public static final int ENC_RANGE = ENC_RETRACT_VAL  - ENC_LVL3_BACK_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
@@ -144,10 +144,13 @@ public class JackStands extends Subsystem {
         public static final int BACK_MAGIC_ACC = RobotMap.isComp ? 12000 : 12000;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("BottomBack", ENC_MIN_BACK_VAL),
-                new MechanismPosition("BottomFront", ENC_MIN_FRONT_VAL),
-                new MechanismPosition("TopBack", ENC_MAX_VAL),
-                new MechanismPosition("TopFront", ENC_MAX_VAL)
+                new MechanismPosition("BackExtendLvl3", ENC_LVL3_BACK_VAL),
+                new MechanismPosition("FrontExtendLvl3", ENC_LVL3_FRONT_VAL),
+                new MechanismPosition("BackExtendLvl2", ENC_LVL2_BACK_VAL),
+                new MechanismPosition("FrontExtendLvl2", ENC_LVL2_FRONT_VAL),
+                new MechanismPosition("BackRetract", ENC_RETRACT_VAL),
+                new MechanismPosition("FrontRetract", ENC_RETRACT_VAL)
+
         };
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);

@@ -33,7 +33,8 @@ public class OI {
 
 	// Driver
 	public static XboxController driverPad;
-	private static JoystickButton frontStandUp, backStandUp, standDown, standUp, frontStandDown, backStandDown;
+	private static JoystickButton rightBumper, leftBumper, gamepadA, gamepadY, gamepadX, gamepadB;
+	private static JoystickButton startButton, backButton;
 	private static JoystickButton leftStickPress, rightStickPress;
 
 	// Operator
@@ -52,17 +53,19 @@ public class OI {
 
 	static void init () {
 		driverPad = new XboxController(0);
+
+		gamepadA = new JoystickButton(driverPad, 1);
+		gamepadB = new JoystickButton(driverPad, 2);
+		gamepadX = new JoystickButton(driverPad, 3);
+		gamepadY = new JoystickButton(driverPad, 4);
+		leftBumper = new JoystickButton(driverPad, 5);
+		rightBumper = new JoystickButton(driverPad, 6);
+		backButton = new JoystickButton(driverPad, 7);
+		startButton = new JoystickButton(driverPad, 8);
 		leftStickPress = new JoystickButton(driverPad, 9);
 		rightStickPress = new JoystickButton(driverPad, 10);
-		frontStandUp = new JoystickButton(driverPad, 6);
-		backStandUp = new JoystickButton(driverPad, 5);
-		standDown = new JoystickButton(driverPad, 1);
-		standUp = new JoystickButton(driverPad, 4);
-		frontStandDown = new JoystickButton(driverPad, 3);
-		backStandDown = new JoystickButton(driverPad, 2);
 
 		operatorBox = new Joystick(1);
-
 
 		op1 = new JoystickButton(operatorBox, 1);
 		op2 = new JoystickButton(operatorBox, 2);
@@ -105,17 +108,17 @@ public class OI {
 		white2.whileHeld(new GrabHatch());
 		black2.whileHeld(new ReleaseHatch());
 
-		standDown.whenPressed(new MoveJackStands("Bottom"));
-		standUp.whenPressed(new MoveJackStands("Top"));
+		startButton.whenPressed(new MoveJackStands("ExtendLvl3"));
+		backButton.whenPressed(new MoveJackStands("ExtendLvl2"));
 
-		backStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Top"));
-		backStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-		frontStandUp.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Top"));
-		frontStandUp.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
-		backStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Bottom"));
-		backStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-		frontStandDown.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Bottom"));
-		frontStandDown.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		gamepadA.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Retract"));
+		gamepadA.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+		gamepadX.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Retract"));
+		gamepadX.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		gamepadB.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "ExtendLvl3"));
+		gamepadB.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+		gamepadY.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "ExtendLvl3"));
+		gamepadY.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
 		handleControls();
 	}
 
@@ -191,12 +194,12 @@ public class OI {
 		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeHatch_HP.getIndex(), ElevatorPosition.IntakeHatch_HP.getIndex())));
 		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex())));
 
-		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Low.getIndex(), ElevatorPosition.RocketHatch_Low.getIndex())));
+		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex())));
 		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Middle.getIndex(), ElevatorPosition.RocketHatch_Middle.getIndex())));
-		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex())));
-		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
+		op3.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Low.getIndex(), ElevatorPosition.RocketHatch_Low.getIndex())));
+		op4.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())));
 		op5.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Middle.getIndex(), ElevatorPosition.RocketCargo_Middle.getIndex())));
-		op6.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_High.getIndex(), ElevatorPosition.RocketCargo_High.getIndex())));
+		op6.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketCargo_Low.getIndex(), ElevatorPosition.RocketCargo_Low.getIndex())));
 		incr.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Hatch.getIndex(), ElevatorPosition.CargoShip_Hatch.getIndex())));
 		decr.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Cargo.getIndex(), ElevatorPosition.CargoShip_Cargo.getIndex())));
 
