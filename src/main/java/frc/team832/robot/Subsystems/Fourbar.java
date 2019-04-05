@@ -126,18 +126,22 @@ public class Fourbar extends Subsystem {
 	public int getMinSafePos () {
 		//2700cos(x/210)
 		int offset;
-		double fourbarMinAngle = (65.5 * (Math.cos((Robot.elevator.getTargetPosition() + 715)/(216.456))) - 65.5);
+
+		double fourbarMinAngle = RobotMap.isComp ? (65.5 * (Math.cos((Robot.elevator.getTargetPosition() - 35)/(248))) - 65.5) : (65.5 * (Math.cos((Robot.elevator.getTargetPosition() + 685)/(216.456))) - 65.5);
+		SmartDashboard.putNumber("Safe Degrees", fourbarMinAngle);
 		if (Robot.fourbar.getTopCurrentPosition() < 1000){
-			offset = 600;
+			offset = 700;
 		} else if (Robot.fourbar.getTopCurrentPosition() < 1500){
-			offset = 300;
+			offset = 400;
 		} else if (Robot.fourbar.getTopCurrentPosition() < 2000){
 			offset = 0;
-		} else{
-			offset = -300;
+		} else {
+			offset = -100;
 		}
 
-		double fourbarMinPos = OscarMath.map(fourbarMinAngle, -65.5, 0, 0, Constants.TOP_MID_VAL) + offset;//RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6950;//5800 ish
+		//RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6950;//5800 ish
+
+		double fourbarMinPos = OscarMath.map(fourbarMinAngle, -65.5, 0, 0, Constants.TOP_MID_VAL) + offset;
 		SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
 		return (int) fourbarMinPos;
 	}
@@ -168,8 +172,8 @@ public class Fourbar extends Subsystem {
 		public static final double UPPERPOTOFFSET = 112.66;
 		public static final double HEIGHTOFFSET = 2;
 
-		public static final int MOTION_MAGIC_VEL = 1000;
-		public static final int MOTION_MAGIC_ACC = 1000;
+		public static final int MOTION_MAGIC_VEL = 1500;
+		public static final int MOTION_MAGIC_ACC = 1500;
 
 		public static final double MAXINCHES = 27;
 		public static final double MININCHES = -29;
@@ -181,19 +185,19 @@ public class Fourbar extends Subsystem {
 				new MechanismPosition("Middle", TOP_MID_VAL),
 				new MechanismPosition("Top", TOP_MAX_VAL),
 
-				new MechanismPosition("IntakeHatch_HP", TOP_MIN_VAL),
+				new MechanismPosition("IntakeHatch_HP", TOP_MID_VAL),
 				new MechanismPosition("IntakeCargo_Floor", TOP_MID_VAL),
 
-				new MechanismPosition("CargoShip_Hatch", TOP_MIN_VAL),
-				new MechanismPosition("CargoShip_Cargo", 3200),
+				new MechanismPosition("CargoShip_Hatch", TOP_MID_VAL),
+				new MechanismPosition("CargoShip_Cargo", 3500),
 
-				new MechanismPosition("RocketHatch_Low", TOP_MIN_VAL),
+				new MechanismPosition("RocketHatch_Low", TOP_MID_VAL),
 				new MechanismPosition("RocketHatch_Middle", TOP_MAX_VAL),
 				new MechanismPosition("RocketHatch_High", TOP_MAX_VAL),
 
 				new MechanismPosition("RocketCargo_Low", TOP_MID_VAL),
-				new MechanismPosition("RocketCargo_Middle", 4400),
-				new MechanismPosition("RocketCargo_High", TOP_MAX_VAL),
+				new MechanismPosition("RocketCargo_Middle", 4600),
+				new MechanismPosition("RocketCargo_High", TOP_MAX_VAL - 100),
 		};
 
 		@SuppressWarnings("unused")

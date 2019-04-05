@@ -13,7 +13,7 @@ public class GrabHatch extends Command {
     }
 
     public void execute(){
-
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_RELEASE);
     }
 
     @Override
@@ -24,5 +24,6 @@ public class GrabHatch extends Command {
     @Override
     protected void end(){
         Robot.snowBlower.stopHatchHolder();
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, SnowBlower.Constants.Colors.DEFAULT);
     }
 }

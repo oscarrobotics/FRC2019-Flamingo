@@ -115,6 +115,7 @@ public class Robot extends TimedRobot {
         fourbarTop.resetSensor();
         fourbar.setPosition(Fourbar.Constants.FourbarPosition.Bottom.getIndex());
         elevator.setPosition(Elevator.Constants.ElevatorPosition.Top.getIndex());
+        jackStands.setPosition("Retract");
     }
 
     @Override
@@ -125,20 +126,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit(){
         Scheduler.getInstance().enable();
+        Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
         if(!DriverStation.getInstance().isFMSAttached()){
             autonomousInit();
-        }
-
-        Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
-
-        if (DriverStation.getInstance().isOperatorControl()) {
-            if (matchTimer.hasPeriodPassed(60)) {
-                snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
-            } else {
-                snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
-            }
-        } else {
-            snowBlower.setLEDs(LEDMode.STATIC, allianceColor);
         }
 
         currentHatchState = AutoHatchState.None;
@@ -149,7 +139,7 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		jackStands.teleopControl();
-
+        OI.runLED();
     }
 
     @Override
@@ -162,8 +152,7 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().disable();
         fourbarTop.setNeutralMode(NeutralMode.Coast);
         jackStands.resetEncoders();
-        Color forestGreen = new Color(24, 200, 0);
-        snowBlower.setLEDs(LEDMode.STATIC, forestGreen);
+        snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
         navX.zero();
     }
 

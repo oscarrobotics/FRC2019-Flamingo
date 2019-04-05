@@ -1,7 +1,6 @@
 package frc.team832.robot.Subsystems;
 
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
@@ -10,12 +9,15 @@ import frc.team832.robot.Commands.Drivetrain.DrivetrainTeleop;
 import frc.team832.robot.OI;
 import frc.team832.robot.RobotMap;
 
+import static edu.wpi.first.wpilibj.GenericHID.Hand.*;
 import static frc.team832.robot.Robot.drivetrain;
 import static frc.team832.robot.RobotMap.diffDrive;
 
 public class Drivetrain extends Subsystem {
 
     private SmartDifferentialDrive _driveSystem;
+
+    static double temp;
 
     private double _kP = .007, _kI, _kD, _kF;
     private static double gyroHeading = 0;
@@ -105,29 +107,24 @@ public class Drivetrain extends Subsystem {
     }
 
     public static void teleopControl (){
-        double leftY = OI.driverPad.getY(GenericHID.Hand.kLeft);
-        double rightX = -OI.driverPad.getX(GenericHID.Hand.kRight);
+        double leftY = OI.driverPad.getY(Constants.swapSticks ? kRight : kLeft);
+        double rightX = -OI.driverPad.getX(Constants.swapSticks ? kLeft : kRight);
+        double joyRotation = (OI.driverPad.getTriggerAxis(kRight) - OI.driverPad.getTriggerAxis(kRight)) * Constants.SENSITIVE_TURN_MULTIPLIER;
         double rotation;
 
         if (diffDrive.isQuickTurning()) {
-            rotation = rightX * 0.4;
+            rotation = rightX * 0.3;
         } else {
             rotation = OscarMath.signumPow(rightX, 3);
         }
+        rotation += joyRotation;
 
-        if(OI.driverPad.getTriggerAxis(GenericHID.Hand.kLeft) > .5) {
-            drivetrain.joystickDrive(
-                    leftY,
-                    rotation * Constants.sensitiveTurnMultiplier,
-                    Drivetrain.DriveMode.CURVATURE,
-                    SmartDifferentialDrive.LoopMode.VELOCITY);
-        } else {
-            drivetrain.joystickDrive(
-                    leftY,
-                    rotation,
-                    Drivetrain.DriveMode.CURVATURE,
-                    SmartDifferentialDrive.LoopMode.PERCENTAGE);
-        }
+        drivetrain.joystickDrive(
+                leftY,
+                rotation,
+                Drivetrain.DriveMode.CURVATURE,
+                SmartDifferentialDrive.LoopMode.PERCENTAGE
+        );
     }
 
     public void pullData() {
@@ -169,7 +166,8 @@ public class Drivetrain extends Subsystem {
     public static class Constants {
         public static final double gyrokP = 0.00175;
         public static final double epsilon = 3.0;
-        public static final double sensitiveTurnMultiplier = 0.3;
+        public static final double SENSITIVE_TURN_MULTIPLIER = 0.5;
+        public static final boolean swapSticks = false;
     }
 
     public double getOutputCurrent() {

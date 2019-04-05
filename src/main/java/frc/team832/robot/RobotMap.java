@@ -3,6 +3,8 @@ package frc.team832.robot;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.team832.GrouchLib.Control.*;
@@ -44,7 +46,6 @@ public class RobotMap {
 			public static final int jackStandDrive = 11;
 			public static final int cargoIntake = 12;
 			public static final int hatchHolder = 13;
-			public static final int hatchGrabbor = 14;
 			public static final int canifier = 0;
 		}
 
@@ -60,13 +61,13 @@ public class RobotMap {
 	SLOT ASSIGNMENTS
 
 		COMP
-							0        15
-							1        14
+				LeftDrive1	0        15	RightDrive1
+				LeftDrive2	1        14	RightDrive2
 							2        13
-							3        12
-							4        11
-							5        10
-							6        9
+							3        12 FrontJackstand
+							4        11 HatchIntake
+							5        10 CargoIntake
+							6        9 	CANifier
 							7        8
 		PRAC
 				LeftDrive1	0        15	RightDrive1
@@ -75,7 +76,7 @@ public class RobotMap {
 					   N/A  3        12
 							4        11
 							5        10
-							6        9
+				HatchIntake	6        9
 							7        8
 
 
@@ -124,7 +125,6 @@ public class RobotMap {
 	static SimpleMechanism hatchHolder;
 	static MiniPID hatchHolderPID;
 
-	static CANTalon hatchGrabborMotor;
 	static SimplySmartMotor hatchHolderSmartMotor;
 	static RotaryMechanism hatchGrabbor;
 
@@ -148,7 +148,10 @@ public class RobotMap {
 			isComp = true;
 		}
 
-		CameraServer.getInstance().startAutomaticCapture(0);
+		UsbCamera driverCamera = CameraServer.getInstance().startAutomaticCapture(0);
+		driverCamera.setPixelFormat(VideoMode.PixelFormat.kYUYV);
+		driverCamera.setResolution(352, 288);
+//		driverCamera.setFPS(20);
 
 		/**
 		 * EXTREMELY IMPORTANT!!!!!!
@@ -165,7 +168,7 @@ public class RobotMap {
 		canifier = new CANifier(0);
 
 		canifier.setLedChannels(LEDChannelC, LEDChannelB, LEDChannelA);
-		canifier.setLedMaxOutput(0.3);
+		canifier.setLedMaxOutput(0.5);
 
 		// NO PCM
 //		visionLight = new Solenoid(pcm, IDs.PCM.lightPort);
@@ -187,10 +190,7 @@ public class RobotMap {
 
 		cargoIntakeMotor = new CANVictor(IDs.CAN.cargoIntake);
 		hatchHolderMotor = new CANVictor(IDs.CAN.hatchHolder);
-		// not yet added, and not CAN-safe
-		// hatchGrabborMotor = new OscarCANTalon(IDs.CAN.hatchGrabbor);
 
-		hatchHolderPID = new MiniPID(1, 0, 0);
 		hatchHolderSmartMotor = new SimplySmartMotor(hatchHolderMotor, new RemoteEncoder(canifier));
 
 
@@ -214,9 +214,6 @@ public class RobotMap {
 		leftSlave.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
 		rightMaster.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
 		rightSlave.getInstance().setSmartCurrentLimit(stallCurrent, freeCurrent);
-
-
-
 
 		leftMaster.setOutputRange(-1.0, 1.0);
 		leftSlave.setOutputRange(-1.0, 1.0);
@@ -289,19 +286,20 @@ public class RobotMap {
 		elevatorMotor.setNeutralMode(NeutralMode.Brake);
 		elevatorMotor.setInverted(isComp ? false : true);
 		elevatorMotor.setSensorPhase(false);
-		elevatorMotor.configMotionMagic(500, 1500);
+		elevatorMotor.configMotionMagic(Elevator.Constants.MOTION_MAGIC_VEL, Elevator.Constants.MOTION_MAGIC_ACC);
 
 		fourbarTopMech = new GeniusMechanism(fourbarTop, Fourbar.Constants.Positions);
-		fourbarTopMech.setPIDF(.5, 0.0, 0.0, .02);
+		fourbarTopMech.setPIDF(.6, 0.0, 0.0, .02);
 
 		elevatorMech = new GeniusMechanism(elevatorMotor, Elevator.Constants.Positions);
 		elevatorMech.setPIDF(8, 0, 0, 0);//was 16
 		// TODO: Actually tune this heckin thing!!
 
-		elevatorMotor.setForwardSoftLimit(isComp ? 430 : -365);
+		elevatorMotor.setForwardSoftLimit(isComp ? 43 : -365);
 		elevatorMotor.setReverseSoftLimit(isComp ? 30 : -720);
 
 		cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
+		cargoIntakeMotor.setInverted(true);
 
 		cargoIntake = new SimpleMechanism(cargoIntakeMotor);
 

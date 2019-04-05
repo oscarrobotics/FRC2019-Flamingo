@@ -11,6 +11,7 @@ import frc.team832.GrouchLib.Mechanisms.SmartMechanism;
 import frc.team832.GrouchLib.Sensors.CANifier;
 import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.GrouchLib.Util.OscarMath;
+import frc.team832.robot.RobotMap;
 
 import java.awt.*;
 
@@ -80,7 +81,7 @@ public class SnowBlower extends Subsystem {
 
 	@Override
 	public void periodic () {
-		hatchStallState = isMotorStall(6, 12.0, 2);
+		hatchStallState = isMotorStall(RobotMap.isComp ? 11 : 6, 12.0, 0.5);
 		hasHatch = hatchStallState == StallState.STALLED || hatchStallState == StallState.LEAVING_STALL;
 	}
 
@@ -95,7 +96,6 @@ public class SnowBlower extends Subsystem {
 	}
 
 	public boolean hasHatch () {
-
 		return hasHatch;
 	}
 
@@ -105,6 +105,10 @@ public class SnowBlower extends Subsystem {
 
 	public void stopHatchHolder () {
 		_hatchHoldor.stop();
+	}
+
+	public void stopCargoIntake () {
+		_intake.stop();
 	}
 
 	public enum CargoPosition {
@@ -128,7 +132,7 @@ public class SnowBlower extends Subsystem {
 	}
 
 	public void setBallStatus (boolean ballStatus) {
-		setLEDs(LEDMode.STATIC, ballStatus ? Color.ORANGE : Color.GREEN);
+		//setLEDs(LEDMode.STATIC, ballStatus ? Color.ORANGE : Color.GREEN);
 		holdBall = ballStatus;
 	}
 
@@ -221,6 +225,7 @@ public class SnowBlower extends Subsystem {
 		HATCH_ACQUIRED,
 		HATCH_HOLD,
 		HATCH_RELEASE,
+		JACKSTAND_AT_TARGET,
 		ALTERNATE_ALLIANCE_GREEN,
 		OFF
 	}
@@ -260,43 +265,46 @@ public class SnowBlower extends Subsystem {
 			double millis = Timer.getFPGATimestamp() * 1000;
 			switch (_ledMode) {
 				case STATIC:
-					_canifier.sendColor(_color);
+					staticColor(_color);
 					break;
 				case RAINBOW:
 					rainbow();
 					break;
 				case CUSTOM_FLASH:
-					flash(_color, 0.1);
+					blink(_color, 0.1f);
 					break;
 				case CUSTOM_BREATHE:
-					breathe(_color);
+					goodBreathe(_color, 0.01f);
 					break;
 				case PREPARE_INTAKE:
-					staticColor(Color.MAGENTA);
+					if (millis - lastMillis < 3000) {
+						staticColor(Color.MAGENTA);
+					} else {
+						staticColor(Constants.Colors.DEFAULT);
+					}
 					break;
 				case BALL_INTAKE:
-					breathe(Color.ORANGE, 0.01f);
+					goodBreathe(Constants.Colors.CARGO, 0.01f);
 					break;
 				case BALL_HOLD:
-					staticColor(Color.ORANGE);
+					staticColor(Constants.Colors.CARGO);
 					break;
 				case BALL_OUTTAKE:
-					flash(Color.ORANGE, 0.05);
+					goodBreathe(Constants.Colors.CARGO, 0.02f);
 					break;
 				case HATCH_ACQUIRED:
-					rainbow();
-					if (millis - lastMillis > 3000) {
-						_ledMode = _lastLedMode;
-						_color = _lastColor;
-					}
+					goodBreathe(Color.BLUE, 0.02f);
 				case HATCH_INTAKE:
+					goodBreathe(Constants.Colors.HATCH, 0.01f);
 					break;
 				case HATCH_HOLD:
-					 breathe(Color.YELLOW, 0.01f);
+					staticColor(Color.BLUE);
 					break;
 				case HATCH_RELEASE:
-					flash(Color.YELLOW, 0.05);
+					goodBreathe(Constants.Colors.HATCH, 0.02f);
 					break;
+				case JACKSTAND_AT_TARGET:
+					goodBreathe(Constants.Colors.DEFAULT, 0.02f);
 				case ALTERNATE_ALLIANCE_GREEN:
 					break;
 				case OFF:
@@ -305,8 +313,8 @@ public class SnowBlower extends Subsystem {
 			}
 		}
 
-
 		private void staticColor (Color color) {
+			_canifier.setLedMaxOutput(1);
 			_canifier.sendColor(color);
 		}
 
@@ -318,12 +326,13 @@ public class SnowBlower extends Subsystem {
 		}
 
 		private void rainbow () {
+			_canifier.setLedMaxOutput(1);
 			rainbow(0.005f);
 		}
 
 		private float breatheBrightness = 0f;
 
-		private void breathe (Color color, float breatheFactor) {
+		private void breathe(Color color, float breatheFactor) {
 			boolean changeDir = breatheBrightness >= 1.0f || breatheBrightness <= 0.0f;
 			float[] hsb = getHSBFromColor(color);
 			breatheBrightness *= changeDir ? -1 : 1;
@@ -331,7 +340,14 @@ public class SnowBlower extends Subsystem {
 			_canifier.sendHSB(hsb);
 		}
 
-		private void breathe (Color color) {
+		private void goodBreathe(Color color, float speed) {
+			float brightness = (float) ((Math.sin(speed * (Timer.getFPGATimestamp() * 1000)) + 1) / 2);
+			SmartDashboard.putNumber("brightness", brightness);
+			_canifier.setLedMaxOutput(OscarMath.clip(brightness, 0, 1));
+			_canifier.sendColor(color);
+		}
+
+		private void breathe(Color color) {
 			breathe(color, 0.02f);
 		}
 
@@ -345,8 +361,12 @@ public class SnowBlower extends Subsystem {
 			_canifier.sendHSB(hsb);
 		}
 
-		private void blink (Color color) {
-
+		private void blink (Color color, float speed) {
+			float[] hsb = getHSBFromColor(color);
+			int brightness = (int) (Math.sin(speed * (Timer.getFPGATimestamp() * 1000)) + 1) / 2;
+			brightness = OscarMath.clip(brightness, 0, 1);
+			hsb[2] = brightness;
+			_canifier.sendHSB(hsb);
 		}
 
 		private Color hsbToColor (float[] hsbVals) {
@@ -414,6 +434,12 @@ public class SnowBlower extends Subsystem {
 
 	@SuppressWarnings("WeakerAccess")
 	public static class Constants {
+
+		public static class Colors {
+			public static final Color CARGO = new Color(155, 10, 0);
+			public static final Color HATCH = Color.YELLOW;
+			public static final Color DEFAULT = Color.GREEN;
+		}
 
 		public static final double HeightController_kP = 1;
 		public static final double HeightController_kI = 0;

@@ -57,11 +57,11 @@ public class JackStands extends Subsystem {
 
    // public void setFrontPosition(String index) { _frontStand.setPosition(index+"Front"); }
     public void setFrontPosition(double pos) { _frontStand.setPosition(pos); }
-    public void setFrontPosition(String index){_frontStand.getMotor().setMotionMagc(_frontStand.getPresetPosition(index+"Front").getTarget());}
+    public void setFrontPosition(String index){_frontStand.getMotor().setMotionMagc(_frontStand.getPresetPosition("Front"+index).getTarget());}
 
     //public void setBackPosition(String index) { _backStand.setPosition(index+"Back"); }
     public void setBackPosition(double pos) { _backStand.setPosition(pos); }
-    public void setBackPosition(String index){_backStand.getMotor().setMotionMagc(_backStand.getPresetPosition(index+"Front").getTarget());}
+    public void setBackPosition(String index){_backStand.getMotor().setMotionMagc(_backStand.getPresetPosition("Back"+index).getTarget());}
 
     public void resetEncoders(){
         _backStand.resetSensor();
@@ -129,19 +129,19 @@ public class JackStands extends Subsystem {
     protected void initDefaultCommand() {}
 
     public static class Constants {
-        public static final int ENC_LVL3_FRONT_VAL = RobotMap.isComp ? -75000 : -79000;
-        public static final int ENC_LVL3_BACK_VAL = RobotMap.isComp ? -75000 : -81000;
-        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -20000 : -21000;
-        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -20000 : -23000;
+        public static final int ENC_LVL3_FRONT_VAL = RobotMap.isComp ? -76000 : -79000;
+        public static final int ENC_LVL3_BACK_VAL = RobotMap.isComp ? -76000 : -81000;
+        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -28000 : -26000;
+        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -28000 : -28000;
         public static final int ENC_RETRACT_VAL = 0;
         public static final int ENC_RANGE = ENC_RETRACT_VAL  - ENC_LVL3_BACK_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
-        public static final int FRONT_MAGIC_VEL = RobotMap.isComp ? 12000 : 12000;
-        public static final int FRONT_MAGIC_ACC = RobotMap.isComp ? 12000 : 12000;
+        public static final int FRONT_MAGIC_VEL = RobotMap.isComp ? 16000 : 12000;
+        public static final int FRONT_MAGIC_ACC = RobotMap.isComp ? 22000 : 12000;
         public static final int BACK_MAGIC_VEL = RobotMap.isComp ? 12000 : 12000;
-        public static final int BACK_MAGIC_ACC = RobotMap.isComp ? 12000 : 12000;
+        public static final int BACK_MAGIC_ACC = RobotMap.isComp ? 14000 : 12000;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
                 new MechanismPosition("BackExtendLvl3", ENC_LVL3_BACK_VAL),

@@ -16,15 +16,14 @@ public class MoveSingleJackStand extends Command {
     }
 
     public void initialize(){
-       switch (_stand) {
-            case FRONT:
-                Robot.jackStands.setFrontPosition(_index);
-                break;
-            case BACK:
-                Robot.jackStands.setBackPosition(_index);
-                break;
-        }
-
+           switch (_stand) {
+                case FRONT:
+                    Robot.jackStands.setFrontPosition(_index);
+                    break;
+                case BACK:
+                    Robot.jackStands.setBackPosition(_index);
+                    break;
+            }
     }
 
     @Override

@@ -8,33 +8,28 @@ import java.awt.*;
 
 
 public class ReleaseHatch extends Command {
+    boolean isStalled;
+    public ReleaseHatch(){ }
 
-
-    public ReleaseHatch(){
-    }
-
-    public void initialize(){
-        Robot.snowBlower.setHatchHolderPower(-.75);
+    public void initialize() {
+        Robot.snowBlower.setHatchHolderPower(-1.0);
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_INTAKE);
     }
 
     public void execute(){
-        if (Robot.snowBlower.hasHatch()) {
-            Robot.snowBlower.stopHatchHolder();
+        isStalled =  Robot.snowBlower.hasHatch();
+        if (isStalled) {
             Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_ACQUIRED);
-        } else {
-            Robot.snowBlower.setHatchHolderPower(-1.0);
-            Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_RELEASE);
         }
     }
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return isStalled;
     }
 
     @Override
     protected void end(){
-        Robot.snowBlower.stopHatchHolder();
-        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.OFF);
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_HOLD);
     }
 }

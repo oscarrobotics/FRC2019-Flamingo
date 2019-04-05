@@ -16,7 +16,10 @@ public class MoveJackStands extends InstantCommand {
     }
 
     public void initialize(){
-        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.GREEN);
-        Robot.jackStands.setPosition(_index);
+        double jackstandDiff = Math.abs(Robot.jackStands.getBackTargetPosition() - Robot.jackStands.getFrontCurrentPosition());
+        if (jackstandDiff < 30000) {
+            Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.GREEN);
+            Robot.jackStands.setPosition(_index);
+        }
     }
 }
