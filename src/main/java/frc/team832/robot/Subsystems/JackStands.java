@@ -131,17 +131,17 @@ public class JackStands extends Subsystem {
     public static class Constants {
         public static final int ENC_LVL3_FRONT_VAL = RobotMap.isComp ? -76000 : -79000;
         public static final int ENC_LVL3_BACK_VAL = RobotMap.isComp ? -76000 : -81000;
-        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -28000 : -26000;
-        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -28000 : -28000;
+        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -30000 : -26000;
+        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -30000 : -28000;
         public static final int ENC_RETRACT_VAL = 0;
         public static final int ENC_RANGE = ENC_RETRACT_VAL  - ENC_LVL3_BACK_VAL;
         public static final double MAX_INCHES = 29;
         public static final double ENC_TO_INCHES = MAX_INCHES/(double)ENC_RANGE;
         public static final double INCHES_TO_ENC = 1.0 / ENC_TO_INCHES;
-        public static final int FRONT_MAGIC_VEL = RobotMap.isComp ? 16000 : 12000;
-        public static final int FRONT_MAGIC_ACC = RobotMap.isComp ? 22000 : 12000;
-        public static final int BACK_MAGIC_VEL = RobotMap.isComp ? 12000 : 12000;
-        public static final int BACK_MAGIC_ACC = RobotMap.isComp ? 14000 : 12000;
+        public static final int FRONT_MAGIC_VEL = RobotMap.isComp ? 18000 : 12000;
+        public static final int FRONT_MAGIC_ACC = RobotMap.isComp ? 26000 : 12000;
+        public static final int BACK_MAGIC_VEL = RobotMap.isComp ? 14000 : 12000;
+        public static final int BACK_MAGIC_ACC = RobotMap.isComp ? 17000 : 12000;
 
         private static MechanismPosition[] _positions = new MechanismPosition[]{
                 new MechanismPosition("BackExtendLvl3", ENC_LVL3_BACK_VAL),
@@ -152,6 +152,18 @@ public class JackStands extends Subsystem {
                 new MechanismPosition("FrontRetract", ENC_RETRACT_VAL)
 
         };
+
+        public enum JackstandPosition {
+            ExtendLvl3("ExtendLvl3"),
+            ExtendLvl2("ExtendLvl2"),
+            Retract("Retract");
+
+            String _index;
+
+            JackstandPosition(String index) { _index = index; }
+
+            public String getIndex() { return _index; }
+        }
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
 

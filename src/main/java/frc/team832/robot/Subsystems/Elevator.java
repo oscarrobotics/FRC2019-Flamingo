@@ -107,8 +107,8 @@ public class Elevator extends Subsystem {
     public static class Constants {
 
         public static final int POT_BOTTOM_VALUE = RobotMap.isComp ? 35 : -685;
-        public static final int POT_MID_VALUE = RobotMap.isComp ? 195 : -545;
         public static final int POT_TOP_VALUE = RobotMap.isComp ? 430 : -375;
+        public static final int POT_MID_VALUE = (int)OscarMath.mid(POT_BOTTOM_VALUE, POT_TOP_VALUE);
 
         public static final double POT_RANGE = (POT_TOP_VALUE) - (POT_BOTTOM_VALUE);
         public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
@@ -170,7 +170,6 @@ public class Elevator extends Subsystem {
 
             public String getIndex() { return _index; }
         }
-
 
         public static final MechanismPositionList Positions = new MechanismPositionList(_positions);
     }

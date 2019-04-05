@@ -16,6 +16,7 @@ import frc.team832.robot.Commands.FourBar.*;
 import frc.team832.robot.Commands.TheBigOne.*;
 import frc.team832.robot.Subsystems.Elevator.Constants.*;
 import frc.team832.robot.Subsystems.Fourbar.Constants.*;
+import frc.team832.robot.Subsystems.JackStands.Constants.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -97,20 +98,33 @@ public class OI {
 		black2.whileHeld(new ReleaseHatch());
 		black2.whenReleased(new StopHatch());
 
+		backButton.whenPressed(new MoveJackStands(JackstandPosition.ExtendLvl2.getIndex()));
+
+		gamepadA.whenPressed(new MoveJackStands(JackstandPosition.ExtendLvl3.getIndex()));
+		gamepadX.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, JackstandPosition.ExtendLvl3.getIndex()));
+		gamepadX.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		gamepadB.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, JackstandPosition.ExtendLvl3.getIndex()));
+		gamepadB.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+		gamepadY.whenPressed(new MoveJackStands(JackstandPosition.Retract.getIndex()));
+
+		rightBumper.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, JackstandPosition.Retract.getIndex()));
+		rightBumper.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		leftBumper.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, JackstandPosition.Retract.getIndex()));
+		leftBumper.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+
+		/*
+		startButton.whenPressed(new MoveJackStands("ExtendLvl3"));
 		backButton.whenPressed(new MoveJackStands("ExtendLvl2"));
 
-		gamepadA.whenPressed(new MoveJackStands("ExtendLvl3"));
-		gamepadX.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "ExtendLvl3"));
+		gamepadA.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Retract"));
+		gamepadA.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
+		gamepadX.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Retract"));
 		gamepadX.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
 		gamepadB.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "ExtendLvl3"));
 		gamepadB.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-		gamepadY.whenPressed(new MoveJackStands("Retract"));
-
-		rightBumper.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "Retract"));
-		rightBumper.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
-		leftBumper.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, "Retract"));
-		leftBumper.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
-
+		gamepadY.whenPressed(new MoveSingleJackStand(JackStands.JackStand.FRONT, "ExtendLvl3"));
+		gamepadY.whenReleased(new JackstandHoldPosition(JackStands.JackStand.FRONT));
+		*/
 
 		mToggle.whenActive(new ManualToggle(new ManualMoveFourbar(), new DoNothing()));
 		mToggle.whenActive(new ManualToggle(new ManualMoveElevator(), new DoNothing()));
@@ -164,6 +178,8 @@ public class OI {
 
 			if (Robot.jackStands.getAtTarget() && Robot.jackStands.getBackTargetPosition() != 0 && Robot.jackStands.getFrontTargetPosition() != 0){
 				Robot.snowBlower.setLEDs(SnowBlower.LEDMode.JACKSTAND_AT_TARGET);
+			} else {
+				Robot.snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, SnowBlower.Constants.Colors.DEFAULT);
 			}
 	}
 
