@@ -173,7 +173,7 @@ public class Fourbar extends Subsystem {
 		public static final double HEIGHTOFFSET = 2;
 
 		public static final int MOTION_MAGIC_VEL = 1500;
-		public static final int MOTION_MAGIC_ACC = 1500;
+		public static final int MOTION_MAGIC_ACC = 2500;
 
 		public static final double MAXINCHES = 27;
 		public static final double MININCHES = -29;
@@ -186,10 +186,11 @@ public class Fourbar extends Subsystem {
 				new MechanismPosition("Top", TOP_MAX_VAL),
 
 				new MechanismPosition("IntakeHatch_HP", TOP_MID_VAL),
-				new MechanismPosition("IntakeCargo_Floor", TOP_MID_VAL),
+				new MechanismPosition("IntakeCargo_Floor", 3100),
 
 				new MechanismPosition("CargoShip_Hatch", TOP_MID_VAL),
-				new MechanismPosition("CargoShip_Cargo", 3500),
+				new MechanismPosition("CargoShip_Cargo", 3600),
+				new MechanismPosition("Grab_Hatch", TOP_MID_VAL + 600),
 
 				new MechanismPosition("RocketHatch_Low", TOP_MID_VAL),
 				new MechanismPosition("RocketHatch_Middle", TOP_MAX_VAL),
@@ -197,7 +198,7 @@ public class Fourbar extends Subsystem {
 
 				new MechanismPosition("RocketCargo_Low", TOP_MID_VAL),
 				new MechanismPosition("RocketCargo_Middle", 4600),
-				new MechanismPosition("RocketCargo_High", TOP_MAX_VAL - 100),
+				new MechanismPosition("RocketCargo_High", TOP_MAX_VAL),
 		};
 
 		@SuppressWarnings("unused")
@@ -211,6 +212,7 @@ public class Fourbar extends Subsystem {
 			IntakeHatch_HP("IntakeHatch_HP"),
 			CargoShip_Hatch("CargoShip_Hatch"),
 			CargoShip_Cargo("CargoShip_Cargo"),
+			Grab_Hatch("Grab_Hatch"),
 			RocketHatch_Low("RocketHatch_Low"),
 			RocketHatch_Middle("RocketHatch_Middle"),
 			RocketHatch_High("RocketHatch_High"),

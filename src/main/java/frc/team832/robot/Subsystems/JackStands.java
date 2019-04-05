@@ -131,8 +131,8 @@ public class JackStands extends Subsystem {
     public static class Constants {
         public static final int ENC_LVL3_FRONT_VAL = RobotMap.isComp ? -76000 : -79000;
         public static final int ENC_LVL3_BACK_VAL = RobotMap.isComp ? -76000 : -81000;
-        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -30000 : -26000;
-        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -30000 : -28000;
+        public static final int ENC_LVL2_FRONT_VAL = RobotMap.isComp ? -32000 : -26000;
+        public static final int ENC_LVL2_BACK_VAL = RobotMap.isComp ? -31000 : -28000;
         public static final int ENC_RETRACT_VAL = 0;
         public static final int ENC_RANGE = ENC_RETRACT_VAL  - ENC_LVL3_BACK_VAL;
         public static final double MAX_INCHES = 29;

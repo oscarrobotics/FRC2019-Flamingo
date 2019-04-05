@@ -131,7 +131,7 @@ public class OI {
 
 		modeButton1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeCargo_Floor.getIndex(), ElevatorPosition.IntakeCargo_Floor.getIndex())));
 		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.IntakeHatch_HP.getIndex(), ElevatorPosition.IntakeHatch_HP.getIndex())));
-		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Top.getIndex(), ElevatorPosition.Bottom.getIndex())));
+		modeButton2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.Grab_Hatch.getIndex(), ElevatorPosition.GrabHatch.getIndex())));
 
 		op1.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_High.getIndex(), ElevatorPosition.RocketHatch_High.getIndex())));
 		op2.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.RocketHatch_Middle.getIndex(), ElevatorPosition.RocketHatch_Middle.getIndex())));
@@ -142,13 +142,13 @@ public class OI {
 		incr.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Hatch.getIndex(), ElevatorPosition.CargoShip_Hatch.getIndex())));
 		decr.whenPressed(new ManualToggle(new DoNothing(), new MoveComplexLiftWithAdjust(FourbarPosition.CargoShip_Cargo.getIndex(), ElevatorPosition.CargoShip_Cargo.getIndex())));
 
-		op1.whenReleased(new DefaultPosition(true));
+		op1.whenReleased(new DefaultPosition(false));
 		op2.whenReleased(new DefaultPosition(false));
 		op3.whenReleased(new DefaultPosition(false));
 		op4.whenReleased(new DefaultPosition(false));
 		op5.whenReleased(new DefaultPosition(false));
 		op6.whenReleased(new DefaultPosition(false));
-		incr.whenReleased(new DefaultPosition(true));
+		incr.whenReleased(new DefaultPosition(false));
 		decr.whenReleased(new DefaultPosition(false));
 	}
 
@@ -175,12 +175,6 @@ public class OI {
 				Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_HOLD);
 			else if (op4.get() || op5.get() || op6.get() || decr.get())
 				Robot.snowBlower.setLEDs(SnowBlower.LEDMode.BALL_HOLD);
-
-			if (Robot.jackStands.getAtTarget() && Robot.jackStands.getBackTargetPosition() != 0 && Robot.jackStands.getFrontTargetPosition() != 0){
-				Robot.snowBlower.setLEDs(SnowBlower.LEDMode.JACKSTAND_AT_TARGET);
-			} else {
-				Robot.snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, SnowBlower.Constants.Colors.DEFAULT);
-			}
 	}
 
 	/**

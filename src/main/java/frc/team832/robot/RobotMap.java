@@ -140,11 +140,13 @@ public class RobotMap {
 	static boolean init () {
 		// check which robot we're on...
 		String path = String.format("%s/practice", Filesystem.getOperatingDirectory());
-		try {
-			isComp = !(new File(path).exists());
-		} catch (Exception e) {
-			isComp = true;
-		}
+//		try {
+//			isComp = !(new File(path).exists());
+//		} catch (Exception e) {
+//			isComp = true;
+//		}
+
+		isComp = true;
 
 		UsbCamera driverCamera = CameraServer.getInstance().startAutomaticCapture(0);
 		driverCamera.setPixelFormat(VideoMode.PixelFormat.kYUYV);
@@ -293,8 +295,8 @@ public class RobotMap {
 		elevatorMech.setPIDF(8, 0, 0, 0);//was 16
 		// TODO: Actually tune this heckin thing!!
 
-		elevatorMotor.setForwardSoftLimit(isComp ? 43 : -365);
-		elevatorMotor.setReverseSoftLimit(isComp ? 30 : -720);
+		elevatorMotor.setForwardSoftLimit(Elevator.Constants.POT_TOP_VALUE);
+		elevatorMotor.setReverseSoftLimit(Elevator.Constants.POT_TOP_VALUE);
 
 		cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 		cargoIntakeMotor.setInverted(true);

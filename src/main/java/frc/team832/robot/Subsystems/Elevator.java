@@ -50,11 +50,6 @@ public class Elevator extends Subsystem {
 
     @Override
     public void periodic() {
-        if (isMovingDown()){
-            _elevator.getMotor().configMotionMagic(Constants.MOTION_MAGIC_VEL / 2, Constants.MOTION_MAGIC_ACC / 2);
-        } else {
-            _elevator.getMotor().configMotionMagic(Constants.MOTION_MAGIC_VEL, Constants.MOTION_MAGIC_ACC);
-        }
     }
 
     public void pushData() {
@@ -66,8 +61,12 @@ public class Elevator extends Subsystem {
 
     public void initDefaultCommand() { }
 
-    public void setMotionPosition(double position){
-        double arbFF = .2;
+    public void setMotionPosition(double position) {
+    	double ff = isMovingDown() ? 0 : .2;
+    	setMotionPosition(position, ff);
+	}
+
+    public void setMotionPosition(double position, double arbFF) {
         _elevator.getMotor().setMotionMagcArbFF(position, arbFF);
     }
 
@@ -133,6 +132,7 @@ public class Elevator extends Subsystem {
 
                 new MechanismPosition("IntakeCargo_Floor", POT_BOTTOM_VALUE),
                 new MechanismPosition("IntakeHatch_HP",POT_BOTTOM_VALUE),//POT_TOP_VALUE - 10
+				new MechanismPosition("HatchGrab", POT_BOTTOM_VALUE),
 
                 new MechanismPosition("CargoShip_Hatch", POT_TOP_VALUE),
                 new MechanismPosition("CargoShip_Cargo", POT_BOTTOM_VALUE),
@@ -155,6 +155,7 @@ public class Elevator extends Subsystem {
             Top("Top"),
             IntakeCargo_Floor("IntakeCargo_Floor"),
             IntakeHatch_HP("IntakeHatch_HP"),
+			GrabHatch("HatchGrab"),
             CargoShip_Hatch("CargoShip_Hatch"),
             CargoShip_Cargo("CargoShip_Cargo"),
             RocketHatch_Low("RocketHatch_Low"),

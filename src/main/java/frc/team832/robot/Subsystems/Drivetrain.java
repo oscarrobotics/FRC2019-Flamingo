@@ -107,7 +107,7 @@ public class Drivetrain extends Subsystem {
     public static void teleopControl (){
         double leftY = OI.driverPad.getY(Constants.swapSticks ? kRight : kLeft);
         double rightX = -OI.driverPad.getX(Constants.swapSticks ? kLeft : kRight);
-        double joyRotation = (OI.driverPad.getTriggerAxis(kRight) - OI.driverPad.getTriggerAxis(kRight)) * Constants.SENSITIVE_TURN_MULTIPLIER;
+        double joyRotation = -((OI.driverPad.getTriggerAxis(kRight) - OI.driverPad.getTriggerAxis(kLeft)) * Constants.SENSITIVE_TURN_MULTIPLIER);
         double rotation;
 
         if (diffDrive.isQuickTurning()) {
@@ -140,7 +140,7 @@ public class Drivetrain extends Subsystem {
     public static class Constants {
         public static final double gyrokP = 0.00175;
         public static final double epsilon = 3.0;
-        public static final double SENSITIVE_TURN_MULTIPLIER = 0.5;
+        public static final double SENSITIVE_TURN_MULTIPLIER = 0.15;
         public static final boolean swapSticks = false;
     }
 }

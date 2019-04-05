@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import frc.team832.robot.Robot;
 import frc.team832.robot.Subsystems.SnowBlower;
 
-import java.awt.*;
-
 public class MoveJackStands extends InstantCommand {
 
     private String _index;
@@ -16,10 +14,14 @@ public class MoveJackStands extends InstantCommand {
     }
 
     public void initialize(){
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.JACKSTAND_MOVING);
         double jackstandDiff = Math.abs(Robot.jackStands.getBackTargetPosition() - Robot.jackStands.getFrontCurrentPosition());
         if (jackstandDiff < 30000) {
-            Robot.snowBlower.setLEDs(SnowBlower.LEDMode.CUSTOM_BREATHE, Color.GREEN);
             Robot.jackStands.setPosition(_index);
         }
+    }
+
+    public void end(){
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.STATIC, SnowBlower.Constants.Colors.DEFAULT);
     }
 }

@@ -1,6 +1,5 @@
 package frc.team832.robot.Subsystems;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -80,7 +79,7 @@ public class SnowBlower extends Subsystem {
 
 	@Override
 	public void periodic () {
-		hatchStallState = isMotorStall(RobotMap.isComp ? 11 : 6, 12.0, 0.25);
+		hatchStallState = isMotorStall(RobotMap.isComp ? 11 : 6, 12.0, 0.75);
 		hasHatch = hatchStallState == StallState.STALLED || hatchStallState == StallState.LEAVING_STALL;
 	}
 
@@ -224,7 +223,7 @@ public class SnowBlower extends Subsystem {
 		HATCH_ACQUIRED,
 		HATCH_HOLD,
 		HATCH_RELEASE,
-		JACKSTAND_AT_TARGET,
+		JACKSTAND_MOVING,
 		ALTERNATE_ALLIANCE_GREEN,
 		OFF
 	}
@@ -292,17 +291,17 @@ public class SnowBlower extends Subsystem {
 					goodBreathe(Constants.Colors.CARGO, 0.02f);
 					break;
 				case HATCH_ACQUIRED:
-					goodBreathe(Color.BLUE, 0.02f);
+					goodBreathe(Color.BLUE, 0.03f);
 				case HATCH_INTAKE:
 					goodBreathe(Constants.Colors.HATCH, 0.01f);
 					break;
 				case HATCH_HOLD:
-					staticColor(Color.BLUE);
+					staticColor(Color.YELLOW);
 					break;
 				case HATCH_RELEASE:
 					goodBreathe(Constants.Colors.HATCH, 0.02f);
 					break;
-				case JACKSTAND_AT_TARGET:
+				case JACKSTAND_MOVING:
 					goodBreathe(Constants.Colors.DEFAULT, 0.02f);
 				case ALTERNATE_ALLIANCE_GREEN:
 					break;
@@ -405,7 +404,7 @@ public class SnowBlower extends Subsystem {
 
 	public StallState isMotorStall (int PDPSlot, double stallCurrent, double stallSec) {
 		int slowdownMultiplier = 8;
-		int stallLoops = (int) stallSec * 20;
+		int  stallLoops = (int)(stallSec * 20);
 		stallLoops *= slowdownMultiplier;
 		double motorCurrent = pdp.getChannelCurrent(PDPSlot);
 
