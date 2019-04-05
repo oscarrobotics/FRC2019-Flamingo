@@ -63,18 +63,16 @@ public class Drivetrain extends Subsystem {
     }
 
     @Override
-    public void periodic() {
-//        pullData();
-    }
+    public void periodic() { }
 
     public void setPIDF(double kP, double kI, double kD, double kF){
         _driveSystem.setPIDF(kP, kI, kD, kF);
-//        _kP = kP;
-//        _kI = kI;
-//        _kD = kD;
-//        _kF = kF;
     }
 
+    /**
+     * @param heading
+     * @return Difference between current heading and passed heading
+     */
     public static double turnAngleError(double heading){
         gyroHeading = RobotMap.navX.getYaw();
         return heading - gyroHeading;
@@ -127,47 +125,8 @@ public class Drivetrain extends Subsystem {
         );
     }
 
-    public void pullData() {
-        // read PID coefficients from SmartDashboard
-        double p = SmartDashboard.getNumber("Drive kP", 0.00025);
-        double i = SmartDashboard.getNumber("Drive kI", 0);
-        double d = SmartDashboard.getNumber("Drive kD", 0);
-        double ff = SmartDashboard.getNumber("Drive kF", 0);
-
-        // if PID coefficients on SmartDashboard have changed, write new values to controller
-        if ((p != _kP)) {
-            _driveSystem.setP(p);
-            _kP = p;
-        }
-        if ((i != _kI)) {
-            _driveSystem.setI(i);
-            _kI = i;
-        }
-        if ((d != _kD)) {
-            _driveSystem.setD(d);
-            _kD = d;
-        }
-        if ((ff != _kF)) {
-            _driveSystem.setF(ff);
-            _kF = ff;
-        }
-//        if ((max != _kMaxOutput) || (min != kMinOutput)) {
-//            m_pidController.setOutputRange(min, max);
-//            kMinOutput = min;
-//            kMaxOutput = max;
-//
-//        }
-    }
-
     public void stop(){
         diffDrive.stopMotor();
-    }
-
-    public static class Constants {
-        public static final double gyrokP = 0.00175;
-        public static final double epsilon = 3.0;
-        public static final double SENSITIVE_TURN_MULTIPLIER = 0.5;
-        public static final boolean swapSticks = false;
     }
 
     public double getOutputCurrent() {
@@ -177,6 +136,12 @@ public class Drivetrain extends Subsystem {
     @Override
     public void initDefaultCommand() {
         setDefaultCommand(new DrivetrainTeleop());
+    }
+    public static class Constants {
+        public static final double gyrokP = 0.00175;
+        public static final double epsilon = 3.0;
+        public static final double SENSITIVE_TURN_MULTIPLIER = 0.5;
+        public static final boolean swapSticks = false;
     }
 }
 

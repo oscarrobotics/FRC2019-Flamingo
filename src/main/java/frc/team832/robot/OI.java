@@ -89,9 +89,6 @@ public class OI {
 		mToggle.whenActive(new ManualToggle(new ManualMoveFourbar(), new DoNothing()));
 		mToggle.whenActive(new ManualToggle(new ManualMoveElevator(), new DoNothing()));
 
-//		black2.whenPressed(new ManualToggle(new DoNothing(), new AcquireHatch()));
-//		black2.whenReleased(new ManualToggle(new DoNothing(), new InterruptAcquire()));
-
 		black1.whileHeld(new IntakeCargo(1.0));
 
 		white1.whileHeld(new OuttakeCargo(.75));

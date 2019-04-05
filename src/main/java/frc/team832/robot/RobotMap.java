@@ -123,10 +123,8 @@ public class RobotMap {
 
 	static CANVictor hatchHolderMotor;
 	static SimpleMechanism hatchHolder;
-	static MiniPID hatchHolderPID;
 
 	static SimplySmartMotor hatchHolderSmartMotor;
-	static RotaryMechanism hatchGrabbor;
 
 	static CANifier canifier;
 

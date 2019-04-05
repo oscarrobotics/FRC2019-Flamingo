@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
         jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
         System.out.println("D, E, F, J INIT");
 
-        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier, RobotMap.hatchGrabbor);
+        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier);
         complexLift = new ComplexLift(RobotMap.complexLiftMech);
         theBigOne = new TheBigOne(complexLift, snowBlower);
         System.out.println("S, C, T INIT");
@@ -104,8 +104,6 @@ public class Robot extends TimedRobot {
         update();
         ThreeSwitchPos = OI.getThreeSwitch();
         navX.pushData();
-        //jackStands.jackstandGyroCorrection();
-        //Logger.updateEntries();
     }
 
     @Override

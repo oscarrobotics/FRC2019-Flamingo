@@ -41,11 +41,10 @@ public class SnowBlower extends Subsystem {
 
 	private boolean holdBall = false;
 
-	public SnowBlower (SimpleMechanism intake, SimpleMechanism hatchHolder, CANifier canifier, SmartMechanism hatchGrabber) {
+	public SnowBlower (SimpleMechanism intake, SimpleMechanism hatchHolder, CANifier canifier) {
 		_intake = intake;
 		_hatchHoldor = hatchHolder;
 		_canifier = canifier;
-		_hatchGrabbor = hatchGrabber;
 
 		_holderPID = new MiniPID(.01, 0, 0);
 		_cargoHeightController = new MiniPID(Constants.HeightController_kP, Constants.HeightController_kI, Constants.HeightController_kD, Constants.HeightController_kF);
