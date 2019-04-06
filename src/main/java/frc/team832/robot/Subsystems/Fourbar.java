@@ -197,8 +197,8 @@ public class Fourbar extends Subsystem {
 				new MechanismPosition("RocketHatch_High", TOP_MAX_VAL),
 
 				new MechanismPosition("RocketCargo_Low", TOP_MID_VAL),
-				new MechanismPosition("RocketCargo_Middle", 4600),
-				new MechanismPosition("RocketCargo_High", TOP_MAX_VAL),
+				new MechanismPosition("RocketCargo_Middle", 4500),
+				new MechanismPosition("RocketCargo_High", 4150),
 		};
 
 		@SuppressWarnings("unused")

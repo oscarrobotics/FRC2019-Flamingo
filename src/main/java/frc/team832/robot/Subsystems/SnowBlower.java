@@ -79,7 +79,7 @@ public class SnowBlower extends Subsystem {
 
 	@Override
 	public void periodic () {
-		hatchStallState = isMotorStall(RobotMap.isComp ? 11 : 6, 12.0, 0.75);
+		hatchStallState = isMotorStall(RobotMap.isComp ? 11 : 6, 12.0, 0.5);
 		hasHatch = hatchStallState == StallState.STALLED || hatchStallState == StallState.LEAVING_STALL;
 	}
 

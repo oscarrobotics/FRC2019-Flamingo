@@ -140,7 +140,7 @@ public class Drivetrain extends Subsystem {
     public static class Constants {
         public static final double gyrokP = 0.00175;
         public static final double epsilon = 3.0;
-        public static final double SENSITIVE_TURN_MULTIPLIER = 0.15;
+        public static final double SENSITIVE_TURN_MULTIPLIER = 0.1;
         public static final boolean swapSticks = false;
     }
 }

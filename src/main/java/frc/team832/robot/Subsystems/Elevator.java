@@ -62,8 +62,7 @@ public class Elevator extends Subsystem {
     public void initDefaultCommand() { }
 
     public void setMotionPosition(double position) {
-    	double ff = isMovingDown() ? 0 : .2;
-    	setMotionPosition(position, ff);
+    	setMotionPosition(position, 0.2);
 	}
 
     public void setMotionPosition(double position, double arbFF) {
@@ -105,45 +104,47 @@ public class Elevator extends Subsystem {
     @SuppressWarnings("WeakerAccess")
     public static class Constants {
 
-        public static final int POT_BOTTOM_VALUE = RobotMap.isComp ? 35 : -685;
-        public static final int POT_TOP_VALUE = RobotMap.isComp ? 430 : -375;
-        public static final int POT_MID_VALUE = (int)OscarMath.mid(POT_BOTTOM_VALUE, POT_TOP_VALUE);
+        public static final int BOTTOM_VALUE = RobotMap.isComp ? 35 : -685;
+        public static final int TOP_VALUE = RobotMap.isComp ? 430 : -375;
+		public static final int BOTTOM_SOFT = BOTTOM_VALUE + 5;
+		public static final int TOP_SOFT = TOP_VALUE - 5;
+        public static final int MID_VALUE = (int)OscarMath.mid(BOTTOM_VALUE, TOP_VALUE);
 
-        public static final double POT_RANGE = (POT_TOP_VALUE) - (POT_BOTTOM_VALUE);
+        public static final double POT_RANGE = (TOP_VALUE) - (BOTTOM_VALUE);
         public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
         public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 
-        public static final int MOTION_MAGIC_VEL = 1000;
-        public static final int MOTION_MAGIC_ACC = 1500;
+        public static final int MOTION_MAGIC_VEL = 750;
+        public static final int MOTION_MAGIC_ACC = 750;
 
         public static double PotToInches(double value) {
-            return OscarMath.map(value, POT_BOTTOM_VALUE, POT_TOP_VALUE, 0, 30);
+            return OscarMath.map(value, BOTTOM_VALUE, TOP_VALUE, 0, 30);
         }
-        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, POT_BOTTOM_VALUE, POT_TOP_VALUE);}
+        public static double InchesToPot(double value) { return OscarMath.map(value, 0, 30, BOTTOM_VALUE, TOP_VALUE);}
 
         private static final MechanismPosition[] _positions = new MechanismPosition[]{
-                new MechanismPosition("StartConfig", POT_TOP_VALUE),
-                new MechanismPosition("TestMiddle", OscarMath.mid(POT_TOP_VALUE, POT_BOTTOM_VALUE)),
-                new MechanismPosition("TestTop", POT_TOP_VALUE),
+                new MechanismPosition("StartConfig", TOP_VALUE),
+                new MechanismPosition("TestMiddle", OscarMath.mid(TOP_VALUE, BOTTOM_VALUE)),
+                new MechanismPosition("TestTop", TOP_VALUE),
 
-                new MechanismPosition("Bottom", POT_BOTTOM_VALUE),
-                new MechanismPosition("Middle", POT_MID_VALUE),
-                new MechanismPosition("Top", POT_TOP_VALUE),
+                new MechanismPosition("Bottom", BOTTOM_VALUE),
+                new MechanismPosition("Middle", MID_VALUE),
+                new MechanismPosition("Top", TOP_VALUE),
 
-                new MechanismPosition("IntakeCargo_Floor", POT_BOTTOM_VALUE),
-                new MechanismPosition("IntakeHatch_HP",POT_BOTTOM_VALUE),//POT_TOP_VALUE - 10
-				new MechanismPosition("HatchGrab", POT_BOTTOM_VALUE),
+                new MechanismPosition("IntakeCargo_Floor", BOTTOM_VALUE),
+                new MechanismPosition("IntakeHatch_HP", BOTTOM_VALUE),//TOP_VALUE - 10
+				new MechanismPosition("HatchGrab", BOTTOM_VALUE),
 
-                new MechanismPosition("CargoShip_Hatch", POT_TOP_VALUE),
-                new MechanismPosition("CargoShip_Cargo", POT_BOTTOM_VALUE),
+                new MechanismPosition("CargoShip_Hatch", TOP_VALUE),
+                new MechanismPosition("CargoShip_Cargo", BOTTOM_VALUE),
 
-                new MechanismPosition("RocketHatch_Low", POT_BOTTOM_VALUE),
-                new MechanismPosition("RocketHatch_Middle", POT_BOTTOM_VALUE),
-                new MechanismPosition("RocketHatch_High", POT_TOP_VALUE),
+                new MechanismPosition("RocketHatch_Low", BOTTOM_VALUE),
+                new MechanismPosition("RocketHatch_Middle", BOTTOM_VALUE),
+                new MechanismPosition("RocketHatch_High", TOP_VALUE),
 
-                new MechanismPosition("RocketCargo_Low", POT_BOTTOM_VALUE),
-                new MechanismPosition("RocketCargo_Middle",POT_BOTTOM_VALUE),
-                new MechanismPosition("RocketCargo_High", POT_TOP_VALUE)
+                new MechanismPosition("RocketCargo_Low", BOTTOM_VALUE),
+                new MechanismPosition("RocketCargo_Middle", BOTTOM_VALUE),
+                new MechanismPosition("RocketCargo_High", TOP_VALUE)
         };
 
         @SuppressWarnings("unused")

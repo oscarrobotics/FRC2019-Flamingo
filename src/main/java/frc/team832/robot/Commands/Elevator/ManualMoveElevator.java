@@ -16,7 +16,7 @@ public class ManualMoveElevator extends Command {
 	protected void execute () {
 		double input = OI.operatorBox.getY();
 		double realInput = OscarMath.clipMap(input, -1, 1, 0, 1);
-		double pos = OscarMath.map(realInput, 0, 1, Elevator.Constants.POT_BOTTOM_VALUE, Elevator.Constants.POT_TOP_VALUE);
+		double pos = OscarMath.map(realInput, 0, 1, Elevator.Constants.BOTTOM_VALUE, Elevator.Constants.TOP_VALUE);
 		Robot.elevator.setMotionPosition(pos);
 	}
 

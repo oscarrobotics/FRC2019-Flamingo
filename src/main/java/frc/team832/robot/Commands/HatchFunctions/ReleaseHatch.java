@@ -13,16 +13,15 @@ public class ReleaseHatch extends Command {
     public ReleaseHatch(){ }
 
     public void initialize() {
+        isStalled =  Robot.snowBlower.hasHatch();
         Robot.snowBlower.setHatchHolderPower(-1.0);
-        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_INTAKE);
+        if (!isStalled) {
+            Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_INTAKE);
+        }
     }
 
     public void execute(){
         isStalled =  Robot.snowBlower.hasHatch();
-        if (isStalled) {
-            Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_ACQUIRED);
-//            Robot.elevator.setPosition(Elevator.Constants.ElevatorPosition.GrabHatch.getIndex());
-        }
     }
 
     @Override
@@ -32,6 +31,8 @@ public class ReleaseHatch extends Command {
 
     @Override
     protected void end(){
-
+        if (isStalled) {
+            Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_ACQUIRED);
+        }
     }
 }

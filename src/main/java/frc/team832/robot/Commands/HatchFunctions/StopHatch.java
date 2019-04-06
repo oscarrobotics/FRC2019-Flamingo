@@ -2,6 +2,7 @@ package frc.team832.robot.Commands.HatchFunctions;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.team832.robot.Robot;
+import frc.team832.robot.Subsystems.SnowBlower;
 
 
 public class StopHatch extends Command {
@@ -18,6 +19,7 @@ public class StopHatch extends Command {
     @Override
     protected void initialize() {
         Robot.snowBlower.setHatchHolderPower(0.0);
+        Robot.snowBlower.setLEDs(SnowBlower.LEDMode.HATCH_HOLD);
     }
 
 

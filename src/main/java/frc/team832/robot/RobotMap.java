@@ -13,10 +13,7 @@ import frc.team832.GrouchLib.Motors.*;
 import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.CANDevice;
 import frc.team832.GrouchLib.Sensors.*;
-import frc.team832.GrouchLib.Util.MiniPID;
 import frc.team832.robot.Subsystems.*;
-
-import java.io.File;
 
 import static com.ctre.phoenix.CANifier.LEDChannel.*;
 
@@ -295,8 +292,8 @@ public class RobotMap {
 		elevatorMech.setPIDF(8, 0, 0, 0);//was 16
 		// TODO: Actually tune this heckin thing!!
 
-		elevatorMotor.setForwardSoftLimit(Elevator.Constants.POT_TOP_VALUE);
-		elevatorMotor.setReverseSoftLimit(Elevator.Constants.POT_TOP_VALUE);
+		elevatorMotor.setForwardSoftLimit(Elevator.Constants.TOP_SOFT);
+		elevatorMotor.setReverseSoftLimit(Elevator.Constants.BOTTOM_SOFT);
 
 		cargoIntakeMotor.setNeutralMode(NeutralMode.Brake);
 		cargoIntakeMotor.setInverted(true);
