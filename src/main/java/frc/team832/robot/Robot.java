@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
 import frc.team832.GrouchLib.Sensors.NavXMicro;
 import frc.team832.GrouchLib.Util.OscarMath;
+import frc.team832.robot.Commands.ZeroNavX;
 import frc.team832.robot.Subsystems.*;
 import frc.team832.robot.Subsystems.SnowBlower.LEDMode;
 import io.github.oblarg.oblog.Logger;
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
     public static SnowBlower snowBlower;
     public static TheBigOne theBigOne;
     public static JackStands jackStands;
+    public static Vision vision;
 
     public static OI.ThreeSwitchPos ThreeSwitchPos = OI.ThreeSwitchPos.OFF;
 
@@ -69,6 +71,9 @@ public class Robot extends TimedRobot {
         jackStands.resetEncoders();
         fourbarTop.resetSensor();
 
+        vision = new Vision();
+
+
         if (isComp) {
             if (!navX.init()) {
                 System.out.println("NavX Failed to Init!!!");
@@ -77,6 +82,7 @@ public class Robot extends TimedRobot {
 
         OI.init();
         OI.setupCommands();
+        SmartDashboard.putData(new ZeroNavX());
 
         System.out.println("OI INIT");
 
@@ -104,6 +110,8 @@ public class Robot extends TimedRobot {
         update();
         ThreeSwitchPos = OI.getThreeSwitch();
         navX.pushData();
+        vision.main();
+        vision.pushData();
     }
 
     @Override

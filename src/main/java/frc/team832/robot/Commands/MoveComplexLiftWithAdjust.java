@@ -30,7 +30,7 @@ public class MoveComplexLiftWithAdjust extends Command {
 		double elevatorAdj;
 		double fourbarAdj;
 		if (OI.singleSwitch.get()) {
-			fourbarAdj = Fourbar.Constants.TOP_MAX_VAL / 10 * (OI.operatorBox.getX());
+			fourbarAdj = Fourbar.Constants.MAX_VAL / 10 * (OI.operatorBox.getX());
 			elevatorAdj = Elevator.Constants.POT_RANGE / 10 /* 75*/ * (OI.operatorBox.getY());
 		} else {
 			elevatorAdj = 0;

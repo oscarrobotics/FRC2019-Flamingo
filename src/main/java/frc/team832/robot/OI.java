@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.OperatorModeCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.robot.Commands.*;
+import frc.team832.robot.Commands.Drivetrain.TrackVisionTarget;
 import frc.team832.robot.Subsystems.*;
 import frc.team832.robot.Commands.AutoJackStand.*;
 import frc.team832.robot.Commands.HatchFunctions.*;
@@ -112,6 +113,7 @@ public class OI {
 		leftBumper.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, JackstandPosition.Retract.getIndex()));
 		leftBumper.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
 
+		leftStickPress.whileHeld(new TrackVisionTarget(30));
 		/*
 		startButton.whenPressed(new MoveJackStands("ExtendLvl3"));
 		backButton.whenPressed(new MoveJackStands("ExtendLvl2"));

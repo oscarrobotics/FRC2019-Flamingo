@@ -90,7 +90,7 @@ public class Fourbar extends Subsystem {
 	}
 
 	public double armDeg () {
-		return OscarMath.map(getTopCurrentPosition(), 0, Constants.TOP_MAX_VAL, -65.5, 61);
+		return OscarMath.map(getTopCurrentPosition(), 0, Constants.MAX_VAL, -65.5, 61);
 	}
 
 	public double armFF () {
@@ -141,7 +141,7 @@ public class Fourbar extends Subsystem {
 
 		//RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6950;//5800 ish
 
-		double fourbarMinPos = OscarMath.map(fourbarMinAngle, -65.5, 0, 0, Constants.TOP_MID_VAL) + offset;
+		double fourbarMinPos = OscarMath.map(fourbarMinAngle, -65.5, 0, 0, Constants.MID_VAL) + offset;
 		SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
 		return (int) fourbarMinPos;
 	}
@@ -164,9 +164,11 @@ public class Fourbar extends Subsystem {
 	@SuppressWarnings({"unused", "WeakerAccess"})
 	public static class Constants {
 
-		public static final double TOP_MIN_VAL = 0;
-		public static final double TOP_MID_VAL = 2600;
-		public static final double TOP_MAX_VAL = 5000;
+		public static final double MIN_VAL = 0;
+		public static final double MID_VAL = 2600;
+		public static final double MAX_VAL = 5000;
+		public static final double MIN_SOFT = MIN_VAL - 100;
+		public static final double MAX_SOFT = MAX_VAL + 100;
 		public static final double ARMLENGTH = 30.75;
 		public static final double UPPERPOTTOANGLE = .262;
 		public static final double UPPERPOTOFFSET = 112.66;
@@ -179,26 +181,26 @@ public class Fourbar extends Subsystem {
 		public static final double MININCHES = -29;
 
 		private static MechanismPosition[] _positions = new MechanismPosition[]{
-				new MechanismPosition("StartConfig", TOP_MIN_VAL),
+				new MechanismPosition("StartConfig", MIN_VAL),
 
-				new MechanismPosition("Bottom", TOP_MIN_VAL),
-				new MechanismPosition("Middle", TOP_MID_VAL),
-				new MechanismPosition("Top", TOP_MAX_VAL),
+				new MechanismPosition("Bottom", MIN_VAL),
+				new MechanismPosition("Middle", MID_VAL),
+				new MechanismPosition("Top", MAX_VAL),
 
-				new MechanismPosition("IntakeHatch_HP", TOP_MID_VAL),
+				new MechanismPosition("IntakeHatch_HP", MID_VAL),
 				new MechanismPosition("IntakeCargo_Floor", 3100),
 
-				new MechanismPosition("CargoShip_Hatch", TOP_MID_VAL),
+				new MechanismPosition("CargoShip_Hatch", MID_VAL),
 				new MechanismPosition("CargoShip_Cargo", 3600),
-				new MechanismPosition("Grab_Hatch", TOP_MID_VAL + 600),
+				new MechanismPosition("Grab_Hatch", MID_VAL + 600),
 
-				new MechanismPosition("RocketHatch_Low", TOP_MID_VAL),
-				new MechanismPosition("RocketHatch_Middle", TOP_MAX_VAL),
-				new MechanismPosition("RocketHatch_High", TOP_MAX_VAL),
+				new MechanismPosition("RocketHatch_Low", MID_VAL),
+				new MechanismPosition("RocketHatch_Middle", MAX_VAL),
+				new MechanismPosition("RocketHatch_High", MAX_VAL),
 
-				new MechanismPosition("RocketCargo_Low", TOP_MID_VAL),
+				new MechanismPosition("RocketCargo_Low", MID_VAL),
 				new MechanismPosition("RocketCargo_Middle", 4500),
-				new MechanismPosition("RocketCargo_High", 4150),
+				new MechanismPosition("RocketCargo_High", 4400),
 		};
 
 		@SuppressWarnings("unused")

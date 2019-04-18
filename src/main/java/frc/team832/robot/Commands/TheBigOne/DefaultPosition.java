@@ -26,10 +26,10 @@ public class DefaultPosition extends Command {
 		switch (_mode){
 			case UP:
 				if (_isDefaultInvert) {
-					fourbarPos = Fourbar.Constants.TOP_MIN_VAL;
+					fourbarPos = Fourbar.Constants.MIN_VAL;
 					elevatorPos = Elevator.Constants.TOP_VALUE;
 				} else {
-					fourbarPos = Fourbar.Constants.TOP_MAX_VAL;
+					fourbarPos = Fourbar.Constants.MAX_VAL;
 					elevatorPos = Elevator.Constants.BOTTOM_VALUE;
 				}
 				break;

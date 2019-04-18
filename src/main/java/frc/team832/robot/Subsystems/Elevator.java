@@ -106,8 +106,8 @@ public class Elevator extends Subsystem {
 
         public static final int BOTTOM_VALUE = RobotMap.isComp ? 35 : -685;
         public static final int TOP_VALUE = RobotMap.isComp ? 430 : -375;
-		public static final int BOTTOM_SOFT = BOTTOM_VALUE + 5;
-		public static final int TOP_SOFT = TOP_VALUE - 5;
+		public static final int BOTTOM_SOFT = BOTTOM_VALUE - 5;
+		public static final int TOP_SOFT = TOP_VALUE + 5;
         public static final int MID_VALUE = (int)OscarMath.mid(BOTTOM_VALUE, TOP_VALUE);
 
         public static final double POT_RANGE = (TOP_VALUE) - (BOTTOM_VALUE);

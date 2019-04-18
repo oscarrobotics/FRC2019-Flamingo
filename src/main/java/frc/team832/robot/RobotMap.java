@@ -7,12 +7,14 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.SerialPort;
 import frc.team832.GrouchLib.Control.*;
 import frc.team832.GrouchLib.Mechanisms.*;
 import frc.team832.GrouchLib.Motors.*;
 import frc.team832.GrouchLib.Motion.*;
 import frc.team832.GrouchLib.CANDevice;
 import frc.team832.GrouchLib.Sensors.*;
+import frc.team832.GrouchLib.Sensors.Vision.JevoisTracker;
 import frc.team832.robot.Subsystems.*;
 
 import static com.ctre.phoenix.CANifier.LEDChannel.*;
@@ -65,7 +67,7 @@ public class RobotMap {
 							4        11 HatchIntake
 							5        10 CargoIntake
 							6        9 	CANifier
-							7        8
+			Limelight		7        8
 		PRAC
 				LeftDrive1	0        15	RightDrive1
 				LeftDrive2	1        14	RightDrive2
@@ -129,6 +131,8 @@ public class RobotMap {
 
 	static Solenoid visionLight;
 
+	public static JevoisTracker jevois;
+
 	public static boolean isComp = false;
 
 	/**
@@ -144,6 +148,9 @@ public class RobotMap {
 //		}
 
 		isComp = true;
+
+		jevois = new JevoisTracker(SerialPort.Port.kUSB, 115200);
+		jevois.startCameraStream();
 
 		UsbCamera driverCamera = CameraServer.getInstance().startAutomaticCapture(0);
 		driverCamera.setPixelFormat(VideoMode.PixelFormat.kYUYV);
@@ -249,8 +256,8 @@ public class RobotMap {
 		fourbarTop.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 		fourbarTop.setClosedLoopRamp(.3);
 		fourbarTop.configMotionMagic(Fourbar.Constants.MOTION_MAGIC_VEL, Fourbar.Constants.MOTION_MAGIC_ACC);
-		fourbarTop.setForwardSoftLimit((int) Fourbar.Constants.TOP_MAX_VAL);
-		fourbarTop.setReverseSoftLimit((int) Fourbar.Constants.TOP_MIN_VAL);
+		fourbarTop.setForwardSoftLimit((int) Fourbar.Constants.MAX_SOFT);
+		fourbarTop.setReverseSoftLimit((int) Fourbar.Constants.MIN_SOFT);
 
 		frontJackStandMotor.setNeutralMode(NeutralMode.Brake);
 		backJackStandMotor.setNeutralMode(NeutralMode.Brake);
