@@ -102,6 +102,7 @@ public class Drivetrain extends Subsystem {
         SmartDashboard.putNumber("Drive kF", _kF);
 
         //pullData();
+        SmartDashboard.putString("CurrentDriveCommand", this.getCurrentCommandName());
     }
 
     public static void teleopControl (){
@@ -112,13 +113,14 @@ public class Drivetrain extends Subsystem {
 
         if (diffDrive.isQuickTurning()) {
             rotation = rightX * 0.3;
+            rotation = OscarMath.signumPow(rotation, 2);
         } else {
-            rotation = OscarMath.signumPow(rightX, 3);
+            rotation = .85 * OscarMath.signumPow(rightX, 3);
         }
         rotation += joyRotation;
 
         drivetrain.joystickDrive(
-                leftY,
+                OscarMath.signumPow(leftY, 2),
                 rotation,
                 Drivetrain.DriveMode.CURVATURE,
                 SmartDifferentialDrive.LoopMode.PERCENTAGE
@@ -137,6 +139,9 @@ public class Drivetrain extends Subsystem {
     public void initDefaultCommand() {
         setDefaultCommand(new DrivetrainTeleop());
     }
+
+
+
     public static class Constants {
         public static final double gyrokP = 0.00175;
         public static final double epsilon = 3.0;

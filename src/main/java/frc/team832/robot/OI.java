@@ -113,7 +113,7 @@ public class OI {
 		leftBumper.whenPressed(new MoveSingleJackStand(JackStands.JackStand.BACK, JackstandPosition.Retract.getIndex()));
 		leftBumper.whenReleased(new JackstandHoldPosition(JackStands.JackStand.BACK));
 
-		leftStickPress.whileHeld(new TrackVisionTarget(30));
+		rightStickPress.whileHeld(new TrackVisionTarget());
 		/*
 		startButton.whenPressed(new MoveJackStands("ExtendLvl3"));
 		backButton.whenPressed(new MoveJackStands("ExtendLvl2"));

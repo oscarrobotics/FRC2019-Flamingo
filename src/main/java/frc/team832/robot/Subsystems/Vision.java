@@ -3,50 +3,50 @@ package frc.team832.robot.Subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.team832.GrouchLib.Sensors.Vision.JevoisTracker;
 import frc.team832.GrouchLib.Util.OscarMath;
-import frc.team832.robot.RobotMap;
 
 public class Vision extends Subsystem {
 
 	private static final double InchesFromFront = 24;
 
-	private static final double Turn_kP = 0.015;
-	private static final double Turn_MaxOutput = 0.25;
+	private static final double Turn_kP = 0.012;
+	private static final double Turn_MaxOutput = 0.2;
 
 	private static final double Dist_kP = 0.05;
 	private static final double Dist_MaxOutput = 0.4;
 
 	private static NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
+	private static LimelightData latestData;
+
 //	private static final JevoisTracker jevois = RobotMap.jevois;
 //	private static JevoisData latestData;
 	private static ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
-	/*
-	private static NetworkTableEntry hasTargetNTE;
-	private static NetworkTableEntry distanceNTE;
-	private static NetworkTableEntry adjustedDistanceNTE;
-	private static NetworkTableEntry x_offsetNTE;
-	private static NetworkTableEntry yawNTE;
+
+//	private static NetworkTableEntry hasTargetNTE;
+//	private static NetworkTableEntry distanceNTE;
+//	private static NetworkTableEntry adjustedDistanceNTE;
+//	private static NetworkTableEntry x_offsetNTE;
+//	private static NetworkTableEntry yawNTE;
 	private static NetworkTableEntry turnAdjustOutputNTE;
 	private static NetworkTableEntry turnAdjustkPNTE;
 	private static NetworkTableEntry distAdjustOutputNTE;
 	private static NetworkTableEntry distAdjustkPNTE;
-	*/
 
-	private static NetworkTableEntry xVal = limelight.getEntry("xVal");
-	private static NetworkTableEntry yVal = limelight.getEntry("yVal");
-	private static NetworkTableEntry targetArea = limelight.getEntry("area");
-	private static NetworkTableEntry skew = limelight.getEntry("skew");
+	private static NetworkTableEntry tx = limelight.getEntry("tx");
+	private static NetworkTableEntry ty = limelight.getEntry("ty");
+	private static NetworkTableEntry ta = limelight.getEntry("ta");
+	private static NetworkTableEntry ts = limelight.getEntry("ts");
+	private static NetworkTableEntry tv = limelight.getEntry("tv");
 
-	private static NetworkTableEntry xOffset = xVal;
-	private static NetworkTableEntry yOffset = yVal;
-	private static NetworkTableEntry area = targetArea;
-	private static NetworkTableEntry yaw = skew;
+	private static NetworkTableEntry v_tx;
+	private static NetworkTableEntry v_ty;
+	private static NetworkTableEntry v_ta;
+	private static NetworkTableEntry v_ts;
+	private static NetworkTableEntry v_tv;
 
 	private static double currentTurn_kP = Turn_kP;
 	private static double gyroHeading;
@@ -63,34 +63,44 @@ public class Vision extends Subsystem {
 	private static double distAdjustOutput;
 
 	public Vision () {
-		xOffset = visionTab.add("Limelight X", 0.0).getEntry();
-		yOffset = visionTab.add("Limelight Y", 0.0).getEntry();
-		area = visionTab.add("Limelight Area", 0.0).getEntry();
-		yaw = visionTab.add("Limelight Yaw", 0.0).getEntry();
-
-		/*
-		hasTargetNTE = visionTab.add("HasTarget", false).getEntry();
-		distanceNTE = visionTab.add("Distance", 0.0).getEntry();
-		adjustedDistanceNTE = visionTab.add("Adj. Dist", 0.0).getEntry();
-		x_offsetNTE = visionTab.add("X Offset", 0.0).getEntry();
-		yawNTE = visionTab.add("Yaw", 0.0).getEntry();
+		v_tx = visionTab.add("Limelight X", 0.0).getEntry();
+		v_ty = visionTab.add("Limelight Y", 0.0).getEntry();
+		v_ta = visionTab.add("Limelight Area", 0.0).getEntry();
+		v_ts = visionTab.add("Limelight Yaw", 0.0).getEntry();
+		v_tv = visionTab.add("Limelight Valid", false).getEntry();
 		turnAdjustOutputNTE = visionTab.add("Turn Adj. Out", 0.0).getEntry();
 		turnAdjustkPNTE = visionTab.add("Turn Adj. kP", Turn_kP).getEntry();
 		distAdjustOutputNTE = visionTab.add("Dist Adj. Out", 0.0).getEntry();
 		distAdjustkPNTE = visionTab.add("Dist Adj. kP", Dist_kP).getEntry();
-		*/
+		limelight.getEntry("stream").setNumber(2);
+//		hasTargetNTE = visionTab.add("HasTarget", false).getEntry();
+//		distanceNTE = visionTab.add("Distance", 0.0).getEntry();
+//		adjustedDistanceNTE = visionTab.add("Adj. Dist", 0.0).getEntry();
+//		x_offsetNTE = visionTab.add("X Offset", 0.0).getEntry();
+//		yawNTE = visionTab.add("Yaw", 0.0).getEntry();
 	}
 
 	public void pushData() {
+		latestData = new LimelightData();
+		latestData.x = tx.getDouble(0.0);
+		latestData.y = ty.getDouble(0.0);
+		latestData.area = ta.getDouble(0.0);
+		latestData.skew = ts.getDouble(0.0);
+//		latestData.valid = (int)tv.getNumber(0) == 1;
 
-		/*
-		hasTargetNTE.setBoolean(hasTarget());
-		if (hasTarget()) {
-			distanceNTE.setDouble(latestData.distance);
-			adjustedDistanceNTE.setDouble(latestData.adjustedDistance);
-			x_offsetNTE.setDouble(latestData.x_offset);
-			yawNTE.setDouble(latestData.yaw);
-		}
+		v_tx.setDouble(latestData.x);
+		v_ty.setDouble(latestData.y);
+		v_ta.setDouble(latestData.area);
+		v_ts.setDouble(latestData.skew);
+
+
+//		hasTargetNTE.setBoolean(hasTarget());
+//		if (hasTarget()) {
+//			distanceNTE.setDouble(latestData.distance);
+//			adjustedDistanceNTE.setDouble(latestData.adjustedDistance);
+//			x_offsetNTE.setDouble(latestData.x_offset);
+//			yawNTE.setDouble(latestData.yaw);
+//		}
 		turnAdjustOutputNTE.setDouble(turnAdjustOutput);
 		distAdjustOutputNTE.setDouble(distAdjustOutput);
 
@@ -105,7 +115,6 @@ public class Vision extends Subsystem {
 			currentDist_kP = newDist_kP;
 		}
 		distAdjustkPNTE.setDouble(currentDist_kP);
-		*/
 	}
 
 	public void main() {
@@ -169,14 +178,14 @@ public class Vision extends Subsystem {
 	*/
 
 	public double getDistPower(){
-		double distPow = area.getDouble(0.0) * currentDist_kP;
-		return OscarMath.clip(distPow, -Dist_MaxOutput, Dist_MaxOutput);
+		double distPow = 1 / latestData.area * currentDist_kP;
+		return OscarMath.clip(-distPow, -Dist_MaxOutput, Dist_MaxOutput);
 	}
 
 	public double getRotPower(){
-		double offsetPow = xOffset.getDouble(0.0) * currentTurn_kP;
-//		double anglePow = skew.getDouble(0.0) * currentTurn_kP * 0.75;
-		return OscarMath.clip(offsetPow, -Turn_MaxOutput, Turn_MaxOutput);
+		double offsetPow = latestData.x * currentTurn_kP;
+		double yawPow = latestData.skew * currentTurn_kP * 0.75;
+		return OscarMath.clip((-offsetPow), -Turn_MaxOutput, Turn_MaxOutput);
 	}
 	/*
 	public JevoisData getData() {
@@ -202,6 +211,14 @@ public class Vision extends Subsystem {
 		return data;
 	}
 	*/
+
+	public static class LimelightData {
+		public double x;
+		public double y;
+		public double area;
+		public double skew;
+		public boolean valid;
+	}
 
 	public static class JevoisData {
 		public double distance;

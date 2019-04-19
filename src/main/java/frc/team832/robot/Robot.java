@@ -1,6 +1,7 @@
 package frc.team832.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -51,11 +52,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-
         if (!RobotMap.init()) {
 //            System.out.println("Something went wrong during RobotMap.init()! Look above here for more");
             throw new RuntimeException("Something went wrong during RobotMap.init()! Look above here for more.");
         }
+
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
 
         drivetrain = new Drivetrain(RobotMap.diffDrive);
         elevator = new Elevator(RobotMap.elevatorMech);

@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.team832.GrouchLib.Control.*;
@@ -67,7 +68,7 @@ public class RobotMap {
 							4        11 HatchIntake
 							5        10 CargoIntake
 							6        9 	CANifier
-			Limelight		7        8
+				Limelight	7        8
 		PRAC
 				LeftDrive1	0        15	RightDrive1
 				LeftDrive2	1        14	RightDrive2
@@ -148,6 +149,8 @@ public class RobotMap {
 //		}
 
 		isComp = true;
+
+		NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(0);
 
 		jevois = new JevoisTracker(SerialPort.Port.kUSB, 115200);
 		jevois.startCameraStream();
