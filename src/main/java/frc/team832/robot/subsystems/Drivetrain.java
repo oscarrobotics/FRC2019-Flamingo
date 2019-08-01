@@ -25,7 +25,9 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     private static double yawCorrection, yawSetpoint;
     private static double rotPower, desiredRPM;
 
-    private static double drivePIDF[] = Constants.drivePIDF;
+    private static final Object m_lock = new Object();
+
+    private static double[] drivePIDF = Constants.drivePIDF;
 
     public static Drivetrain getInstance() {
         if(instance == null) {
@@ -36,13 +38,13 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
 
     private Drivetrain() {
         super(yawController);
+        SmartDashboard.putData("DT Subsys", this);
+        SmartDashboard.putData("DT Diff", diffDrive);
+        SmartDashboard.putData("DT YawPID", m_runner);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putData(this);
-        // SmartDashboard.putData(diffDrive);
-        SmartDashboard.putData(yawController);
         SmartDashboard.putNumber("DesiredVelocity", desiredRPM);
         SmartDashboard.putNumber("DriveVelocity", leftMaster.getSensorVelocity());
         SmartDashboard.putNumber("Yaw Output", yawCorrection);
@@ -50,7 +52,6 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     }
 
     public static boolean initialize() {
-        getInstance(); // ensure we have a local instance
         boolean good = true;
 
         navx = new AHRS(I2C.Port.kOnboard);
@@ -101,6 +102,8 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
         yawController.setOutputRange(-0.7, 0.7);
         yawController.setAbsoluteTolerance(1.5);
 
+        instance.m_runner.enable();
+
         return good;
     }
 
@@ -122,12 +125,14 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
 
     @Override
     public void useOutput(double output) {
-        output = OscarMath.round(output, 2);
-        if (!yawController.atSetpoint() && yawController.getError() > 15) {
-            output += 0.1;
+        synchronized (m_lock) {
+            output = OscarMath.round(output, 2);
+            if (!yawController.atSetpoint() && yawController.getError() > 15) {
+                output += 0.1;
+            }
+            // failsafe, if navx goes RIP
+            yawCorrection = navx.isConnected() ? output : 0.0;
         }
-        // failsafe, if navx goes RIP
-        yawCorrection = navx.isConnected() ? output : 0.0;
     }
 
     @Override
@@ -137,6 +142,8 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
 
     @Override
     public double getMeasurement() {
-        return OscarMath.round(navx.getYaw(), 2);
+        synchronized (m_lock) {
+            return OscarMath.round(navx.getYaw(), 2);
+        }
     }
 }

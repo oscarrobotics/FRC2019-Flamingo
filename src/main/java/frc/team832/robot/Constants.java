@@ -1,7 +1,5 @@
 package frc.team832.robot;
 
-import com.revrobotics.CANSparkMax.IdleMode;
-
 public class Constants {
 
     /**
@@ -13,5 +11,5 @@ public class Constants {
 
     public static final double[] yawPID = {0.0085, 0, 0}; // PID
 
-    private Constants() {} // private contructor to disallow instances
+    private Constants() {} // private constructor to disallow instances
 }
