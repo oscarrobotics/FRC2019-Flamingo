@@ -1,171 +1,84 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
 package frc.team832.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
-import frc.team832.GrouchLib.Sensors.NavXMicro;
-import frc.team832.GrouchLib.Util.OscarMath;
-import frc.team832.robot.Commands.ZeroNavX;
-import frc.team832.robot.Subsystems.*;
-import frc.team832.robot.Subsystems.SnowBlower.LEDMode;
-import io.github.oblarg.oblog.Logger;
-
-import java.awt.*;
-
-import static frc.team832.robot.RobotMap.*;
+import edu.wpi.first.wpilibj.frc2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
+ * functions corresponding to each mode, as described in the TimedRobot
  * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.properties file in the
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
-// If you rename or move this class, update the build.properties file in the project root
 public class Robot extends TimedRobot {
 
-    public static Drivetrain drivetrain;
-    public static Elevator elevator;
-    public static Fourbar fourbar;
-    public static ComplexLift complexLift;
-    public static SnowBlower snowBlower;
-    public static TheBigOne theBigOne;
-    public static JackStands jackStands;
-    public static Vision vision;
+  /**
+   * This function is run when the robot is first started up and should be
+   * used for any initialization code.
+   */
+  @Override
+  public void robotInit() {
+    System.out.println("INIT - Robot - BEGIN");
 
-    public static OI.ThreeSwitchPos ThreeSwitchPos = OI.ThreeSwitchPos.OFF;
+    if (!RobotContainer.init()) {
+      System.out.println("INIT - RobotContainer - FAIL");
+    } else { System.out.println("INIT - RobotContainer - OK");}
 
-    public static AutoHatchState currentHatchState = AutoHatchState.None;
-    public static AutoHatchState interruptedHatchState = AutoHatchState.None;
+  }
 
-    private Timer matchTimer = new Timer();
+  /**
+   * This function is called every robot packet, no matter the mode. Use
+   * this for items like diagnostics that you want ran during disabled,
+   * autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before
+   * LiveWindow and SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
-    @Override
-    public void robotInit() {
+  /**
+   * This autonomous (along with the chooser code above) shows how to select
+   * between different autonomous modes using the dashboard. The sendable
+   * chooser code works with the Java SmartDashboard. If you prefer the
+   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+   * getString line to get the auto name from the text box below the Gyro
+   *
+   * <p>You can add additional auto modes by adding additional comparisons to
+   * the switch structure below with additional strings. If using the
+   * SendableChooser make sure to add them to the chooser code above as well.
+   */
+  @Override
+  public void autonomousInit() {
+  }
 
-        if (!RobotMap.init()) {
-//            System.out.println("Something went wrong during RobotMap.init()! Look above here for more");
-            throw new RuntimeException("Something went wrong during RobotMap.init()! Look above here for more.");
-        }
+  /**
+   * This function is called periodically during autonomous.
+   */
+  @Override
+  public void autonomousPeriodic() {
+  }
 
-        drivetrain = new Drivetrain(RobotMap.diffDrive);
-        elevator = new Elevator(RobotMap.elevatorMech);
-        fourbar = new Fourbar(RobotMap.fourbarTopMech);
-        jackStands = new JackStands(RobotMap.frontJackStand, RobotMap.backJackStand, RobotMap.jackStandDrive);
-        System.out.println("D, E, F, J INIT");
+  /**
+   * This function is called periodically during operator control.
+   */
+  @Override
+  public void teleopPeriodic() {
+  }
 
-        snowBlower = new SnowBlower(RobotMap.cargoIntake, RobotMap.hatchHolder, RobotMap.canifier);
-        complexLift = new ComplexLift(RobotMap.complexLiftMech);
-        theBigOne = new TheBigOne(complexLift, snowBlower);
-        System.out.println("S, C, T INIT");
-
-        jackStands.resetEncoders();
-        fourbarTop.resetSensor();
-
-        vision = new Vision();
-
-
-        if (isComp) {
-            if (!navX.init()) {
-                System.out.println("NavX Failed to Init!!!");
-            }
-        }
-
-        OI.init();
-        OI.setupCommands();
-        SmartDashboard.putData(new ZeroNavX());
-
-        System.out.println("OI INIT");
-
-        Logger.configureLoggingAndConfig(this, false);
-    }
-
-    private void update() {
-        snowBlower.update();
-    }
-
-    private void pushData() {
-        if (pdp.isOnBus()) {
-            SmartDashboard.putData(pdp.getInstance());
-        }
-        drivetrain.pushData();
-        elevator.pushData();
-        fourbar.pushData();
-        jackStands.pushData();
-        snowBlower.pushData();
-    }
-
-    @Override
-    public void robotPeriodic() {
-        pushData();
-        update();
-        ThreeSwitchPos = OI.getThreeSwitch();
-        navX.pushData();
-        vision.main();
-        vision.pushData();
-    }
-
-    @Override
-    public void autonomousInit() {
-        Scheduler.getInstance().enable();
-        jackStands.resetEncoders();
-        fourbarTop.resetSensor();
-        fourbar.setPosition(Fourbar.Constants.FourbarPosition.Bottom.getIndex());
-        elevator.setPosition(Elevator.Constants.ElevatorPosition.Top.getIndex());
-        jackStands.setPosition("Retract");
-    }
-
-    @Override
-    public void autonomousPeriodic() {
-        teleopPeriodic();
-    }
-
-    @Override
-    public void teleopInit(){
-        Scheduler.getInstance().enable();
-        Color allianceColor = DriverStation.getInstance().getAlliance().equals(DriverStation.Alliance.Blue) ? Color.BLUE : Color.RED;
-        if(!DriverStation.getInstance().isFMSAttached()){
-            autonomousInit();
-        }
-
-        currentHatchState = AutoHatchState.None;
-        interruptedHatchState = AutoHatchState.None;
-    }
-
-    @Override
-    public void teleopPeriodic() {
-		Scheduler.getInstance().run();
-		jackStands.teleopControl();
-        OI.runLED();
-    }
-
-    @Override
-    public void disabledPeriodic(){
-    }
-
-    @Override
-    public void disabledInit() {
-        Scheduler.getInstance().removeAll();
-        Scheduler.getInstance().disable();
-        fourbarTop.setNeutralMode(NeutralMode.Coast);
-        jackStands.resetEncoders();
-        snowBlower.setLEDs(LEDMode.STATIC, Color.GREEN);
-        navX.zero();
-    }
-
-    public enum AutoHatchState{
-        None,
-        Grabbing,
-        MovingElevator,
-        Driving
-    }
+  /**
+   * This function is called periodically during test mode.
+   */
+  @Override
+  public void testPeriodic() {
+  }
 }
