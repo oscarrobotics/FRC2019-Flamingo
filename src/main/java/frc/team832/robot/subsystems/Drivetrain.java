@@ -7,10 +7,13 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.frc2.command.AsynchronousPIDSubsystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.Motors.CANSparkMax;
-import frc.team832.GrouchLib.Motion.SmartDifferentialDrive;
-import frc.team832.GrouchLib.Motors.NeutralMode;
-import frc.team832.GrouchLib.Util.OscarMath;
+import frc.team832.GrouchLib.motorcontrol.CANSparkMax;
+import frc.team832.GrouchLib.motion.SmartDifferentialDrive;
+import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.GrouchLib.motors.DTPowerTrain;
+import frc.team832.GrouchLib.motors.Gearbox;
+import frc.team832.GrouchLib.motors.Motors;
+import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 
@@ -22,8 +25,15 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     private static PIDController yawController = new PIDController(Constants.yawPID[0], Constants.yawPID[1], Constants.yawPID[2]);
     private static SmartDifferentialDrive diffDrive;
 
+    private static DTPowerTrain dtPowerTrain;
+
+    private static boolean holdYaw;
     private static double yawCorrection, yawSetpoint;
-    private static double rotPower, desiredRPM;
+    private static double desiredRPM;
+
+    private static double leftFPS, rightFPS, leftPeakFPS, rightPeakFPS;
+    private static double leftAmps, rightAmps, leftPeakAmps, rightPeakAmps;
+    private static double totalAmps, totalPeakAmps;
 
     private static final Object m_lock = new Object();
 
@@ -45,19 +55,53 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
 
     @Override
     public void periodic() {
+        leftFPS = dtPowerTrain.calculateFeetPerSec(leftMaster.getSensorVelocity());
+        rightFPS = dtPowerTrain.calculateFeetPerSec(rightMaster.getSensorVelocity());
+
+        leftAmps = leftMaster.getOutputCurrent() + leftSlave.getOutputCurrent();
+        rightAmps = rightMaster.getOutputCurrent() + rightSlave.getOutputCurrent();
+
+        totalAmps = leftAmps + rightAmps;
+
+        if (Math.abs(leftFPS) > leftPeakFPS) leftPeakFPS = Math.abs(leftFPS);
+        if (Math.abs(rightFPS) > rightPeakFPS) rightPeakFPS = Math.abs(rightFPS);
+
+        if (leftAmps > leftPeakAmps) leftPeakAmps = leftAmps;
+        if (rightAmps > rightPeakAmps) rightPeakAmps = rightAmps;
+
+        if (totalAmps > totalPeakAmps) totalPeakAmps = totalAmps;
+
+        desiredRPM = RobotContainer.drivePad.getY(Hand.kLeft) * dtPowerTrain.motor.freeSpeed;
+
+        SmartDashboard.putNumber("Left FPS", leftFPS);
+        SmartDashboard.putNumber("Right FPS", rightFPS);
+        SmartDashboard.putNumber("Left FPS Peak", leftPeakFPS);
+        SmartDashboard.putNumber("Right FPS Peak", rightPeakFPS);
+
+        SmartDashboard.putNumber("Left Amps", leftAmps);
+        SmartDashboard.putNumber("Right Amps", rightAmps);
+        SmartDashboard.putNumber("Left Amps Peak", leftPeakAmps);
+        SmartDashboard.putNumber("Right Amps Peak", rightPeakAmps);
+
+        SmartDashboard.putNumber("Total Amps", totalAmps);
+        SmartDashboard.putNumber("Total Peak Amps", totalPeakAmps);
+
         SmartDashboard.putNumber("DesiredVelocity", desiredRPM);
         SmartDashboard.putNumber("DriveVelocity", leftMaster.getSensorVelocity());
+        SmartDashboard.putNumber("VelocityError", desiredRPM - rightMaster.getSensorVelocity());
         SmartDashboard.putNumber("Yaw Output", yawCorrection);
         SmartDashboard.putNumber("NavX Yaw", getMeasurement());
     }
 
-    public static boolean initialize() {
+    public boolean initialize() {
         boolean good = true;
 
         navx = new AHRS(I2C.Port.kOnboard);
         if (!navx.isConnected()) {
             good = false;
         }
+
+        dtPowerTrain = new DTPowerTrain(new Gearbox(Constants.dtReductions[0], Constants.dtReductions[1]), Motors.NEO, 2, 6);
 
         leftMaster = new CANSparkMax(Constants.driveIDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
         leftSlave = new CANSparkMax(Constants.driveIDs[1], CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -68,6 +112,11 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
         if (leftSlave.getInstance().getFirmwareString() == null) good = false;
         if (rightMaster.getInstance().getFirmwareString() == null) good = false;
         if (rightSlave.getInstance().getFirmwareString() == null) good = false;
+
+        leftMaster.resetSettings();
+        leftSlave.resetSettings();
+        rightMaster.resetSettings();
+        rightSlave.resetSettings();
 
         leftSlave.follow(leftMaster);
         rightSlave.follow(rightMaster);
@@ -95,14 +144,19 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
         leftMaster.setClosedLoopRamp(0.25);
         rightMaster.setClosedLoopRamp(0.25);
 
-        diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 4600);
+        leftMaster.setPeakCurrentLimit(50);
+        leftSlave.setPeakCurrentLimit(50);
+        rightMaster.setPeakCurrentLimit(50);
+        rightSlave.setPeakCurrentLimit(50);
+
+        diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, dtPowerTrain.motor.freeSpeed);
 
         yawController.setContinuous();
         yawController.setInputRange(-180.0, 180.0);
         yawController.setOutputRange(-0.7, 0.7);
         yawController.setAbsoluteTolerance(1.5);
 
-        instance.m_runner.enable();
+        m_runner.enable();
 
         return good;
     }
@@ -110,13 +164,26 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     public static void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
+        boolean rotHold = RobotContainer.drivePad.getStickButton(Hand.kRight);
 
-        rotStick *= 0.7;
+        if (rotHold) {
+            if (!holdYaw) {
+                yawSetpoint = navx.getYaw();
+                holdYaw = true;
+                yawController.setSetpoint(yawSetpoint);
+            }
+        } else {
+            holdYaw = false;
+        }
+
+        rotStick *= 0.625;
 
         moveStick = OscarMath.signumPow(moveStick, 2);
         rotStick = OscarMath.signumPow(rotStick, 2);
 
-        diffDrive.curvatureDrive(moveStick, rotStick);
+        double rotPow = holdYaw ? yawCorrection : rotStick;
+
+        diffDrive.curvatureDrive(moveStick, rotPow);
     }
 
     public static void stop() {

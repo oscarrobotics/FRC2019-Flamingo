@@ -10,24 +10,12 @@ public class MainDrive extends SendableCommandBase {
     }
 
     @Override
-    public void initialize() {
-    }
-
-    @Override
     public void execute() {
         Drivetrain.drive();
     }
 
     @Override
     public void end(boolean interrupted) {
-        if (interrupted) {}
         Drivetrain.stop();
-    }
-
-    @Override
-    public boolean isFinished() {
-        // This return value will specify whether the command has finished!  The default is "false," which will make the
-        // command never end.
-        return false;
     }
 }

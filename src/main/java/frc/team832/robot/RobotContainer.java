@@ -10,7 +10,7 @@ public class RobotContainer {
     public static final XboxController drivePad = new XboxController(0);
 
     public static boolean init() {
-        if (Drivetrain.initialize()) {
+        if (Drivetrain.getInstance().initialize()) {
             return false;
         }
         CommandScheduler.getInstance().setDefaultCommand(Drivetrain.getInstance(), new MainDrive());
