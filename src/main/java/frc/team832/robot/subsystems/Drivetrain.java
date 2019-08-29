@@ -49,14 +49,13 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     private Drivetrain() {
         super(yawController);
         SmartDashboard.putData("DT Subsys", this);
-        SmartDashboard.putData("DT Diff", diffDrive);
         SmartDashboard.putData("DT YawPID", m_runner);
     }
 
     @Override
     public void periodic() {
-        leftFPS = dtPowerTrain.calculateFeetPerSec(leftMaster.getSensorVelocity());
-        rightFPS = dtPowerTrain.calculateFeetPerSec(rightMaster.getSensorVelocity());
+//        leftFPS = dtPowerTrain.calculateFeetPerSec(leftMaster.getSensorVelocity());
+//        rightFPS = dtPowerTrain.calculateFeetPerSec(rightMaster.getSensorVelocity());
 
         leftAmps = leftMaster.getOutputCurrent() + leftSlave.getOutputCurrent();
         rightAmps = rightMaster.getOutputCurrent() + rightSlave.getOutputCurrent();
@@ -71,7 +70,7 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
 
         if (totalAmps > totalPeakAmps) totalPeakAmps = totalAmps;
 
-        desiredRPM = RobotContainer.drivePad.getY(Hand.kLeft) * dtPowerTrain.motor.freeSpeed;
+        desiredRPM = RobotContainer.drivePad.getY(Hand.kLeft) * 5676;
 
         SmartDashboard.putNumber("Left FPS", leftFPS);
         SmartDashboard.putNumber("Right FPS", rightFPS);
@@ -96,12 +95,15 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     public boolean initialize() {
         boolean good = true;
 
+//        SmartDashboard.putData("DT Diff", diffDrive);
+
+
         navx = new AHRS(I2C.Port.kOnboard);
         if (!navx.isConnected()) {
             good = false;
         }
 
-        dtPowerTrain = new DTPowerTrain(new Gearbox(Constants.dtReductions[0], Constants.dtReductions[1]), Motors.NEO, 2, 6);
+//        dtPowerTrain = new DTPowerTrain(new Gearbox(Constants.dtReductions[0], Constants.dtReductions[1]), Motors.NEO, 2, 6);
 
         leftMaster = new CANSparkMax(Constants.driveIDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
         leftSlave = new CANSparkMax(Constants.driveIDs[1], CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -149,7 +151,7 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
         rightMaster.setPeakCurrentLimit(50);
         rightSlave.setPeakCurrentLimit(50);
 
-        diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, dtPowerTrain.motor.freeSpeed);
+        diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 5676);
 
         yawController.setContinuous();
         yawController.setInputRange(-180.0, 180.0);

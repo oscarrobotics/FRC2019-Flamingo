@@ -59,6 +59,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
   }
 
   /**
@@ -73,12 +74,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-  }
-
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
   }
 }

@@ -13,5 +13,9 @@ public class Constants {
 
     public static final long[] dtReductions = {(long) (1f/(12f/64f)), (long) (1f/(36f/76f))};
 
+    public static final double[] frontJackstandPIDF = {0,0,0,0};
+
+    public static final double[] backJackstandPIDF = {0,0,0,0};
+
     private Constants() {} // private constructor to disallow instances
 }
