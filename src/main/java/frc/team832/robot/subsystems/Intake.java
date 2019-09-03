@@ -44,7 +44,23 @@ public class Intake extends SendableSubsystemBase {
 		cargoIntake.set(power);
 	}
 
+	public static void cargoDown(double power) {
+		cargoIntake.set(power);
+	}
+
 	public static void stopCargo() {
 		cargoIntake.set(0);
+	}
+
+	public static void hatchIn(double power) {
+		hatchIntake.set(power);
+	}
+
+	public static void hatchOut(double power) {
+		hatchIntake.set(power);
+	}
+
+	public static void stopHatch(double power) {
+		hatchIntake.set(power);
 	}
 }

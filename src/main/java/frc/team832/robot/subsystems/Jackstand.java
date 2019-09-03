@@ -6,6 +6,9 @@ import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.robot.Constants;
 
+import static frc.team832.robot.Constants.backJackstandPos;
+import static frc.team832.robot.Constants.frontJackstandPos;
+
 public class Jackstand extends SendableSubsystemBase {
 
 	private static Jackstand instance;
@@ -51,5 +54,39 @@ public class Jackstand extends SendableSubsystemBase {
 		backJack.setkF(Constants.backJackstandPIDF[3]);
 
 		return successful;
+	}
+
+	public static void jackstandExtend() {
+		frontJack.setPosition(frontJackstandPos[1]);
+		backJack.setPosition(backJackstandPos[1]);
+	}
+
+	public static void jackstandRetract() {
+		frontJack.setPosition(frontJackstandPos[0]);
+		backJack.setPosition(backJackstandPos[0]);
+	}
+
+	public static void frontJackstandHold() {
+		frontJack.setPosition(frontJack.getSensorPosition());
+	}
+
+	public static void backJackstandHold() {
+		backJack.setPosition(backJack.getSensorPosition());
+	}
+
+	public static boolean frontAtTarget() {
+		return frontJack.atTarget();
+	}
+
+	public static boolean backAtTarget() {
+		return backJack.atTarget();
+	}
+
+	public static boolean frontAtTarget(int range) {
+		return Math.abs(frontJack.getTargetPosition() - frontJack.getSensorPosition()) < range;
+	}
+
+	public static boolean backAtTarget(int range) {
+		return Math.abs(backJack.getTargetPosition() - backJack.getSensorPosition()) < range;
 	}
 }

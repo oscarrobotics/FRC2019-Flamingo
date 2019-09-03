@@ -17,5 +17,9 @@ public class Constants {
 
     public static final double[] backJackstandPIDF = {0,0,0,0};
 
+    public static final double[] frontJackstandPos = {0, 10000};
+
+    public static final double[] backJackstandPos = {0, 9000};
+
     private Constants() {} // private constructor to disallow instances
 }
