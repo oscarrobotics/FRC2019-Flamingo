@@ -20,7 +20,9 @@ public class RobotContainer {
 
         if (!Drivetrain.getInstance().initialize()) {
             successful = false;
+            System.out.println("Drivetrain INIT - FAIL");
         } else {
+            System.out.println("Drivetrain INIT - OK");
             CommandScheduler.getInstance().setDefaultCommand(Drivetrain.getInstance(), new MainDrive());
         }
 
@@ -34,7 +36,7 @@ public class RobotContainer {
         bButton.whenHeld(new HatchIn());
         xButton.whenHeld(new HatchOut());
 
-        
+
         return successful;
     }
 }
