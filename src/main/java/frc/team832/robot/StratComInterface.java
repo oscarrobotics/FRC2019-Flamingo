@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 public class StratComInterface extends GenericHID {
 
+	//Constructor
 	public StratComInterface(int port) {
 		super(port);
 	}
 
-	public enum SCIButton { //Represent buttons on StratComInterface
+	//Represent buttons on StratComInterface
+	public enum SCIButton {
 		SC1(1),
 		SC2(2),
 		SC3(3),
@@ -36,13 +38,6 @@ public class StratComInterface extends GenericHID {
 			this.value = value;
 		}
 	}
-
-//	private static JoystickButton SC1 = new JoystickButton(this, SCIButton.SC1.value);
-
-	private JoystickButton blackL = new JoystickButton(this, SCIButton.ArcadeBlackLeft.value);
-	private JoystickButton blackR = new JoystickButton(this, SCIButton.ArcadeBlackRight.value);
-	private JoystickButton whiteL = new JoystickButton(this, SCIButton.ArcadeWhiteLeft.value);
-	private JoystickButton whiteR = new JoystickButton(this, SCIButton.ArcadeWhiteRight.value);
 
 	//Gets current state of key switch
 	public boolean getKeySwitch() { return getRawButton(SCIButton.KeySwitch.value);}
@@ -109,10 +104,10 @@ public class StratComInterface extends GenericHID {
 	public boolean getDoubleToggleUp() { return getRawButton(SCIButton.DoubleToggleUp.value);}
 	public boolean getDoubleToggleDown() { return getRawButton(SCIButton.DoubleToggleDown.value);}
 
-	//Left slider
+	//Gets state of left slider
 	@Override
 	public double getX(Hand hand) { return getX();}
-	//Right slider
+	//Gets state of right slider
 	@Override
 	public double getY(Hand hand) { return getY();}
 }

@@ -60,7 +60,7 @@ public class Intake extends SendableSubsystemBase {
 		hatchIntake.set(power);
 	}
 
-	public static void stopHatch(double power) {
-		hatchIntake.set(power);
+	public static void stopHatch() {
+		hatchIntake.set(0);
 	}
 }

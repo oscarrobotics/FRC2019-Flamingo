@@ -56,9 +56,14 @@ public class Jackstand extends SendableSubsystemBase {
 		return successful;
 	}
 
-	public static void jackstandExtend() {
+	public static void jackstandExtendLvl3() {
 		frontJack.setPosition(frontJackstandPos[1]);
 		backJack.setPosition(backJackstandPos[1]);
+	}
+
+	public static void jackstandExtendLvl2() {
+		frontJack.setPosition(frontJackstandPos[2]);
+		backJack.setPosition(backJackstandPos[2]);
 	}
 
 	public static void jackstandRetract() {
