@@ -19,6 +19,6 @@ public class HatchIn extends SendableCommandBase {
 
 	@Override
 	public void end(boolean interrupted) {
-		Intake.stopHatch(0);
+		Intake.stopHatch();
 	}
 }

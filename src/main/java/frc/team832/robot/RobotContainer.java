@@ -66,6 +66,11 @@ public class RobotContainer {
         arcadeWhiteLeft.whenHeld(new CargoDown());
         arcadeWhiteRight.whenHeld(new HatchOut());
 
+//         learning is occuring here
+        SCPlus.whenHeld(new Test());
+
+
+
         return successful;
     }
 }
