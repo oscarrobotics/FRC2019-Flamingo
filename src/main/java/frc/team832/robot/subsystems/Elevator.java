@@ -11,7 +11,7 @@ public class Elevator extends SendableSubsystemBase {
 
 	public static Elevator getInstance() {
 		if (instance == null) {
-			instance = new Fourbar();
+			//instance = new Fourbar();
 		}
 		return instance;
 	}
