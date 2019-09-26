@@ -6,12 +6,13 @@ import edu.wpi.first.wpilibj.frc2.command.CommandScheduler;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.Drivetrain;
 import frc.team832.robot.subsystems.Intake;
+import frc.team832.robot.subsystems.Jackstand;
 
 public class RobotContainer {
 
     //Creates the drivePad object of XboxController class
     public static final XboxController drivePad = new XboxController(0);
-    //Creates the JoystickButton object w/ name aButton, etc...
+    //Creates the JoystickButton object for drivPad w/ name aButton, etc...
     public static final JoystickButton aButton = new JoystickButton(drivePad, 1);
     public static final JoystickButton bButton = new JoystickButton(drivePad, 2);
     public static final JoystickButton yButton = new JoystickButton(drivePad, 4);
@@ -35,6 +36,12 @@ public class RobotContainer {
 
         if (!Intake.getInstance().initialize()) {
             successful = false;
+            System.out.println("Intake INIT - FAIL");
+        }
+
+        if (!Jackstand.getInstance().initialize()) {
+            successful = false;
+            System.out.println("Jackstand INIT - FAIL");
         }
 
         //Commands: drivePad
@@ -48,7 +55,7 @@ public class RobotContainer {
         stratComInterface.getArcadeWhiteRight().whenHeld(new HatchOut());
 
 //        arcadeWhiteLeft.whenPressed(() -> Intake.cargoDown(.25));
-        
+
 
         return successful;
     }
