@@ -1,27 +1,17 @@
 package frc.team832.robot.subsystems;
 
-import edu.wpi.first.wpilibj.frc2.command.SendableSubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.robot.Constants;
 
-import static frc.team832.robot.Constants.backJackstandPos;
-import static frc.team832.robot.Constants.frontJackstandPos;
+public class Jackstand extends SubsystemBase {
 
-public class Jackstand extends SendableSubsystemBase {
+	private CANTalon frontJack, backJack;
+	private boolean isHolding;
 
-	private static Jackstand instance;
-	private static CANTalon frontJack, backJack;
-
-	public static Jackstand getInstance() {
-		if (instance == null) {
-			instance = new Jackstand();
-		}
-		return instance;
-	}
-
-	private Jackstand() {
+	public Jackstand() {
 		super();
 		SmartDashboard.putData("Jack Subsys", this);
 	}
@@ -33,8 +23,8 @@ public class Jackstand extends SendableSubsystemBase {
 
 	public boolean initialize() {
 		boolean successful = true;
-		frontJack = new CANTalon(9);
-		backJack = new CANTalon(10);
+		frontJack = new CANTalon(Constants.FRONTJACK_CAN_ID);
+		backJack = new CANTalon(Constants.BACKJACK_CAN_ID);
 
 		if (!(frontJack.getInputVoltage() > 0)) successful = false;
 		if (!(backJack.getInputVoltage() > 0)) successful = false;
@@ -56,42 +46,38 @@ public class Jackstand extends SendableSubsystemBase {
 		return successful;
 	}
 
-	public static void jackstandExtendLvl3() {
-		frontJack.setPosition(frontJackstandPos[1]);
-		backJack.setPosition(backJackstandPos[1]);
+	public void setJackstandTarget(JackstandPosition position) {
+		isHolding = false;
+		frontJack.setPosition(position.frontValue);
+		backJack.setPosition(position.backValue);
 	}
 
-	public static void jackstandExtendLvl2() {
-		frontJack.setPosition(frontJackstandPos[2]);
-		backJack.setPosition(backJackstandPos[2]);
-	}
-
-	public static void jackstandRetract() {
-		frontJack.setPosition(frontJackstandPos[0]);
-		backJack.setPosition(backJackstandPos[0]);
-	}
-
-	public static void frontJackstandHold() {
-		frontJack.setPosition(frontJack.getSensorPosition());
-	}
-
-	public static void backJackstandHold() {
-		backJack.setPosition(backJack.getSensorPosition());
-	}
-
-	public static boolean frontAtTarget() {
-		return frontJack.atTarget();
-	}
-
-	public static boolean backAtTarget() {
-		return backJack.atTarget();
-	}
-
-	public static boolean frontAtTarget(int range) {
+	public boolean frontAtTarget(int range) {
 		return Math.abs(frontJack.getTargetPosition() - frontJack.getSensorPosition()) < range;
 	}
 
-	public static boolean backAtTarget(int range) {
+	public boolean backAtTarget(int range) {
 		return Math.abs(backJack.getTargetPosition() - backJack.getSensorPosition()) < range;
+	}
+
+	public enum JackstandPosition {
+		STARTING(0),
+		RETRACTED(-1000),
+		LVL2_UP(-30000),
+		LVL2_FRONT_ON(RETRACTED.frontValue, LVL2_UP.backValue),
+		LVL3_UP(-60000),
+		LVL3_FRONT_ON(RETRACTED.frontValue, LVL3_UP.backValue);
+
+		public final int frontValue, backValue;
+
+		JackstandPosition(int value) {
+			this.frontValue = value;
+			this.backValue = value;
+		}
+
+		JackstandPosition(int frontValue, int backValue) {
+			this.frontValue = frontValue;
+			this.backValue = backValue;
+		}
 	}
 }

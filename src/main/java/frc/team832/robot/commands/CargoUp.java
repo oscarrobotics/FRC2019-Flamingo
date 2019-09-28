@@ -1,15 +1,18 @@
 package frc.team832.robot.commands;
 
-import edu.wpi.first.wpilibj.frc2.command.SendableCommandBase;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team832.robot.subsystems.Intake;
 
-public class CargoUp extends SendableCommandBase {
-	public CargoUp() {
-		addRequirements(Intake.getInstance());
+public class CargoUp extends CommandBase {
+	private final Intake subsystem;
+
+	public CargoUp(Intake subsystem) {
+		this.subsystem = subsystem;
+		addRequirements(subsystem);
 	}
 
 	public void initialize() {
-		Intake.cargoUp(-1.0);
+		subsystem.cargoUp(-1.0);
 	}
 
 	@Override
@@ -19,6 +22,6 @@ public class CargoUp extends SendableCommandBase {
 
 	@Override
 	public void end(boolean interrupted) {
-		Intake.stopCargo();
+		subsystem.stopCargo();
 	}
 }

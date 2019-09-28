@@ -1,7 +1,7 @@
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.frc2.buttons.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 @SuppressWarnings("unused")
 public class StratComInterface extends GenericHID {
@@ -40,24 +40,24 @@ public class StratComInterface extends GenericHID {
 		}
 	}
 
-	private final JoystickButton SC1 = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SC1.index);
-	private final JoystickButton SC2 = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SC2.index);
-	private final JoystickButton SC3 = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SC3.index);
-	private final JoystickButton SC4 = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SC4.index);
-	private final JoystickButton SC5 = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SC5.index);
-	private final JoystickButton SC6 = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SC6.index);
-	private final JoystickButton SCPlus = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SCPlus.index);
-	private final JoystickButton SCMinus = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SCMinus.index);
-	private final JoystickButton SCSideTop = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SCSideTop.index);
-	private final JoystickButton SCSideMid = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SCSideMid.index);
-	private final JoystickButton SCSideBot = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SCSideBot.index);
-	private final JoystickButton ArcadeBlackLeft = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.ArcadeBlackLeft.index);
-	private final JoystickButton ArcadeBlackRight = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.ArcadeBlackRight.index);
-	private final JoystickButton ArcadeWhiteLeft = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.ArcadeWhiteLeft.index);
-	private final JoystickButton ArcadeWhiteRight = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.ArcadeWhiteRight.index);
-	private final JoystickButton SingleToggle = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.SingleToggle.index);
-	private final JoystickButton DoubleToggleUp = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.DoubleToggleUp.index);
-	private final JoystickButton DoubleToggleDown = new edu.wpi.first.wpilibj.frc2.buttons.JoystickButton(this, SCIButton.DoubleToggleDown.index);
+	private final JoystickButton SC1 = new JoystickButton(this, SCIButton.SC1.index);
+	private final JoystickButton SC2 = new JoystickButton(this, SCIButton.SC2.index);
+	private final JoystickButton SC3 = new JoystickButton(this, SCIButton.SC3.index);
+	private final JoystickButton SC4 = new JoystickButton(this, SCIButton.SC4.index);
+	private final JoystickButton SC5 = new JoystickButton(this, SCIButton.SC5.index);
+	private final JoystickButton SC6 = new JoystickButton(this, SCIButton.SC6.index);
+	private final JoystickButton SCPlus = new JoystickButton(this, SCIButton.SCPlus.index);
+	private final JoystickButton SCMinus = new JoystickButton(this, SCIButton.SCMinus.index);
+	private final JoystickButton SCSideTop = new JoystickButton(this, SCIButton.SCSideTop.index);
+	private final JoystickButton SCSideMid = new JoystickButton(this, SCIButton.SCSideMid.index);
+	private final JoystickButton SCSideBot = new JoystickButton(this, SCIButton.SCSideBot.index);
+	private final JoystickButton ArcadeBlackLeft = new JoystickButton(this, SCIButton.ArcadeBlackLeft.index);
+	private final JoystickButton ArcadeBlackRight = new JoystickButton(this, SCIButton.ArcadeBlackRight.index);
+	private final JoystickButton ArcadeWhiteLeft = new JoystickButton(this, SCIButton.ArcadeWhiteLeft.index);
+	private final JoystickButton ArcadeWhiteRight = new JoystickButton(this, SCIButton.ArcadeWhiteRight.index);
+	private final JoystickButton SingleToggle = new JoystickButton(this, SCIButton.SingleToggle.index);
+	private final JoystickButton DoubleToggleUp = new JoystickButton(this, SCIButton.DoubleToggleUp.index);
+	private final JoystickButton DoubleToggleDown = new JoystickButton(this, SCIButton.DoubleToggleDown.index);
 	private final JoystickButton KeySwitch = new JoystickButton(this, SCIButton.KeySwitch.index);
 
 

@@ -4,7 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.frc2.command.AsynchronousPIDSubsystem;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.motorcontrol.CANSparkMax;
@@ -16,40 +16,33 @@ import frc.team832.GrouchLib.motors.Motors;
 import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
+import frc.team832.robot.commands.MainDrive;
 
-public class Drivetrain extends AsynchronousPIDSubsystem {
+public class Drivetrain extends PIDSubsystem {
 
-    private static Drivetrain instance;
-    private static AHRS navx;
-    private static CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
+    private AHRS navx;
+    private CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
     private static PIDController yawController = new PIDController(Constants.yawPID[0], Constants.yawPID[1], Constants.yawPID[2]);
-    private static SmartDifferentialDrive diffDrive;
+    private SmartDifferentialDrive diffDrive;
 
-    private static DTPowerTrain dtPowerTrain;
+    private DTPowerTrain dtPowerTrain;
 
-    private static boolean holdYaw;
-    private static double yawCorrection, yawSetpoint;
-    private static double desiredRPM;
+    private boolean holdYaw;
+    private double yawCorrection, yawSetpoint;
+    private double desiredRPM;
 
-    private static double leftFPS, rightFPS, leftPeakFPS, rightPeakFPS;
-    private static double leftAmps, rightAmps, leftPeakAmps, rightPeakAmps;
-    private static double totalAmps, totalPeakAmps;
+    private double leftFPS, rightFPS, leftPeakFPS, rightPeakFPS;
+    private double leftAmps, rightAmps, leftPeakAmps, rightPeakAmps;
+    private double totalAmps, totalPeakAmps;
 
-    private static final Object m_lock = new Object();
+    private final Object m_lock = new Object();
 
-    private static double[] drivePIDF = Constants.drivePIDF;
+    private double[] drivePIDF = Constants.drivePIDF;
 
-    public static Drivetrain getInstance() {
-        if(instance == null) {
-            instance = new Drivetrain();
-        }
-        return instance;
-    }
-
-    private Drivetrain() {
+    public Drivetrain() {
         super(yawController);
         SmartDashboard.putData("DT Subsys", this);
-        SmartDashboard.putData("DT YawPID", m_runner);
+        SmartDashboard.putData("DT YawPID", yawController);
     }
 
     @Override
@@ -153,17 +146,17 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
 
         diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 5676);
 
-        yawController.setContinuous();
+        // yawController.setContinuous();
         yawController.setInputRange(-180.0, 180.0);
         yawController.setOutputRange(-0.7, 0.7);
         yawController.setAbsoluteTolerance(1.5);
 
-        m_runner.enable();
+        setDefaultCommand(new MainDrive(this));
 
         return good;
     }
 
-    public static void drive() {
+    public void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
         boolean rotHold = RobotContainer.drivePad.getStickButton(Hand.kRight);
@@ -188,7 +181,7 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
         diffDrive.curvatureDrive(moveStick, rotPow);
     }
 
-    public static void stop() {
+    public void stop() {
         diffDrive.stopMotor();
     }
 
@@ -196,7 +189,7 @@ public class Drivetrain extends AsynchronousPIDSubsystem {
     public void useOutput(double output) {
         synchronized (m_lock) {
             output = OscarMath.round(output, 2);
-            if (!yawController.atSetpoint() && yawController.getError() > 15) {
+            if (!yawController.atSetpoint() && yawController.getPositionError() > 15) {
                 output += 0.1;
             }
             // failsafe, if navx goes RIP

@@ -1,12 +1,12 @@
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.frc2.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.frc2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.Drivetrain;
 import frc.team832.robot.subsystems.Intake;
 import frc.team832.robot.subsystems.Jackstand;
+import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
 
 public class RobotContainer {
 
@@ -23,36 +23,39 @@ public class RobotContainer {
     public static final StratComInterface stratComInterface = new StratComInterface(1);
     //Creates the JoystickButton object
 
+    public static final Drivetrain drivetrain = new Drivetrain();
+    public static final Intake intake = new Intake();
+    public static final Jackstand jackstand = new Jackstand();
+
     public static boolean init() {
         boolean successful = true;
 
-        if (!Drivetrain.getInstance().initialize()) {
+        if (!drivetrain.initialize()) {
             successful = false;
             System.out.println("Drivetrain INIT - FAIL");
         } else {
             System.out.println("Drivetrain INIT - OK");
-            CommandScheduler.getInstance().setDefaultCommand(Drivetrain.getInstance(), new MainDrive());
         }
 
-        if (!Intake.getInstance().initialize()) {
+        if (!intake.initialize()) {
             successful = false;
             System.out.println("Intake INIT - FAIL");
         }
 
-        if (!Jackstand.getInstance().initialize()) {
+        if (!jackstand.initialize()) {
             successful = false;
             System.out.println("Jackstand INIT - FAIL");
         }
 
         //Commands: drivePad
-        yButton.whenPressed(new JackstandRetract());
-        bButton.whenPressed(new JackstandExtendLvl3());
-        startButton.whenPressed(new JackstandExtendLvl2());
+        yButton.whenPressed(new MoveJackstands(jackstand, JackstandPosition.RETRACTED));
+        bButton.whenPressed(new MoveJackstands(jackstand, JackstandPosition.LVL3_UP));
+        startButton.whenPressed(new MoveJackstands(jackstand, JackstandPosition.LVL2_UP));
         //Commands: stratComInterface
-        stratComInterface.getArcadeBlackRight().whenHeld(new CargoUp());
-        stratComInterface.getArcadeBlackRight().whenHeld(new HatchIn());
-        stratComInterface.getArcadeWhiteLeft().whenHeld(new CargoDown());
-        stratComInterface.getArcadeWhiteRight().whenHeld(new HatchOut());
+        stratComInterface.getArcadeBlackRight().whenHeld(new CargoUp(intake));
+        stratComInterface.getArcadeBlackRight().whenHeld(new HatchIn(intake));
+        stratComInterface.getArcadeWhiteLeft().whenHeld(new CargoDown(intake));
+        stratComInterface.getArcadeWhiteRight().whenHeld(new HatchOut(intake));
 
 //        arcadeWhiteLeft.whenPressed(() -> Intake.cargoDown(.25));
 

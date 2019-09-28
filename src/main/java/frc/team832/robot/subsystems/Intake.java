@@ -1,24 +1,16 @@
 package frc.team832.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.frc2.command.SendableSubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.motorcontrol.CANVictor;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 
-public class Intake extends SendableSubsystemBase {
+public class Intake extends SubsystemBase {
 
-	private static Intake instance;
-	private static CANVictor hatchIntake, cargoIntake;
+	private CANVictor hatchIntake, cargoIntake;
 
-	public static Intake getInstance() {
-		if (instance == null) {
-			instance = new Intake();
-		}
-		return instance;
-	}
-
-	private Intake() {
+	public Intake() {
 		super();
 		SmartDashboard.putData("Intake Subsys", this);
 	}
@@ -40,27 +32,27 @@ public class Intake extends SendableSubsystemBase {
 		return successful;
 	}
 
-	public static void cargoUp(double power) {
+	public void cargoUp(double power) {
 		cargoIntake.set(power);
 	}
 
-	public static void cargoDown(double power) {
+	public void cargoDown(double power) {
 		cargoIntake.set(power);
 	}
 
-	public static void stopCargo() {
+	public void stopCargo() {
 		cargoIntake.set(0);
 	}
 
-	public static void hatchIn(double power) {
+	public void hatchIn(double power) {
 		hatchIntake.set(power);
 	}
 
-	public static void hatchOut(double power) {
+	public void hatchOut(double power) {
 		hatchIntake.set(power);
 	}
 
-	public static void stopHatch() {
+	public void stopHatch() {
 		hatchIntake.set(0);
 	}
 }

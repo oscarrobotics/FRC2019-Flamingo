@@ -21,5 +21,8 @@ public class Constants {
 
     public static final double[] backJackstandPos = {-1000, -60000, -30000};
 
+    public static final int FRONTJACK_CAN_ID = 9;
+    public static final int BACKJACK_CAN_ID = 10;
+
     private Constants() {} // private constructor to disallow instances
 }
