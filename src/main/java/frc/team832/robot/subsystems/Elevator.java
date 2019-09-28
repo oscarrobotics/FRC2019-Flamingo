@@ -1,9 +1,10 @@
 package frc.team832.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.robot.Constants;
 
 public class Elevator extends SubsystemBase {
 	private CANTalon elevator;
@@ -18,7 +19,7 @@ public class Elevator extends SubsystemBase {
 
 	public boolean initialize() {
 		boolean successful = true;
-		elevator = new CANTalon(6);
+		elevator = new CANTalon(Constants.ELEVATOR_CAN_ID);
 
 		if (!(elevator.getInputVoltage() > 0)) successful = false;
 
@@ -30,11 +31,15 @@ public class Elevator extends SubsystemBase {
 		return successful;
 	}
 
-	public void setPosition(double position) {
-		//bottom 30
-		//top 430
-		if (!(position > 430 || position < 30)) {
-			elevator.setPosition(position);
+	public enum ElevatorPosition{
+		BOTTOM(30),
+		TOP(430),
+		MIDDLE(ElevatorPosition.BOTTOM.value + (Math.abs(ElevatorPosition.TOP.value - ElevatorPosition.BOTTOM.value) / 2));
+
+		public final int value;
+
+		ElevatorPosition(int value){
+			this.value = value;
 		}
 	}
 }

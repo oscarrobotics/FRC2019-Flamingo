@@ -3,10 +3,7 @@ package frc.team832.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.team832.robot.commands.*;
-import frc.team832.robot.subsystems.Drivetrain;
-import frc.team832.robot.subsystems.Intake;
-import frc.team832.robot.subsystems.Jackstand;
-import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
+import frc.team832.robot.subsystems.*;
 
 public class RobotContainer {
 
@@ -25,6 +22,8 @@ public class RobotContainer {
 
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Intake intake = new Intake();
+    public static final Fourbar fourbar = new Fourbar();
+    public static final Elevator elevator = new Elevator();
     public static final Jackstand jackstand = new Jackstand();
 
     public static boolean init() {
@@ -42,15 +41,25 @@ public class RobotContainer {
             System.out.println("Intake INIT - FAIL");
         }
 
+        if (!fourbar.initialize()) {
+            successful = false;
+            System.out.println("Fourbar INIT - FAIL");
+        }
+
+        if (!elevator.initialize()) {
+            successful = false;
+            System.out.println("Elevator INIT - FAIL");
+        }
+
         if (!jackstand.initialize()) {
             successful = false;
             System.out.println("Jackstand INIT - FAIL");
         }
 
         //Commands: drivePad
-        yButton.whenPressed(new MoveJackstands(jackstand, JackstandPosition.RETRACTED));
-        bButton.whenPressed(new MoveJackstands(jackstand, JackstandPosition.LVL3_UP));
-        startButton.whenPressed(new MoveJackstands(jackstand, JackstandPosition.LVL2_UP));
+        yButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.RETRACTED));
+        bButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL3_UP));
+        startButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL2_UP));
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackRight().whenHeld(new CargoUp(intake));
         stratComInterface.getArcadeBlackRight().whenHeld(new HatchIn(intake));

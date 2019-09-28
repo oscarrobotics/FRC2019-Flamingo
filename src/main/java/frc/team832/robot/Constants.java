@@ -1,5 +1,7 @@
 package frc.team832.robot;
 
+import frc.team832.robot.subsystems.*;
+
 public class Constants {
 
     /**
@@ -17,12 +19,25 @@ public class Constants {
 
     public static final double[] backJackstandPIDF = {0,0,0,0};
 
-    public static final double[] frontJackstandPos = {-1000, -60000, -30000};
+    public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 5;
+    public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 5;
 
-    public static final double[] backJackstandPos = {-1000, -60000, -30000};
+    public static final double FOURBAR_SOFT_MAX = Fourbar.FourbarPosition.TOP.value - 100;
+    public static final double FOURBAR_SOFT_MIN = Fourbar.FourbarPosition.BOTTOM.value + 100;
 
+    public static final double FRONTJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.frontValue ;
+    public static final double FRONTJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.frontValue;
+
+    public static final double BACKJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.backValue;
+    public static final double BACKJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.backValue;
+
+    public static final int ELEVATOR_CAN_ID = 6;
+    public static final int FOURBARTOP_CAN_ID = 7;
+    public static final int FOURBARBOTTOM_CAN_ID = 8;
     public static final int FRONTJACK_CAN_ID = 9;
     public static final int BACKJACK_CAN_ID = 10;
+    public static final int CARGOINTAKE_CAN_ID = 12;
+    public static final int HATCHINTAKE_CAN_ID = 13;
 
     private Constants() {} // private constructor to disallow instances
 }

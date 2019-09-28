@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.motorcontrol.CANVictor;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
@@ -20,8 +21,8 @@ public class Intake extends SubsystemBase {
 
 	public boolean initialize() {
 		boolean successful = true;
-		hatchIntake = new CANVictor(13);
-		cargoIntake = new CANVictor(12);
+		hatchIntake = new CANVictor(Constants.HATCHINTAKE_CAN_ID);
+		cargoIntake = new CANVictor(Constants.CARGOINTAKE_CAN_ID);
 		if (!(hatchIntake.getInputVoltage() > 0)) successful = false;
 		if (!(cargoIntake.getInputVoltage() > 0)) successful = false;
 

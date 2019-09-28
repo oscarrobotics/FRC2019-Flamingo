@@ -60,7 +60,7 @@ public class Jackstand extends SubsystemBase {
 		return Math.abs(backJack.getTargetPosition() - backJack.getSensorPosition()) < range;
 	}
 
-	public enum JackstandPosition {
+	public static enum JackstandPosition {
 		STARTING(0),
 		RETRACTED(-1000),
 		LVL2_UP(-30000),
