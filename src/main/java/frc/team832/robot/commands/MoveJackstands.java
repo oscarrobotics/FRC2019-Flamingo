@@ -16,7 +16,7 @@ public class MoveJackstands extends CommandBase {
 	}
 
 	public void initialize() {
-		subsystem.setJackstandTarget(position);
+		subsystem.setTarget(position);
 	}
 
 	@Override

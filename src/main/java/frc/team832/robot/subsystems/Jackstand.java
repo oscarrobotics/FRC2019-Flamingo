@@ -9,7 +9,6 @@ import frc.team832.robot.Constants;
 public class Jackstand extends SubsystemBase {
 
 	private CANTalon frontJack, backJack;
-	private boolean isHolding;
 
 	public Jackstand() {
 		super();
@@ -46,8 +45,7 @@ public class Jackstand extends SubsystemBase {
 		return successful;
 	}
 
-	public void setJackstandTarget(JackstandPosition position) {
-		isHolding = false;
+	public void setTarget(JackstandPosition position) {
 		frontJack.setPosition(position.frontValue);
 		backJack.setPosition(position.backValue);
 	}
@@ -64,8 +62,8 @@ public class Jackstand extends SubsystemBase {
 		STARTING(0),
 		RETRACTED(-1000),
 		LVL2_UP(-30000),
-		LVL2_FRONT_ON(RETRACTED.frontValue, LVL2_UP.backValue),
 		LVL3_UP(-60000),
+		LVL2_FRONT_ON(RETRACTED.frontValue, LVL2_UP.backValue),
 		LVL3_FRONT_ON(RETRACTED.frontValue, LVL3_UP.backValue);
 
 		public final int frontValue, backValue;

@@ -25,11 +25,15 @@ public class Constants {
     public static final double FOURBAR_SOFT_MAX = Fourbar.FourbarPosition.TOP.value - 100;
     public static final double FOURBAR_SOFT_MIN = Fourbar.FourbarPosition.BOTTOM.value + 100;
 
-    public static final double FRONTJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.frontValue ;
-    public static final double FRONTJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.frontValue;
+    public static final double FRONTJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.frontValue - 1000;
+    public static final double FRONTJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.frontValue + 1000;
 
-    public static final double BACKJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.backValue;
-    public static final double BACKJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.backValue;
+    public static final double BACKJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.backValue - 1000;
+    public static final double BACKJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.backValue + 1000;
+
+    public static final double POT_RANGE = (Elevator.ElevatorPosition.TOP.value) - (Elevator.ElevatorPosition.BOTTOM.value);
+    public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
+    public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 
     public static final int ELEVATOR_CAN_ID = 6;
     public static final int FOURBARTOP_CAN_ID = 7;

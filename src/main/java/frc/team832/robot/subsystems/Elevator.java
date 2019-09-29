@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
 
 public class Elevator extends SubsystemBase {
@@ -31,10 +32,29 @@ public class Elevator extends SubsystemBase {
 		return successful;
 	}
 
-	public enum ElevatorPosition{
+	public double getTarget(){
+		return elevator.getTargetPosition();
+	}
+
+	public void setTarget(ElevatorPosition position) {
+		elevator.setPosition(position.value);
+	}
+
+	public static enum ElevatorPosition{
 		BOTTOM(30),
 		TOP(430),
-		MIDDLE(ElevatorPosition.BOTTOM.value + (Math.abs(ElevatorPosition.TOP.value - ElevatorPosition.BOTTOM.value) / 2));
+		MIDDLE(ElevatorPosition.BOTTOM.value + (Math.abs(ElevatorPosition.TOP.value - ElevatorPosition.BOTTOM.value) / 2)),
+		INTAKEHATCH(BOTTOM.value),
+		INTAKECARGO(BOTTOM.value),
+		CARGOSHIP_HATCH(TOP.value),
+		CARGOSHIP_CARGO(BOTTOM.value),
+		ROCKETHATCH_LOW(TOP.value),
+		ROCKETHATCH_MID(BOTTOM.value),
+		ROCKETHATCH_HIGH(TOP.value),
+		ROCKETCARGO_LOW(BOTTOM.value),
+		ROCKETCARGO_MIDDLE(BOTTOM.value),
+		ROCKETCARGO_HIGH(TOP.value)
+		;
 
 		public final int value;
 
@@ -42,4 +62,7 @@ public class Elevator extends SubsystemBase {
 			this.value = value;
 		}
 	}
+
+	public double PotToInches(double value) { return OscarMath.map(value, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value, 0, 30);}
+	public double InchesToPot(double value) { return OscarMath.map(value, 0, 30, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);}
 }
