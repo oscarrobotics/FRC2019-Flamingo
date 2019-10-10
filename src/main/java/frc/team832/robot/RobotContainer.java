@@ -1,20 +1,13 @@
 package frc.team832.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.*;
+import frc.team832.GrouchLib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.*;
 
 public class RobotContainer {
 
     //Creates the drivePad object of XboxController class
-    public static final XboxController drivePad = new XboxController(0);
-    //Creates the JoystickButton object for drivPad w/ name aButton, etc...
-    public static final JoystickButton aButton = new JoystickButton(drivePad, 1);
-    public static final JoystickButton bButton = new JoystickButton(drivePad, 2);
-    public static final JoystickButton yButton = new JoystickButton(drivePad, 4);
-    public static final JoystickButton xButton = new JoystickButton(drivePad, 3);
-    public static final JoystickButton startButton = new JoystickButton(drivePad, 8);
+    public static final Xbox360Controller drivePad = new Xbox360Controller(0);
 
     //Creates the stratComInterface of the StratComInterface Class
     public static final StratComInterface stratComInterface = new StratComInterface(1);
@@ -57,9 +50,10 @@ public class RobotContainer {
         }
 
         //Commands: drivePad
-        yButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.RETRACTED));
-        bButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL3_UP));
-        startButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL2_UP));
+        drivePad.yButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.RETRACTED));
+        drivePad.bButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL3_UP));
+        drivePad.startButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL2_UP));
+
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackRight().whenHeld(new CargoUp(intake));
         stratComInterface.getArcadeBlackRight().whenHeld(new HatchIn(intake));

@@ -5,14 +5,14 @@ import frc.team832.robot.subsystems.Intake;
 
 public class HatchStop extends InstantCommand {
 
-	private final Intake subsystem;
+	private final Intake intake;
 
-	public HatchStop(Intake subsys){
-		subsystem = subsys;
-		addRequirements(subsystem);
+	public HatchStop(Intake intake){
+		this.intake = intake;
+		addRequirements(intake);
 	}
 
 	public void initialize(){
-		subsystem.stopHatch();
+		intake.stopHatch();
 	}
 }

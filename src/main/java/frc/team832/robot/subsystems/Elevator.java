@@ -6,6 +6,7 @@ import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
+import org.opencv.core.Mat;
 
 public class Elevator extends SubsystemBase {
 	private CANTalon elevator;
@@ -38,6 +39,10 @@ public class Elevator extends SubsystemBase {
 
 	public void setTarget(ElevatorPosition position) {
 		elevator.setPosition(position.value);
+	}
+
+	public boolean atTarget(){
+		return Math.abs(elevator.getTargetPosition() - elevator.getSensorPosition()) <= 50;
 	}
 
 	public static enum ElevatorPosition{

@@ -71,6 +71,10 @@ public class Fourbar extends SubsystemBase
 		fourbarTop.setPosition(position.value);
 	}
 
+	public boolean atTarget(){
+		return Math.abs(fourbarTop.getTargetPosition() - fourbarTop.getSensorPosition()) <= 75;
+	}
+
 	public double posToDeg(double pos){
 		//bottom = -70
 		//top = 55

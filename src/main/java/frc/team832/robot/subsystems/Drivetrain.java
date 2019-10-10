@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team832.GrouchLib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.GrouchLib.motorcontrol.CANSparkMax;
 import frc.team832.GrouchLib.motion.SmartDifferentialDrive;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
@@ -18,7 +19,7 @@ import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 import frc.team832.robot.commands.MainDrive;
 
-public class Drivetrain extends PIDSubsystem {
+public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
     private AHRS navx;
     private CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
@@ -41,6 +42,7 @@ public class Drivetrain extends PIDSubsystem {
 
     public Drivetrain() {
         super(yawController);
+        setName("Drive Subsys");
         SmartDashboard.putData("DT Subsys", this);
         SmartDashboard.putData("DT YawPID", yawController);
     }
@@ -159,7 +161,7 @@ public class Drivetrain extends PIDSubsystem {
     public void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
-        boolean rotHold = RobotContainer.drivePad.getStickButton(Hand.kRight);
+        boolean rotHold = RobotContainer.drivePad.rightStickPress.get();
 
         if (rotHold) {
             if (!holdYaw) {
@@ -207,5 +209,15 @@ public class Drivetrain extends PIDSubsystem {
         synchronized (m_lock) {
             return OscarMath.round(navx.getYaw(), 2);
         }
+    }
+
+    @Override
+    public String getDashboardTabName () {
+        return m_name;
+    }
+
+    @Override
+    public void updateDashboardData () {
+
     }
 }
