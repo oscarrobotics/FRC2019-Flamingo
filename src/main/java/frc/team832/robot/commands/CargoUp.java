@@ -4,15 +4,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team832.robot.subsystems.Intake;
 
 public class CargoUp extends CommandBase {
-	private final Intake subsystem;
+	private final Intake intake;
 
-	public CargoUp(Intake subsystem) {
-		this.subsystem = subsystem;
-		addRequirements(subsystem);
+	public CargoUp(Intake intake) {
+		this.intake = intake;
+		addRequirements(intake);
 	}
 
 	public void initialize() {
-		subsystem.cargoUp(-1.0);
+		intake.cargoUp(-1.0);
 	}
 
 	@Override
@@ -22,6 +22,6 @@ public class CargoUp extends CommandBase {
 
 	@Override
 	public void end(boolean interrupted) {
-		subsystem.stopCargo();
+		intake.stopCargo();
 	}
 }

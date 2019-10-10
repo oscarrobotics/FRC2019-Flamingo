@@ -1,5 +1,6 @@
 package frc.team832.robot.subsystems;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
@@ -7,6 +8,7 @@ import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.Robot;
+import frc.team832.robot.RobotContainer;
 
 import static frc.team832.robot.RobotContainer.elevator;
 
@@ -45,7 +47,7 @@ public class Fourbar extends SubsystemBase
 	public int getMinSafePos () {
 		double offset;
 
-		double fourbarMinAngle = (65.5 * (Math.cos((elevator.getTarget() - 35)/(248))) - 65.5);
+		double fourbarMinAngle = (-Constants.ELEVATOR_MIN_ANGLE * (Math.cos((elevator.getTarget() - Elevator.ElevatorPosition.BOTTOM.value)/(248))) + Constants.ELEVATOR_MIN_ANGLE);
 		SmartDashboard.putNumber("Safe Degrees", fourbarMinAngle);
 
 //		if (fourbarTop.getTopCurrentPosition() < 1000){
@@ -53,17 +55,21 @@ public class Fourbar extends SubsystemBase
 //		} else if (Robot.fourbar.getTopCurrentPosition() < 1500){
 //			offset = 400;
 //		}
-		if (fourbarTop.getSensorPosition() < 2000){
-			offset = (700000 / fourbarTop.getSensorPosition()) - 100;
-		} else {
-			offset = -100;
-		}
+		
 
 		//RobotMap.isComp ? (-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100 : (-0.015 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (25.0 * Robot.elevator.getTargetPosition()) - 6950;//5800 ish
 
-		double fourbarMinPos = OscarMath.map(fourbarMinAngle, -65.5, 0, 0, Elevator.ElevatorPosition.MIDDLE.value) + offset;
+		double fourbarMinPos = OscarMath.map(fourbarMinAngle, Constants.ELEVATOR_MIN_ANGLE, 0, 0, Elevator.ElevatorPosition.MIDDLE.value) + offset;
 		SmartDashboard.putNumber("Min Safe Val: ", fourbarMinPos);
 		return (int) fourbarMinPos;
+	}
+
+	public double getSlider(){
+		return RobotContainer.stratComInterface.getRightSlider();
+	}
+
+	public double getSliderTarget(double slider){
+		return OscarMath.map(slider, -1.0, 1.0, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value);
 	}
 
 
@@ -78,7 +84,7 @@ public class Fourbar extends SubsystemBase
 	public double posToDeg(double pos){
 		//bottom = -70
 		//top = 55
-		return OscarMath.map(pos, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value,-70, 55);
+		return OscarMath.map(pos, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value,Constants.ELEVATOR_MIN_ANGLE, Constants.ELEVATOR_MAX_ANGLE);
 	}
 
 	public static enum FourbarPosition{
