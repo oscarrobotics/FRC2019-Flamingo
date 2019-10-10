@@ -100,4 +100,12 @@ public class StratComInterface extends GenericHID {
 	//Gets state of right slider
 	@Override
 	public double getY(Hand hand) { return getY();}
+
+	public double getLeftSlider() {
+		return getX();
+	}
+
+	public double getRightSlider() {
+		return getY();
+	}
 }

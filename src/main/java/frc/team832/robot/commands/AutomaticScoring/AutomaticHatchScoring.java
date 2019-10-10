@@ -1,4 +1,4 @@
-package frc.team832.robot.commands;
+package frc.team832.robot.commands.AutomaticScoring;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -7,6 +7,7 @@ import frc.team832.robot.RobotContainer;
 import frc.team832.robot.commands.AutomaticScoring.DriveToScore;
 import frc.team832.robot.commands.AutomaticScoring.HatchStop;
 import frc.team832.robot.commands.AutomaticScoring.MoveToHatchScorePosition;
+import frc.team832.robot.commands.HatchOut;
 
 public class AutomaticHatchScoring extends SequentialCommandGroup {
 

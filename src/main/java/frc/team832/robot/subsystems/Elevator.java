@@ -1,11 +1,13 @@
 package frc.team832.robot.subsystems;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
+import frc.team832.robot.RobotContainer;
 
 public class Elevator extends SubsystemBase {
 	private CANTalon elevator;
@@ -32,12 +34,24 @@ public class Elevator extends SubsystemBase {
 		return successful;
 	}
 
+	public double getSlider(){
+		return RobotContainer.stratComInterface.getRightSlider();
+	}
+
+	public double getSliderTarget(double slider){
+		return OscarMath.map(slider, -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
+	}
+
+
 	public double getTarget(){
 		return elevator.getTargetPosition();
 	}
 
 	public void setTarget(ElevatorPosition position) {
 		elevator.setPosition(position.value);
+	}
+	public void setTarget(double position) {
+		elevator.setPosition(position);
 	}
 
 	public static enum ElevatorPosition{
