@@ -1,19 +1,24 @@
 package frc.team832.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.team832.GrouchLib.driverstation.dashboard.DashboardManager;
+import frc.team832.GrouchLib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 
-public class Elevator extends SubsystemBase {
+public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	private CANTalon elevatorMotor;
+
+	private NetworkTableEntry dashboard_RawPos;
 
 	public Elevator() {
 		super();
-		SmartDashboard.putData("Elevator Subsys", this);
+		DashboardManager.addTab(this);
+		DashboardManager.addTabSubsystem(this, this);
 	}
 
 	@Override
@@ -30,6 +35,8 @@ public class Elevator extends SubsystemBase {
 
 		elevatorMotor.setForwardSoftLimit((int)Constants.ELEVATOR_SOFT_MAX);
 		elevatorMotor.setReverseSoftLimit((int)Constants.ELEVATOR_SOFT_MIN);
+
+		dashboard_RawPos = DashboardManager.addTabItem(this, "Raw Pos", 0.0);
 
 		return successful;
 	}
@@ -50,6 +57,16 @@ public class Elevator extends SubsystemBase {
 
 	public boolean atTarget(){
 		return Math.abs(elevatorMotor.getTargetPosition() - elevatorMotor.getSensorPosition()) <= 50;
+	}
+
+	@Override
+	public String getDashboardTabName () {
+		return m_name;
+	}
+
+	@Override
+	public void updateDashboardData () {
+		dashboard_RawPos.setDouble(elevatorMotor.getSensorPosition());
 	}
 
 	public static enum ElevatorPosition{

@@ -68,9 +68,9 @@ public class RobotContainer {
         stratComInterface.getArcadeWhiteLeft().whenHeld(new CargoDown(intake));
         stratComInterface.getArcadeWhiteRight().whenHeld(new HatchOut(intake));
 
-        stratComInterface.getSC1().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveFourbar(fourbar, Fourbar.FourbarPosition.MIDDLE));
+//        stratComInterface.getSC1().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveFourbar(fourbar, Fourbar.FourbarPosition.MIDDLE));
 
-        stratComInterface.getSC3().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveSuperStructure(superStructure, fourbar, elevator, SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW));
+//        stratComInterface.getSC3().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveSuperStructure(superStructure, fourbar, elevator, SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW));
 
         stratComInterface.getKeySwitch()
                 .whenHeld(new ManualMoveElevator(elevator))

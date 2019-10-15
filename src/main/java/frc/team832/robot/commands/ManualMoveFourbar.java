@@ -21,7 +21,7 @@ public class ManualMoveFourbar extends CommandBase {
 
     @Override
     public void execute() {
-
+        fourbar.moveManual();
     }
 
     @Override

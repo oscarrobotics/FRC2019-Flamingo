@@ -19,11 +19,14 @@ public class Constants {
 
     public static final double[] backJackstandPIDF = {0,0,0,0};
 
+    public static final double[] armPIDF = {.6, 0.0, 0.0, .02};
+    public static final double armGravFF = 0.1;
+
     public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 5;
     public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 5;
 
-    public static final double FOURBAR_SOFT_MAX = Fourbar.FourbarPosition.TOP.value - 100;
-    public static final double FOURBAR_SOFT_MIN = Fourbar.FourbarPosition.BOTTOM.value + 100;
+    public static final double FOURBAR_SOFT_MAX = Fourbar.FourbarPosition.TOP.value + 100;
+    public static final double FOURBAR_SOFT_MIN = Fourbar.FourbarPosition.BOTTOM.value + 10;
 
     public static final double FRONTJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.frontValue - 1000;
     public static final double FRONTJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.frontValue + 1000;
