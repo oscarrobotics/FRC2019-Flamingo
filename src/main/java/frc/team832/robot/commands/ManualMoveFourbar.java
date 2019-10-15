@@ -6,10 +6,10 @@ import frc.team832.robot.RobotContainer;
 import frc.team832.robot.StratComInterface;
 import frc.team832.robot.subsystems.Fourbar;
 
-public class MoveFourbar extends CommandBase {
+public class ManualMoveFourbar extends CommandBase {
     private final Fourbar fourbar;
 
-    public MoveFourbar(Fourbar subsystem) {
+    public ManualMoveFourbar (Fourbar subsystem) {
         this.fourbar = subsystem;
         addRequirements(fourbar);
     }

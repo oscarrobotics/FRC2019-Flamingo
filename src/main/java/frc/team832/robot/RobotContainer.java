@@ -1,5 +1,8 @@
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team832.GrouchLib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.*;
@@ -18,6 +21,7 @@ public class RobotContainer {
     public static final Fourbar fourbar = new Fourbar();
     public static final Elevator elevator = new Elevator();
     public static final Jackstand jackstand = new Jackstand();
+    public static final SuperStructure superStructure = new SuperStructure(fourbar, elevator, intake);
 
     public static boolean init() {
         boolean successful = true;
@@ -37,11 +41,15 @@ public class RobotContainer {
         if (!fourbar.initialize()) {
             successful = false;
             System.out.println("Fourbar INIT - FAIL");
+        } else {
+            System.out.println("Fourbar INIT - OK");
         }
 
         if (!elevator.initialize()) {
             successful = false;
             System.out.println("Elevator INIT - FAIL");
+        } else {
+            System.out.println("Elevator INIT - OK");
         }
 
         if (!jackstand.initialize()) {
@@ -60,8 +68,13 @@ public class RobotContainer {
         stratComInterface.getArcadeWhiteLeft().whenHeld(new CargoDown(intake));
         stratComInterface.getArcadeWhiteRight().whenHeld(new HatchOut(intake));
 
-//        arcadeWhiteLeft.whenPressed(() -> Intake.cargoDown(.25));
+        stratComInterface.getSC1().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveFourbar(fourbar, Fourbar.FourbarPosition.MIDDLE));
 
+        stratComInterface.getSC3().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveSuperStructure(superStructure, fourbar, elevator, SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW));
+
+        stratComInterface.getKeySwitch()
+                .whenHeld(new ManualMoveElevator(elevator))
+                .whenHeld(new ManualMoveFourbar(fourbar));
 
         return successful;
     }

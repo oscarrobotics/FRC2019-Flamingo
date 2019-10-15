@@ -95,7 +95,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
         navx = new AHRS(I2C.Port.kOnboard);
         if (!navx.isConnected()) {
-            good = false;
+//            good = false;
         }
 
 //        dtPowerTrain = new DTPowerTrain(new Gearbox(Constants.dtReductions[0], Constants.dtReductions[1]), Motors.NEO, 2, 6);

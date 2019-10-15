@@ -40,8 +40,8 @@ public class MoveToHatchScorePosition extends CommandBase {
 				break;
 		}
 
-		fourbar.setTarget(fourbarPos);
-		elevator.setTarget(elevatorPos);
+		fourbar.setPosition(fourbarPos);
+		elevator.setPosition(elevatorPos);
 	}
 
 	@Override

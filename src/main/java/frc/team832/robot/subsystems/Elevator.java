@@ -1,17 +1,15 @@
 package frc.team832.robot.subsystems;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.GrouchLib.util.OscarMath;
 import frc.team832.robot.Constants;
-import org.opencv.core.Mat;
 import frc.team832.robot.RobotContainer;
 
 public class Elevator extends SubsystemBase {
-	private CANTalon elevator;
+	private CANTalon elevatorMotor;
 
 	public Elevator() {
 		super();
@@ -23,46 +21,41 @@ public class Elevator extends SubsystemBase {
 
 	public boolean initialize() {
 		boolean successful = true;
-		elevator = new CANTalon(Constants.ELEVATOR_CAN_ID);
+		elevatorMotor = new CANTalon(Constants.ELEVATOR_CAN_ID);
 
-		if (!(elevator.getInputVoltage() > 0)) successful = false;
+		if (!(elevatorMotor.getInputVoltage() > 0)) successful = false;
 
 		NeutralMode allIdleMode = NeutralMode.kBrake;
-		elevator.setNeutralMode(allIdleMode);
+		elevatorMotor.setNeutralMode(allIdleMode);
 
-		//setDefaultCommand(new);
+		elevatorMotor.setForwardSoftLimit((int)Constants.ELEVATOR_SOFT_MAX);
+		elevatorMotor.setReverseSoftLimit((int)Constants.ELEVATOR_SOFT_MIN);
 
 		return successful;
 	}
 
-	public double getSlider(){
-		return RobotContainer.stratComInterface.getRightSlider();
-	}
-
-	public double getSliderTarget(double slider){
-		return OscarMath.map(slider, -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
-	}
-
-
 	public double getTarget(){
-		return elevator.getTargetPosition();
+		return elevatorMotor.getTargetPosition();
 	}
 
-	public void setTarget(ElevatorPosition position) {
-		elevator.setPosition(position.value);
+	public void setPosition (ElevatorPosition position) {
+		elevatorMotor.setPosition(position.value);
 	}
-	public void setTarget(double position) {
-		elevator.setPosition(position);
+
+	public void moveManual() {
+		var sliderPos = RobotContainer.stratComInterface.getRightSlider();
+		var mappedSlider = OscarMath.map(sliderPos, -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
+		elevatorMotor.setPosition(mappedSlider);
 	}
 
 	public boolean atTarget(){
-		return Math.abs(elevator.getTargetPosition() - elevator.getSensorPosition()) <= 50;
+		return Math.abs(elevatorMotor.getTargetPosition() - elevatorMotor.getSensorPosition()) <= 50;
 	}
 
 	public static enum ElevatorPosition{
 		BOTTOM(30),
 		TOP(430),
-		MIDDLE(ElevatorPosition.BOTTOM.value + (Math.abs(ElevatorPosition.TOP.value - ElevatorPosition.BOTTOM.value) / 2)),
+		MIDDLE(OscarMath.mid(BOTTOM.value, TOP.value)),
 		INTAKEHATCH(BOTTOM.value),
 		INTAKECARGO(BOTTOM.value),
 		CARGOSHIP_HATCH(TOP.value),

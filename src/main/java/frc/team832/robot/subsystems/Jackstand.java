@@ -42,10 +42,16 @@ public class Jackstand extends SubsystemBase {
 		backJack.setkD(Constants.backJackstandPIDF[2]);
 		backJack.setkF(Constants.backJackstandPIDF[3]);
 
+		frontJack.setForwardSoftLimit((int)Constants.FRONTJACK_SOFT_MIN);
+		frontJack.setReverseSoftLimit((int)Constants.FRONTJACK_SOFT_MAX);
+
+		backJack.setForwardSoftLimit((int)Constants.BACKJACK_SOFT_MIN);
+		backJack.setReverseSoftLimit((int)Constants.BACKJACK_SOFT_MAX);
+
 		return successful;
 	}
 
-	public void setTarget(JackstandPosition position) {
+	public void setPosition (JackstandPosition position) {
 		frontJack.setPosition(position.frontValue);
 		backJack.setPosition(position.backValue);
 	}

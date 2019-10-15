@@ -34,8 +34,9 @@ public class Constants {
     public static final double POT_RANGE = (Elevator.ElevatorPosition.TOP.value) - (Elevator.ElevatorPosition.BOTTOM.value);
     public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
     public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
-    public static final double ELEVATOR_MIN_ANGLE = -67.5;
-    public static final double ELEVATOR_MAX_ANGLE = 55;
+
+    public static final double FOURBAR_MIN_ANGLE = -67.5;
+    public static final double FOURBAR_MAX_ANGLE = 55;
 
     public static final int ELEVATOR_CAN_ID = 6;
     public static final int FOURBARTOP_CAN_ID = 7;
