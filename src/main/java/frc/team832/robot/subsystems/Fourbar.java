@@ -104,22 +104,14 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public int getMinSafePos() {
-		final double magicPi = 248;
-		double offset = 0;
-		var elevatorBottomDiff = elevator.getTarget() - Elevator.ElevatorPosition.BOTTOM.value;
-		var aNumber = Math.cos(elevatorBottomDiff / magicPi);
-		safety_minFourbarAngle = (-Constants.FOURBAR_MIN_ANGLE * aNumber + Constants.FOURBAR_MIN_ANGLE);
+		final double magicPi = 254;// 800/3.1415
+		double offset = 100;
+		double unadjustedAngle = Math.cos(elevator.getTarget() - Elevator.ElevatorPosition.BOTTOM.value) / magicPi;
 
-//		if (fourbarTop.getTopCurrentPosition() < 1000){
-//			offset = 700;
-//		} else if (Robot.fourbar.getTopCurrentPosition() < 1500){
-//			offset = 400;
-//		}
-
-
+		safety_minFourbarAngle = (-Constants.FOURBAR_MIN_ANGLE * unadjustedAngle) + Constants.FOURBAR_MIN_ANGLE;
 		//(-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100;
-
 		safety_minFourbarPos = OscarMath.map(safety_minFourbarAngle, Constants.FOURBAR_MIN_ANGLE, 0, 0, Elevator.ElevatorPosition.MIDDLE.value) + offset;
+
 		return (int) safety_minFourbarPos;
 	}
 
