@@ -49,10 +49,12 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		elevatorMotor.setPosition(position.value);
 	}
 
+	public int getSliderTarget() {
+		return (int) OscarMath.map(RobotContainer.stratComInterface.getRightSlider(), -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
+	}
+
 	public void moveManual() {
-		var sliderPos = RobotContainer.stratComInterface.getRightSlider();
-		var mappedSlider = OscarMath.map(sliderPos, -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
-		elevatorMotor.setPosition(mappedSlider);
+		elevatorMotor.setPosition(getSliderTarget());
 	}
 
 	public boolean atTarget(){

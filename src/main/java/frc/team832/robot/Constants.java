@@ -19,7 +19,7 @@ public class Constants {
 
     public static final double[] backJackstandPIDF = {0,0,0,0};
 
-    public static final double[] armPIDF = {.6, 0.0, 0.0, .02};
+    public static final double[] armPIDF = {.7, 0.0, 0.0, 0.0};//.02 ff
     public static final double armGravFF = 0.1;
 
     public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 5;
@@ -38,8 +38,10 @@ public class Constants {
     public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
     public static final double INCHES_TO_POT = 1 / POT_TO_INCHES;
 
-    public static final double FOURBAR_MIN_ANGLE = -67.5;
-    public static final double FOURBAR_MAX_ANGLE = 55;
+//    public static final double FOURBAR_MIN_ANGLE = -67.5; // Before gas shocks
+    public static final double FOURBAR_MIN_ANGLE = -70;
+//    public static final double FOURBAR_MAX_ANGLE = 55;
+    public static final double FOURBAR_MAX_ANGLE = 52;
 
     public static final int ELEVATOR_CAN_ID = 6;
     public static final int FOURBARTOP_CAN_ID = 7;

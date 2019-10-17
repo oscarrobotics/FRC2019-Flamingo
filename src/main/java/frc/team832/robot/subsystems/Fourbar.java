@@ -2,9 +2,9 @@ package frc.team832.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team832.GrouchLib.driverstation.dashboard.DashboardManager;
 import frc.team832.GrouchLib.driverstation.dashboard.DashboardUpdatable;
+import frc.team832.GrouchLib.driverstation.dashboard.DashboardWidget;
 import frc.team832.GrouchLib.motorcontrol.CANTalon;
 import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 import frc.team832.GrouchLib.util.OscarMath;
@@ -12,21 +12,22 @@ import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 
 import static frc.team832.robot.RobotContainer.elevator;
-import static frc.team832.robot.RobotContainer.fourbar;
 
 public class Fourbar extends SubsystemBase implements DashboardUpdatable {
-	private CANTalon fourbarTop, fourbarBottom;
+	private static final double CHEESY_NUMBER = 800/Math.PI;
 
+	private CANTalon fourbarTop, fourbarBottom;
 
 	private NetworkTableEntry dashboard_AppliedPower;
 	private NetworkTableEntry dashboard_DesiredPos;
 	private NetworkTableEntry dashboard_RawPos;
 	private NetworkTableEntry dashboard_minSafeAngle;
 	private NetworkTableEntry dashboard_minSafePos;
+	private NetworkTableEntry dashboard_isSafe;
+	private NetworkTableEntry dashboard_currentDegrees;
 
 	private double safety_minFourbarAngle;
 	private double safety_minFourbarPos;
-	private boolean safety_isSafe;
 
 	public Fourbar () {
 		super();
@@ -39,7 +40,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	public void periodic () {
 //		safety_isSafe = checkSafety();
 //		if (!isSafe()) {
-//			_top.getMotor().setMotionMagcArbFF(getMinSafePos(), armFF());
+//			_top.getMotor().setMotionMagcArbFF(checkMinSafePos(), armFF());
 //		} else {
 //			_top.getMotor().setMotionMagcArbFF(targetPos, armFF());
 //		}
@@ -49,7 +50,10 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 //		} else {
 //			_top.getMotor().configMotionMagic(Constants.MOTION_MAGIC_VEL,Constants.MOTION_MAGIC_ACC);
 //		}
-		getMinSafePos();
+
+		if (!isSafe(false)) {
+			fourbarTop.setPosition(safety_minFourbarPos);
+		}
 	}
 
 	public boolean initialize() {
@@ -66,6 +70,8 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		fourbarTop.setInverted(false);
 		fourbarTop.setSensorPhase(true);
 
+		fourbarTop.resetSensor();
+
 		fourbarTop.setkP(Constants.armPIDF[0]);
 		fourbarTop.setkF(Constants.armPIDF[3]);
 
@@ -81,6 +87,8 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		dashboard_RawPos = DashboardManager.addTabItem(this, "Raw Pos", 0.0);
 		dashboard_minSafeAngle = DashboardManager.addTabItem(this, "Min Safe Angle", 0.0);
 		dashboard_minSafePos = DashboardManager.addTabItem(this, "Min Safe Pos", 0.0);
+		dashboard_isSafe = DashboardManager.addTabItem(this, "Is Safe", false, DashboardWidget.BooleanBox);
+		dashboard_currentDegrees = DashboardManager.addTabItem(this, "Arm Deg", 0.0);
 
 		fourbarTop.setForwardSoftLimit((int)Constants.FOURBAR_SOFT_MAX);
 		fourbarTop.setReverseSoftLimit((int)Constants.FOURBAR_SOFT_MIN);
@@ -88,14 +96,10 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		return successful;
 	}
 
-	public boolean isSafe() {
+	private boolean isSafe(boolean isTelemetry) {
 		boolean isSafe;
-		int fourbarMinPos = getMinSafePos();
-		SmartDashboard.putNumber("Fourbar Safe Min: ", fourbarMinPos);
-
-		isSafe = !(fourbarTop.getTargetPosition() < fourbarMinPos);
-		SmartDashboard.putBoolean("Is Safe: ", isSafe);
-
+		checkMinSafePos(isTelemetry);
+		isSafe = !(fourbarTop.getTargetPosition() < safety_minFourbarPos);
 		return isSafe;
 	}
 
@@ -103,46 +107,45 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		return fourbarTop.getSensorPosition();
 	}
 
-	public int getMinSafePos() {
-		final double magicPi = 254;// 800/3.1415
-		double offset = 100;
-		double unadjustedAngle = Math.cos(elevator.getTarget() - Elevator.ElevatorPosition.BOTTOM.value) / magicPi;
+	private void checkMinSafePos(boolean isTelemetry) {
+		final double intersectionOffset = 100;
 
-		safety_minFourbarAngle = (-Constants.FOURBAR_MIN_ANGLE * unadjustedAngle) + Constants.FOURBAR_MIN_ANGLE;
-		//(-(-0.0146 * Math.pow(Robot.elevator.getTargetPosition(), 2)) - (16.5 * Robot.elevator.getTargetPosition() - 6000)) / 2 + 100;
-		safety_minFourbarPos = OscarMath.map(safety_minFourbarAngle, Constants.FOURBAR_MIN_ANGLE, 0, 0, Elevator.ElevatorPosition.MIDDLE.value) + offset;
+		double elevatorTarget = isTelemetry ? elevator.getSliderTarget() : elevator.getTarget();
+		double unadjustedAngle = Math.cos( (elevatorTarget - Elevator.ElevatorPosition.BOTTOM.value) / CHEESY_NUMBER);
 
-		return (int) safety_minFourbarPos;
+		safety_minFourbarAngle = ( Math.abs(Constants.FOURBAR_MIN_ANGLE) * unadjustedAngle) + Constants.FOURBAR_MIN_ANGLE;
+
+		safety_minFourbarPos = OscarMath.map(safety_minFourbarAngle, Constants.FOURBAR_MIN_ANGLE, 0, 0, FourbarPosition.MIDDLE.value) + intersectionOffset;
 	}
 
 	public void moveManual() {
-		var mappedSlider = getSliderTarget(getSlider());
-		fourbarTop.setPosition(mappedSlider);
+		double targetPos = isSafe(false) ? getSliderTarget(getSlider()) : safety_minFourbarPos;
+		fourbarTop.setPosition(targetPos);
 	}
 
 	public double getSlider() {
-		return RobotContainer.stratComInterface.getRightSlider();
+		return RobotContainer.stratComInterface.getLeftSlider();
 	}
 
-	public double getSliderTarget (double slider) {
+	public double getSliderTarget(double slider) {
 		return OscarMath.map(slider, -1.0, 1.0, FourbarPosition.MANUAL_BOTTOM.value, FourbarPosition.TOP.value);
 	}
 
 	public void setPosition(FourbarPosition position) {
-		fourbarTop.setPosition(position.value);
+		double targetPos = isSafe(false) ? position.value : safety_minFourbarPos;
+		fourbarTop.setPosition(targetPos);
 	}
 
 	public boolean atTarget() {
 		return Math.abs(fourbarTop.getTargetPosition() - fourbarTop.getSensorPosition()) <= 75;
 	}
 
-	public double armDeg() {
-		return OscarMath.map(fourbarTop.getSensorPosition(), FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value, Constants.FOURBAR_MIN_ANGLE, Constants.FOURBAR_MAX_ANGLE);
+	public double degreesToPosition(double degrees) {
+		return OscarMath.map(degrees, Constants.FOURBAR_MIN_ANGLE, Constants.FOURBAR_MAX_ANGLE, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value);
 	}
 
-	public double armFF() {
-		final double gravFF = .10;
-		return gravFF * Math.cos(Math.toRadians(armDeg()));
+	public double positionToDegrees(double position) {
+		return OscarMath.map(position, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value, Constants.FOURBAR_MIN_ANGLE, Constants.FOURBAR_MAX_ANGLE);
 	}
 
 	@Override
@@ -152,10 +155,12 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 
 	@Override
 	public void updateDashboardData() {
+		dashboard_isSafe.setBoolean(isSafe(true));
 		dashboard_RawPos.setDouble(getRawPosition());
-		dashboard_minSafeAngle.setDouble(safety_minFourbarAngle);
-		dashboard_minSafePos.setDouble(safety_minFourbarPos);
+		dashboard_currentDegrees.setDouble(positionToDegrees(getRawPosition()));
 		dashboard_DesiredPos.setDouble(getSliderTarget(getSlider()));
+		dashboard_minSafePos.setDouble(safety_minFourbarPos);
+		dashboard_minSafeAngle.setDouble(safety_minFourbarAngle);
 		dashboard_AppliedPower.setDouble(fourbarTop.get());
 	}
 
@@ -167,7 +172,8 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		BOTTOM(0),
 		MANUAL_BOTTOM(BOTTOM.value + 100),
 		MIDDLE(2600),
-		TOP(5000),
+		TOP(4760),
+//		TOP(5000), // Before gas shocks
 		INTAKEHATCH(MIDDLE.value),
 		INTAKECARGO(3100),
 		CARGOSHIP_HATCH(MIDDLE.value),
