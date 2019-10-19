@@ -121,7 +121,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         leftMaster.setInverted(true);
         rightMaster.setInverted(true);
 
-        NeutralMode allIdleMode = NeutralMode.kBrake;
+        NeutralMode allIdleMode = NeutralMode.kCoast;
 
         leftMaster.setNeutralMode(allIdleMode);
         leftSlave.setNeutralMode(allIdleMode);
@@ -138,8 +138,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         rightMaster.setkD(drivePIDF[2]);
         rightMaster.setkF(drivePIDF[3]);
 
-        leftMaster.setClosedLoopRamp(0.25);
-        rightMaster.setClosedLoopRamp(0.25);
+        leftMaster.setClosedLoopRamp(0.4);
+        rightMaster.setClosedLoopRamp(0.4);
 
         leftMaster.setPeakCurrentLimit(50);
         leftSlave.setPeakCurrentLimit(50);
@@ -161,6 +161,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     public void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
+        double rotStickMultiplier = 0.55;
         boolean rotHold = RobotContainer.drivePad.rightStickPress.get();
 
         if (rotHold) {
@@ -173,7 +174,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
             holdYaw = false;
         }
 
-        rotStick *= 0.625;
+        rotStick *= rotStickMultiplier;
 
         moveStick = OscarMath.signumPow(moveStick, 2);
         rotStick = OscarMath.signumPow(rotStick, 2);

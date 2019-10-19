@@ -15,7 +15,7 @@ import frc.team832.robot.subsystems.Fourbar.FourbarPosition;
 public class SuperStructure extends SubsystemBase implements DashboardUpdatable {
 
 	private static final double CHEESY_NUMBER = 800/Math.PI;
-	private static final int intersectionOffset = 150;
+	private static final int intersectionOffset = 200;
 
 	private final Intake intake;
 	private final Fourbar fourbar;

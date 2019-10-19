@@ -40,6 +40,8 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 
 		setPosition(ElevatorPosition.STARTING_CONFIG);
 
+		elevatorMotor.configMotionMagic(Constants.ELEVATOR_VELOCITY, Constants.ELEVATOR_ACCELERATION);
+
 		return successful;
 	}
 
@@ -71,7 +73,7 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public static enum ElevatorPosition{
-		BOTTOM(85),//30
+		BOTTOM(70),//30
 		TOP(470),//430
 		MIDDLE(OscarMath.mid(BOTTOM.value, TOP.value)),
 		STARTING_CONFIG(TOP.value),

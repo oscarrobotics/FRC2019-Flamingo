@@ -71,6 +71,8 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		fourbarTop.setForwardSoftLimit((int)Constants.FOURBAR_SOFT_MAX);
 		fourbarTop.setReverseSoftLimit((int)Constants.FOURBAR_SOFT_MIN);
 
+		fourbarTop.configMotionMagic(Constants.FOURBAR_VELOCITY, Constants.FOURBAR_ACCELERATION);
+
 		setPosition(FourbarPosition.STARTING_CONFIG);
 
 		return successful;

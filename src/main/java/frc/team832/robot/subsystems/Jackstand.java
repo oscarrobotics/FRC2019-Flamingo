@@ -48,6 +48,9 @@ public class Jackstand extends SubsystemBase {
 		backJack.setForwardSoftLimit((int)Constants.BACKJACK_SOFT_MIN);
 		backJack.setReverseSoftLimit((int)Constants.BACKJACK_SOFT_MAX);
 
+		frontJack.configMotionMagic(Constants.FRONT_JACKSTAND_VELOCITY, Constants.FRONT_JACKSTAND_ACCELERATION);
+		backJack.configMotionMagic(Constants.BACK_JACKSTAND_VELOCITY, Constants.BACK_JACKSTAND_ACCELERATION);
+
 		return successful;
 	}
 
