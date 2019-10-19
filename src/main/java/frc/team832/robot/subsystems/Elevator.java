@@ -38,6 +38,8 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 
 		dashboard_RawPos = DashboardManager.addTabItem(this, "Raw Pos", 0.0);
 
+		setPosition(ElevatorPosition.STARTING_CONFIG);
+
 		return successful;
 	}
 
@@ -45,16 +47,13 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		return elevatorMotor.getTargetPosition();
 	}
 
-	public void setPosition (ElevatorPosition position) {
+	public void setPosition(ElevatorPosition position) {
 		elevatorMotor.setPosition(position.value);
 	}
 
-	public int getSliderTarget() {
-		return (int) OscarMath.map(RobotContainer.stratComInterface.getRightSlider(), -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
-	}
-
-	public void moveManual() {
-		elevatorMotor.setPosition(getSliderTarget());
+	public void moveManual(int targetPos) {
+		targetPos = OscarMath.clip(targetPos, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
+		elevatorMotor.setPosition(targetPos);
 	}
 
 	public boolean atTarget(){
@@ -72,9 +71,10 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public static enum ElevatorPosition{
-		BOTTOM(30),
-		TOP(430),
+		BOTTOM(85),//30
+		TOP(470),//430
 		MIDDLE(OscarMath.mid(BOTTOM.value, TOP.value)),
+		STARTING_CONFIG(TOP.value),
 		INTAKEHATCH(BOTTOM.value),
 		INTAKECARGO(BOTTOM.value),
 		CARGOSHIP_HATCH(TOP.value),
@@ -84,8 +84,7 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		ROCKETHATCH_HIGH(TOP.value),
 		ROCKETCARGO_LOW(BOTTOM.value),
 		ROCKETCARGO_MIDDLE(BOTTOM.value),
-		ROCKETCARGO_HIGH(TOP.value)
-		;
+		ROCKETCARGO_HIGH(TOP.value);
 
 		public final int value;
 

@@ -8,9 +8,11 @@
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team832.GrouchLib.driverstation.dashboard.DashboardManager;
+import frc.team832.GrouchLib.motorcontrol.NeutralMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -81,6 +83,11 @@ public class Robot extends TimedRobot {
 		} else if (DriverStation.getInstance().isFMSAttached()) { // field enable
 			// do nothing
 		}
+	}
+
+	@Override
+	public void disabledInit() {
+		RobotContainer.fourbar.setIdleMode(NeutralMode.kCoast);
 	}
 
 	/**

@@ -1,9 +1,9 @@
 package frc.team832.robot.commands.AutomaticScoring;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.team832.robot.ScorePosition;
-import frc.team832.robot.commands.HatchOut;
 import frc.team832.robot.subsystems.Drivetrain;
 import frc.team832.robot.subsystems.Elevator;
 import frc.team832.robot.subsystems.Fourbar;
@@ -24,7 +24,7 @@ public class AutomaticHatchScoring extends SequentialCommandGroup {
 
 		addCommands(new MoveToHatchScorePosition(elevator, fourbar, position),
 				new DriveToTarget(),
-				new HatchOut(intake),
+				new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake),
 				new WaitCommand(1),
 				new HatchStop(intake));
 	}

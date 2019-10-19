@@ -26,6 +26,9 @@ public class Intake extends SubsystemBase {
 		if (!(hatchIntake.getInputVoltage() > 0)) successful = false;
 		if (!(cargoIntake.getInputVoltage() > 0)) successful = false;
 
+		hatchIntake.setInverted(true);
+		cargoIntake.setInverted(true);
+
 		NeutralMode allIdleMode = NeutralMode.kCoast;
 		hatchIntake.setNeutralMode(allIdleMode);
 		cargoIntake.setNeutralMode(allIdleMode);
@@ -33,27 +36,41 @@ public class Intake extends SubsystemBase {
 		return successful;
 	}
 
-	public void cargoUp(double power) {
-		cargoIntake.set(power);
-	}
-
-	public void cargoDown(double power) {
-		cargoIntake.set(power);
+	public void runCargo(CargoDirection direction) {
+		cargoIntake.set(direction.power);
 	}
 
 	public void stopCargo() {
-		cargoIntake.set(0);
+		cargoIntake.set(0.0);
 	}
 
-	public void hatchIn(double power) {
-		hatchIntake.set(power);
-	}
-
-	public void hatchOut(double power) {
-		hatchIntake.set(power);
+	public void runHatch(HatchDirection direction) {
+		hatchIntake.set(direction.power);
 	}
 
 	public void stopHatch() {
-		hatchIntake.set(0);
+		hatchIntake.set(0.0);
+	}
+
+	public enum CargoDirection {
+		UP(0.7),
+		DOWN(-0.5);
+
+		public final double power;
+
+		CargoDirection(double power) {
+			this.power = power;
+		}
+	}
+
+	public enum HatchDirection {
+		IN(1.0),
+		OUT(-1.0);
+
+		public final double power;
+
+		HatchDirection(double power) {
+			this.power = power;
+		}
 	}
 }
