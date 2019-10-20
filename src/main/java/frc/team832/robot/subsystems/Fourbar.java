@@ -2,16 +2,13 @@ package frc.team832.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardManager;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardUpdatable;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardWidget;
-import frc.team832.GrouchLib.motorcontrol.CANTalon;
-import frc.team832.GrouchLib.motorcontrol.NeutralMode;
-import frc.team832.GrouchLib.util.OscarMath;
+import frc.team832.lib.driverstation.dashboard.DashboardManager;
+import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
+import frc.team832.lib.motorcontrol.NeutralMode;
+import frc.team832.lib.motorcontrol.vendor.CANTalon;
+import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
-
-import static frc.team832.robot.RobotContainer.elevator;
 
 public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	private static final double CHEESY_NUMBER = 800/Math.PI;
@@ -53,10 +50,10 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 
 		fourbarTop.resetSensor();
 
-		fourbarTop.setkP(Constants.armPIDF[0]);
-		fourbarTop.setkF(Constants.armPIDF[3]);
+		fourbarTop.setkP(Constants.ARM_PIDF[0]);
+		fourbarTop.setkF(Constants.ARM_PIDF[3]);
 
-		NeutralMode allIdleMode = NeutralMode.kBrake;
+		NeutralMode allIdleMode = NeutralMode.kCoast;
 		fourbarTop.setNeutralMode(allIdleMode);
 		fourbarBottom.setNeutralMode(allIdleMode);
 
@@ -94,7 +91,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		return fourbarTop.getSensorPosition();
 	}
 
-	public double getTarget() { return fourbarTop.getTargetPosition(); }
+	public double getTarget() { return fourbarTop.getClosedLoopTarget(); }
 
 //	private void checkMinSafePos(boolean isTelemetry) {
 //		final double intersectionOffset = 100;
@@ -126,7 +123,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public boolean atTarget() {
-		return Math.abs(fourbarTop.getTargetPosition() - fourbarTop.getSensorPosition()) <= 75;
+		return Math.abs(fourbarTop.getClosedLoopTarget() - fourbarTop.getSensorPosition()) <= 75;
 	}
 
 	public double degreesToPosition(double degrees) {

@@ -2,8 +2,8 @@ package frc.team832.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team832.GrouchLib.motorcontrol.CANTalon;
-import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.lib.motorcontrol.NeutralMode;
+import frc.team832.lib.motorcontrol.vendor.CANTalon;
 import frc.team832.robot.Constants;
 
 public class Jackstand extends SubsystemBase {
@@ -32,15 +32,15 @@ public class Jackstand extends SubsystemBase {
 		frontJack.setNeutralMode(allIdleMode);
 		backJack.setNeutralMode(allIdleMode);
 
-		frontJack.setkP(Constants.frontJackstandPIDF[0]);
-		frontJack.setkI(Constants.frontJackstandPIDF[1]);
-		frontJack.setkF(Constants.frontJackstandPIDF[2]);
-		frontJack.setkF(Constants.frontJackstandPIDF[3]);
+		frontJack.setkP(Constants.FRONT_JACKSTAND_PIDF[0]);
+		frontJack.setkI(Constants.FRONT_JACKSTAND_PIDF[1]);
+		frontJack.setkF(Constants.FRONT_JACKSTAND_PIDF[2]);
+		frontJack.setkF(Constants.FRONT_JACKSTAND_PIDF[3]);
 
-		backJack.setkP(Constants.backJackstandPIDF[0]);
-		backJack.setkI(Constants.backJackstandPIDF[1]);
-		backJack.setkD(Constants.backJackstandPIDF[2]);
-		backJack.setkF(Constants.backJackstandPIDF[3]);
+		backJack.setkP(Constants.BACK_JACKSTAND_PIDF[0]);
+		backJack.setkI(Constants.BACK_JACKSTAND_PIDF[1]);
+		backJack.setkD(Constants.BACK_JACKSTAND_PIDF[2]);
+		backJack.setkF(Constants.BACK_JACKSTAND_PIDF[3]);
 
 		frontJack.setForwardSoftLimit((int)Constants.FRONTJACK_SOFT_MIN);
 		frontJack.setReverseSoftLimit((int)Constants.FRONTJACK_SOFT_MAX);
@@ -60,14 +60,14 @@ public class Jackstand extends SubsystemBase {
 	}
 
 	public boolean frontAtTarget(int range) {
-		return Math.abs(frontJack.getTargetPosition() - frontJack.getSensorPosition()) < range;
+		return Math.abs(frontJack.getClosedLoopTarget() - frontJack.getSensorPosition()) < range;
 	}
 
 	public boolean backAtTarget(int range) {
-		return Math.abs(backJack.getTargetPosition() - backJack.getSensorPosition()) < range;
+		return Math.abs(backJack.getClosedLoopTarget() - backJack.getSensorPosition()) < range;
 	}
 
-	public static enum JackstandPosition {
+	public enum JackstandPosition {
 		STARTING(0),
 		RETRACTED(-1000),
 		LVL2_UP(-30000),

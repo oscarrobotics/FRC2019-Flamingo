@@ -1,10 +1,9 @@
 package frc.team832.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.motorcontrol.CANVictor;
-import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.lib.motorcontrol.NeutralMode;
+import frc.team832.lib.motorcontrol.vendor.CANVictor;
 import frc.team832.robot.Constants;
 
 public class Intake extends SubsystemBase {

@@ -2,11 +2,11 @@ package frc.team832.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardManager;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardUpdatable;
-import frc.team832.GrouchLib.motorcontrol.CANTalon;
-import frc.team832.GrouchLib.motorcontrol.NeutralMode;
-import frc.team832.GrouchLib.util.OscarMath;
+import frc.team832.lib.driverstation.dashboard.DashboardManager;
+import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
+import frc.team832.lib.motorcontrol.vendor.CANTalon;
+import frc.team832.lib.motorcontrol.NeutralMode;
+import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 
@@ -38,15 +38,17 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 
 		dashboard_RawPos = DashboardManager.addTabItem(this, "Raw Pos", 0.0);
 
-		setPosition(ElevatorPosition.STARTING_CONFIG);
+		elevatorMotor.setAllowableClosedLoopError(20);
 
 		elevatorMotor.configMotionMagic(Constants.ELEVATOR_VELOCITY, Constants.ELEVATOR_ACCELERATION);
+
+		setPosition(ElevatorPosition.STARTING_CONFIG);
 
 		return successful;
 	}
 
 	public double getTarget(){
-		return elevatorMotor.getTargetPosition();
+		return elevatorMotor.getClosedLoopTarget();
 	}
 
 	public void setPosition(ElevatorPosition position) {
@@ -58,8 +60,8 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		elevatorMotor.setPosition(targetPos);
 	}
 
-	public boolean atTarget(){
-		return Math.abs(elevatorMotor.getTargetPosition() - elevatorMotor.getSensorPosition()) <= 50;
+	public boolean atTarget() {
+		return elevatorMotor.atTarget();
 	}
 
 	@Override
@@ -70,6 +72,10 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	@Override
 	public void updateDashboardData () {
 		dashboard_RawPos.setDouble(elevatorMotor.getSensorPosition());
+	}
+
+	public void setIdleMode(NeutralMode idleMode) {
+		elevatorMotor.setNeutralMode(idleMode);
 	}
 
 	public static enum ElevatorPosition{

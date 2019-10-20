@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardManager;
-import frc.team832.GrouchLib.motorcontrol.NeutralMode;
+import frc.team832.lib.driverstation.dashboard.DashboardManager;
+import frc.team832.lib.motorcontrol.NeutralMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -36,7 +36,15 @@ public class Robot extends TimedRobot {
 		} else {
 			System.out.println("INIT - RobotContainer - OK");
 		}
+	}
 
+	public void enabledInit() {
+		RobotContainer.fourbar.zeroEncoder();
+		RobotContainer.fourbar.setIdleMode(NeutralMode.kBrake);
+		RobotContainer.elevator.setIdleMode(NeutralMode.kBrake);
+		RobotContainer.drivetrain.setIdleMode(NeutralMode.kBrake);
+		RobotContainer.drivetrain.resetGyro();
+		RobotContainer.drivetrain.resetEncoders();
 	}
 
 	/**
@@ -66,7 +74,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit () {
-		RobotContainer.fourbar.zeroEncoder();
+		enabledInit();
 	}
 
 	/**
@@ -79,7 +87,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit () {
 		if (DriverStation.getInstance().isDSAttached()) { // human enable
-			RobotContainer.fourbar.zeroEncoder();
+			enabledInit();
 		} else if (DriverStation.getInstance().isFMSAttached()) { // field enable
 			// do nothing
 		}
@@ -88,6 +96,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		RobotContainer.fourbar.setIdleMode(NeutralMode.kCoast);
+		RobotContainer.drivetrain.setIdleMode(NeutralMode.kCoast);
 	}
 
 	/**

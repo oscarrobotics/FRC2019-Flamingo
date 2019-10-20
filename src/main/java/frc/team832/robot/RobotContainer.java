@@ -2,9 +2,13 @@ package frc.team832.robot;
 
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.team832.GrouchLib.driverstation.controllers.Xbox360Controller;
+import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.*;
+import jaci.pathfinder.PathfinderFRC;
+import jaci.pathfinder.Trajectory;
+
+import java.io.IOException;
 
 public class RobotContainer {
 
@@ -79,6 +83,16 @@ public class RobotContainer {
 //        stratComInterface.getSC3().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveSuperStructure(superStructure, fourbar, elevator, SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW));
 
         stratComInterface.getKeySwitch().whileActiveContinuous(new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure));
+
+        var k_path_name = "Path1";
+
+        try {
+            Trajectory left_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".right");
+            Trajectory right_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".left");
+            drivePad.aButton.whenPressed(new FollowPath(drivetrain, left_trajectory, right_trajectory));
+        } catch (IOException e) {
+            System.err.println("Failed to load paths");
+        }
 
         return successful;
     }

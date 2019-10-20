@@ -2,31 +2,43 @@ package frc.team832.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team832.GrouchLib.driverstation.dashboard.DashboardUpdatable;
-import frc.team832.GrouchLib.motorcontrol.CANSparkMax;
-import frc.team832.GrouchLib.motion.SmartDifferentialDrive;
-import frc.team832.GrouchLib.motorcontrol.NeutralMode;
-import frc.team832.GrouchLib.motors.DTPowerTrain;
-import frc.team832.GrouchLib.motors.Gearbox;
-import frc.team832.GrouchLib.motors.Motors;
-import frc.team832.GrouchLib.util.OscarMath;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.RunEndCommand;
+import frc.team832.lib.driverstation.dashboard.DashboardManager;
+import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
+import frc.team832.lib.drive.SmartDifferentialDrive;
+import frc.team832.lib.driverstation.dashboard.DashboardWidget;
+import frc.team832.lib.motorcontrol.vendor.CANSparkMax;
+import frc.team832.lib.motorcontrol.NeutralMode;
+import frc.team832.lib.motors.Motors;
+import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
-import frc.team832.robot.commands.MainDrive;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.followers.EncoderFollower;
 
 public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
     private AHRS navx;
     private CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
-    private static PIDController yawController = new PIDController(Constants.yawPID[0], Constants.yawPID[1], Constants.yawPID[2]);
+    private static PIDController yawController = new PIDController(Constants.YAW_PID[0], Constants.YAW_PID[1], Constants.YAW_PID[2]);
     private SmartDifferentialDrive diffDrive;
 
-    private DTPowerTrain dtPowerTrain;
+    private EncoderFollower leftPathFollower, rightPathFollower;
+    private Notifier pathNotifier;
+
+    private NetworkTableEntry dashboard_leftFPS, dashboard_rightFPS, dashboard_leftFPSPeak, dashboard_rightFPSPeak,
+                              dashboard_leftAmps, dashboard_rightAmps, dashboard_leftAmpsPeak, dashboard_rightAmpsPeak,
+                              dashboard_totalAmps, dashboard_totalAmpsPeak, dashboard_desiredVelocity,
+                              dashboard_leftVelocity, dashboard_rightVelocity, dashboard_leftVelocityError, dashboard_rightVelocityError,
+                              dashboard_navxYaw, dashboard_yawOutput, dashboard_isRightDecel, dashboard_isLeftDecel,
+                              dashboard_leftPos, dashboard_rightPos;
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
@@ -38,19 +50,19 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
     private final Object m_lock = new Object();
 
-    private double[] drivePIDF = Constants.drivePIDF;
+    private double[] drivePIDF = Constants.DRIVE_PIDF;
 
     public Drivetrain() {
         super(yawController);
         setName("Drive Subsys");
-        SmartDashboard.putData("DT Subsys", this);
-        SmartDashboard.putData("DT YawPID", yawController);
+        DashboardManager.addTab(this);
+        DashboardManager.addTabSubsystem(this, this);
     }
 
     @Override
     public void periodic() {
-//        leftFPS = dtPowerTrain.calculateFeetPerSec(leftMaster.getSensorVelocity());
-//        rightFPS = dtPowerTrain.calculateFeetPerSec(rightMaster.getSensorVelocity());
+        leftFPS = Constants.DRIVE_POWERTRAIN.calculateFeetPerSec(leftMaster.getSensorVelocity());
+        rightFPS = Constants.DRIVE_POWERTRAIN.calculateFeetPerSec(rightMaster.getSensorVelocity());
 
         leftAmps = leftMaster.getOutputCurrent() + leftSlave.getOutputCurrent();
         rightAmps = rightMaster.getOutputCurrent() + rightSlave.getOutputCurrent();
@@ -65,50 +77,29 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
         if (totalAmps > totalPeakAmps) totalPeakAmps = totalAmps;
 
-        desiredRPM = RobotContainer.drivePad.getY(Hand.kLeft) * 5676;
+        desiredRPM = RobotContainer.drivePad.getY(Hand.kLeft) * Motors.NEO.freeSpeed;
 
-        SmartDashboard.putNumber("Left FPS", leftFPS);
-        SmartDashboard.putNumber("Right FPS", rightFPS);
-        SmartDashboard.putNumber("Left FPS Peak", leftPeakFPS);
-        SmartDashboard.putNumber("Right FPS Peak", rightPeakFPS);
-
-        SmartDashboard.putNumber("Left Amps", leftAmps);
-        SmartDashboard.putNumber("Right Amps", rightAmps);
-        SmartDashboard.putNumber("Left Amps Peak", leftPeakAmps);
-        SmartDashboard.putNumber("Right Amps Peak", rightPeakAmps);
-
-        SmartDashboard.putNumber("Total Amps", totalAmps);
-        SmartDashboard.putNumber("Total Peak Amps", totalPeakAmps);
-
-        SmartDashboard.putNumber("DesiredVelocity", desiredRPM);
-        SmartDashboard.putNumber("DriveVelocity", leftMaster.getSensorVelocity());
-        SmartDashboard.putNumber("VelocityError", desiredRPM - rightMaster.getSensorVelocity());
-        SmartDashboard.putNumber("Yaw Output", yawCorrection);
-        SmartDashboard.putNumber("NavX Yaw", getMeasurement());
+        handleDecelLimiting();
     }
 
     public boolean initialize() {
-        boolean good = true;
-
-//        SmartDashboard.putData("DT Diff", diffDrive);
-
+        boolean success = true;
 
         navx = new AHRS(I2C.Port.kOnboard);
         if (!navx.isConnected()) {
 //            good = false;
+            System.out.println("Drivetrain INIT - navX failure!");
         }
 
-//        dtPowerTrain = new DTPowerTrain(new Gearbox(Constants.dtReductions[0], Constants.dtReductions[1]), Motors.NEO, 2, 6);
+        leftMaster = new CANSparkMax(Constants.DRIVE_IDS[0], CANSparkMaxLowLevel.MotorType.kBrushless);
+        leftSlave = new CANSparkMax(Constants.DRIVE_IDS[1], CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightMaster = new CANSparkMax(Constants.DRIVE_IDS[2], CANSparkMaxLowLevel.MotorType.kBrushless);
+        rightSlave = new CANSparkMax(Constants.DRIVE_IDS[3], CANSparkMaxLowLevel.MotorType.kBrushless);
 
-        leftMaster = new CANSparkMax(Constants.driveIDs[0], CANSparkMaxLowLevel.MotorType.kBrushless);
-        leftSlave = new CANSparkMax(Constants.driveIDs[1], CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightMaster = new CANSparkMax(Constants.driveIDs[2], CANSparkMaxLowLevel.MotorType.kBrushless);
-        rightSlave = new CANSparkMax(Constants.driveIDs[3], CANSparkMaxLowLevel.MotorType.kBrushless);
-
-        if (leftMaster.getInstance().getFirmwareString() == null) good = false;
-        if (leftSlave.getInstance().getFirmwareString() == null) good = false;
-        if (rightMaster.getInstance().getFirmwareString() == null) good = false;
-        if (rightSlave.getInstance().getFirmwareString() == null) good = false;
+        if (leftMaster.getInstance().getFirmwareString() == null) success = false;
+        if (leftSlave.getInstance().getFirmwareString() == null) success = false;
+        if (rightMaster.getInstance().getFirmwareString() == null) success = false;
+        if (rightSlave.getInstance().getFirmwareString() == null) success = false;
 
         leftMaster.resetSettings();
         leftSlave.resetSettings();
@@ -121,7 +112,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         leftMaster.setInverted(true);
         rightMaster.setInverted(true);
 
-        NeutralMode allIdleMode = NeutralMode.kCoast;
+        NeutralMode allIdleMode = NeutralMode.kBrake;
 
         leftMaster.setNeutralMode(allIdleMode);
         leftSlave.setNeutralMode(allIdleMode);
@@ -138,8 +129,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         rightMaster.setkD(drivePIDF[2]);
         rightMaster.setkF(drivePIDF[3]);
 
-        leftMaster.setClosedLoopRamp(0.4);
-        rightMaster.setClosedLoopRamp(0.4);
+        leftMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
+        rightMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
 
         leftMaster.setPeakCurrentLimit(50);
         leftSlave.setPeakCurrentLimit(50);
@@ -149,16 +140,112 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 5676);
 
         // yawController.setContinuous();
-        yawController.setInputRange(-180.0, 180.0);
-        yawController.setOutputRange(-0.7, 0.7);
-        yawController.setAbsoluteTolerance(1.5);
+//        yawController.
+//        yawController.setInputRange(-180.0, 180.0);
+//        yawController.setOutputRange(-0.7, 0.7);
+//        yawController.setAbsoluteTolerance(1.5);
 
-        setDefaultCommand(new MainDrive(this));
+        dashboard_leftFPS = DashboardManager.addTabItem(this, "Left FPS", 0.0);
+        dashboard_rightFPS = DashboardManager.addTabItem(this, "Right FPS", 0.0);
+        dashboard_leftFPSPeak = DashboardManager.addTabItem(this, "Left FPS Peak", 0.0);
+        dashboard_rightFPSPeak = DashboardManager.addTabItem(this, "Right FPS Peak", 0.0);
+        dashboard_leftAmps = DashboardManager.addTabItem(this, "Left Amps", 0.0);
+        dashboard_rightAmps = DashboardManager.addTabItem(this, "Right Amps", 0.0);
+        dashboard_leftAmpsPeak = DashboardManager.addTabItem(this, "Left Amps Peak", 0.0);
+        dashboard_rightAmpsPeak = DashboardManager.addTabItem(this, "Right Amps Peak", 0.0);
+        dashboard_totalAmps = DashboardManager.addTabItem(this, "Total Amps", 0.0);
+        dashboard_totalAmpsPeak = DashboardManager.addTabItem(this, "Total Peak Amps", 0.0);
+        dashboard_desiredVelocity = DashboardManager.addTabItem(this, "Desired Velocity", 0.0);
+        dashboard_leftVelocity = DashboardManager.addTabItem(this, "Left Drive Velocity", 0.0);
+        dashboard_rightVelocity = DashboardManager.addTabItem(this, "Right Drive Velocity", 0.0);
+        dashboard_leftVelocityError = DashboardManager.addTabItem(this, "Left Velocity Error", 0.0);
+        dashboard_rightVelocityError = DashboardManager.addTabItem(this, "Right Velocity Error", 0.0);
+        dashboard_navxYaw = DashboardManager.addTabItem(this, "NavX Yaw", 0.0);
+        dashboard_yawOutput = DashboardManager.addTabItem(this, "Yaw Output", 0.0);
+        dashboard_isRightDecel = DashboardManager.addTabItem(this, "Is Right Decel", false, DashboardWidget.BooleanBox);
+        dashboard_isLeftDecel = DashboardManager.addTabItem(this, "Is Left Decel", false, DashboardWidget.BooleanBox);
 
-        return good;
+        dashboard_leftPos = DashboardManager.addTabItem(this, "Left Drive Pos", 0.0);
+        dashboard_rightPos = DashboardManager.addTabItem(this, "Right Drive Pos", 0.0);
+
+
+        RunEndCommand driveCommand = new RunEndCommand(this::drive, this::stop, this);
+        driveCommand.setName("TeleDriveCommand");
+
+        navx.zeroYaw();
+        resetEncoders();
+
+        setDefaultCommand(driveCommand);
+
+        return success;
     }
 
-    public void drive() {
+    public void preparePathFollower(Trajectory leftTraj, Trajectory rightTraj) {
+        leftPathFollower = new EncoderFollower(rightTraj);
+        rightPathFollower = new EncoderFollower(leftTraj);
+
+        leftPathFollower.configureEncoder((int)leftMaster.getSensorPosition(), Constants.DRIVE_POWERTRAIN.getWheelTicksPerRev(42), Constants.WHEEL_RADIUS_METERS);
+        leftPathFollower.configurePIDVA(Constants.DRIVE_PATH_PIDVA[0], Constants.DRIVE_PATH_PIDVA[1], Constants.DRIVE_PATH_PIDVA[2], Constants.DRIVE_PATH_PIDVA[3], Constants.DRIVE_PATH_PIDVA[4]);
+
+        rightPathFollower.configureEncoder((int)rightMaster.getSensorPosition(), Constants.DRIVE_POWERTRAIN.getWheelTicksPerRev(42), Constants.WHEEL_RADIUS_METERS);
+        rightPathFollower.configurePIDVA(Constants.DRIVE_PATH_PIDVA[0], Constants.DRIVE_PATH_PIDVA[1], Constants.DRIVE_PATH_PIDVA[2], Constants.DRIVE_PATH_PIDVA[3], Constants.DRIVE_PATH_PIDVA[4]);
+
+        pathNotifier = new Notifier(this::followPath);
+        pathNotifier.startPeriodic(leftTraj.get(0).dt);
+        System.out.printf("Starting Path Follower with dt %f\n", leftTraj.get(0).dt);
+    }
+
+    private int pathIndex = 0;
+
+    private void followPath() {
+        if (leftPathFollower.isFinished() || rightPathFollower.isFinished()) {
+            System.out.println("Stopping path follow");
+            pathNotifier.stop();
+        } else {
+            var seg = leftPathFollower.getSegment();
+            System.out.printf("Running path index %d, V: %.2f A: %.2f P: %.2f H: %.2f,", pathIndex, seg.velocity, seg.acceleration, seg.position, seg.heading);
+            pathIndex++;
+            double left_speed = leftPathFollower.calculate((int) leftMaster.getSensorPosition());
+            double right_speed = rightPathFollower.calculate((int) rightMaster.getSensorPosition());
+            double heading = -getMeasurement();
+            double desired_heading = Pathfinder.r2d(leftPathFollower.getHeading());
+            double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
+            double turn =  0.8 * (-1.0/80.0) * heading_difference;
+            double leftPow = left_speed + turn;
+            double rightPow = right_speed - turn;
+            leftMaster.set(leftPow);
+            rightMaster.set(rightPow);
+            System.out.printf(" LeftPow: %f, RightPow: %f, Turn: %.2f\n", left_speed, right_speed, turn);
+        }
+    }
+
+
+    public boolean isPathing() {
+        return !leftPathFollower.isFinished() && !rightPathFollower.isFinished();
+    }
+
+    public void stopPathing() {
+        pathNotifier.stop();
+        leftMaster.set(0);
+        rightMaster.set(0);
+        pathIndex = 0;
+    }
+
+    private void handleDecelLimiting() {
+        if (isLeftDecel()) {
+            leftMaster.setClosedLoopRamp(Constants.DRIVE_DECEL_RAMP);
+        } else {
+            leftMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
+        }
+
+        if (isRightDecel()) {
+            rightMaster.setClosedLoopRamp(Constants.DRIVE_DECEL_RAMP);
+        } else {
+            rightMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
+        }
+    }
+
+    private void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
         double rotStickMultiplier = 0.55;
@@ -184,7 +271,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         diffDrive.curvatureDrive(moveStick, rotPow);
     }
 
-    public void stop() {
+    private void stop() {
         diffDrive.stopMotor();
     }
 
@@ -212,13 +299,64 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         }
     }
 
+    public boolean isRightDecel() {
+        if (!diffDrive.isQuickTurning()) return false;
+        return Math.abs(rightMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
+    }
+
+    public boolean isLeftDecel() {
+        if (!diffDrive.isQuickTurning()) return false;
+        return Math.abs(leftMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
+    }
+
     @Override
-    public String getDashboardTabName () {
+    public String getDashboardTabName() {
         return m_name;
     }
 
     @Override
-    public void updateDashboardData () {
+    public void updateDashboardData() {
+        dashboard_desiredVelocity.setDouble(desiredRPM);
+        dashboard_isRightDecel.setBoolean(isRightDecel());
+        dashboard_isLeftDecel.setBoolean(isLeftDecel());
 
+        dashboard_totalAmps.setDouble(totalAmps);
+        dashboard_totalAmpsPeak.setDouble(totalPeakAmps);
+
+        dashboard_navxYaw.setDouble(getMeasurement());
+        dashboard_yawOutput.setDouble(yawCorrection);
+
+        dashboard_leftAmps.setDouble(leftAmps);
+        dashboard_leftAmpsPeak.setDouble(leftPeakAmps);
+        dashboard_leftFPS.setDouble(leftFPS);
+        dashboard_leftFPSPeak.setDouble(leftPeakFPS);
+        dashboard_leftVelocity.setDouble(leftMaster.getSensorVelocity());
+        dashboard_leftVelocityError.setDouble(desiredRPM - leftMaster.getSensorVelocity());
+        dashboard_leftPos.setDouble(leftMaster.getSensorPosition());
+
+        dashboard_rightAmps.setDouble(rightAmps);
+        dashboard_rightAmpsPeak.setDouble(rightPeakAmps);
+        dashboard_rightFPS.setDouble(rightFPS);
+        dashboard_rightFPSPeak.setDouble(rightPeakFPS);
+        dashboard_rightVelocity.setDouble(rightMaster.getSensorVelocity());
+        dashboard_rightVelocityError.setDouble(desiredRPM - rightMaster.getSensorVelocity());
+        dashboard_rightPos.setDouble(rightMaster.getSensorPosition());
+
+    }
+
+    public void setIdleMode(NeutralMode neutralMode) {
+        leftMaster.setNeutralMode(neutralMode);
+        leftSlave.setNeutralMode(neutralMode);
+        rightMaster.setNeutralMode(neutralMode);
+        rightSlave.setNeutralMode(neutralMode);
+    }
+
+    public void resetGyro() {
+        navx.zeroYaw();
+    }
+
+    public void resetEncoders() {
+        leftMaster.setSensorPosition(0);
+        rightMaster.setSensorPosition(0);
     }
 }
