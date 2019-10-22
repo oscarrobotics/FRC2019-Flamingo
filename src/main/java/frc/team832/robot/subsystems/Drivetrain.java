@@ -248,7 +248,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
-        double rotStickMultiplier = 0.55;
+        double rotStickMultiplier = 0.6;
         boolean rotHold = RobotContainer.drivePad.rightStickPress.get();
 
         if (rotHold) {

@@ -78,22 +78,29 @@ public class RobotContainer {
         stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.IN), intake::stopHatch, intake));
         stratComInterface.getArcadeWhiteRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake));
 
-//        stratComInterface.getSC1().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveFourbar(fourbar, Fourbar.FourbarPosition.MIDDLE));
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator), new Storage(getThreeSwitch(), superStructure, fourbar, elevator), egg));
 
-//        stratComInterface.getSC3().and(stratComInterface.getKeySwitch().negate()).whenActive(new AutoMoveSuperStructure(superStructure, fourbar, elevator, SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW));
+        var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
-        stratComInterface.getKeySwitch().whileActiveContinuous(new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure));
+        stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
-        var k_path_name = "Path1";
-
-        try {
-            Trajectory left_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".right");
-            Trajectory right_trajectory = PathfinderFRC.getTrajectory(k_path_name + ".left");
-            drivePad.aButton.whenPressed(new FollowPath(drivetrain, left_trajectory, right_trajectory));
-        } catch (IOException e) {
-            System.err.println("Failed to load paths");
-        }
 
         return successful;
     }
+
+    public static ThreeSwitchPos getThreeSwitch () {
+        if (stratComInterface.getDoubleToggleUp().get())
+            return ThreeSwitchPos.UP;
+        else if (stratComInterface.getDoubleToggleDown().get())
+            return ThreeSwitchPos.DOWN;
+        else
+            return ThreeSwitchPos.OFF;
+    }
+
+    public enum ThreeSwitchPos{
+        UP,
+        DOWN,
+        OFF
+    }
+
 }

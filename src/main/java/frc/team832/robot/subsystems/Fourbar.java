@@ -119,7 +119,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 
 	public void setPosition(FourbarPosition position) {
 //		double targetPos = isSafe(false) ? position.value : safety_minFourbarPos;
-		fourbarTop.setPosition(position.value);
+		fourbarTop.setMotionMagic(position.value);
 	}
 
 	public boolean atTarget() {

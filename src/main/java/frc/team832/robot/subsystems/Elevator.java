@@ -13,6 +13,8 @@ import frc.team832.robot.RobotContainer;
 public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	private CANTalon elevatorMotor;
 
+	private final double ArbFF = 0.3;
+
 	private NetworkTableEntry dashboard_RawPos;
 
 	public Elevator() {
@@ -57,7 +59,7 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 
 	public void moveManual(int targetPos) {
 		targetPos = OscarMath.clip(targetPos, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
-		elevatorMotor.setPosition(targetPos);
+		elevatorMotor.setMotionMagicArbFF(targetPos, ArbFF);
 	}
 
 	public boolean atTarget() {

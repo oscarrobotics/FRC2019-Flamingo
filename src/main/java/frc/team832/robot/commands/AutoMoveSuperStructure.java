@@ -9,7 +9,7 @@ public class AutoMoveSuperStructure extends InstantCommand {
 	private final SuperStructure superStructure;
 	private final SuperStructure.SuperStructurePosition target;
 
-	public AutoMoveSuperStructure(SuperStructure subsystem, Fourbar fourbar, Elevator elevator, SuperStructure.SuperStructurePosition position) {
+	public AutoMoveSuperStructure(SuperStructure.SuperStructurePosition position, SuperStructure subsystem, Fourbar fourbar, Elevator elevator) {
 		this.superStructure = subsystem;
 		this.target = position;
 		addRequirements(superStructure, fourbar, elevator);
