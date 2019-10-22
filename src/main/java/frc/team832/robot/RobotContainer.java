@@ -78,7 +78,7 @@ public class RobotContainer {
         stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.IN), intake::stopHatch, intake));
         stratComInterface.getArcadeWhiteRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake));
 
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator), new Storage(getThreeSwitch(), superStructure, fourbar, elevator), egg));
+//        stratComInterface.getSC1().whenPressed(new ConditionalCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator), new Storage(getThreeSwitch(), superStructure, fourbar, elevator), egg));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
