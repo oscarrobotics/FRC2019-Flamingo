@@ -7,8 +7,16 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.RunEndCommand;
+import edu.wpi.first.wpiutil.math.MathUtils;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.lib.drive.SmartDifferentialDrive;
@@ -30,8 +38,14 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private static PIDController yawController = new PIDController(Constants.YAW_PID[0], Constants.YAW_PID[1], Constants.YAW_PID[2]);
     private SmartDifferentialDrive diffDrive;
 
-    private EncoderFollower leftPathFollower, rightPathFollower;
-    private Notifier pathNotifier;
+    public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(0.711); //track width in meters
+    private DifferentialDriveOdometry driveOdometry;
+
+    private static final Pose2d CENTER_HAB_START_POSE = new Pose2d(new Translation2d(1.775, 4.125), new Rotation2d(0));
+    private static final Pose2d RIGHT_HAB_START_POSE = new Pose2d(new Translation2d(1.775, 5.2), new Rotation2d(0));
+    private static final Pose2d LEFT_HAB_START_POSE = new Pose2d(new Translation2d(1.775, 3.0), new Rotation2d(0));
+
+    private Pose2d startingPose = CENTER_HAB_START_POSE; // TODO: Set from Dashboard
 
     private NetworkTableEntry dashboard_leftFPS, dashboard_rightFPS, dashboard_leftFPSPeak, dashboard_rightFPSPeak,
                               dashboard_leftAmps, dashboard_rightAmps, dashboard_leftAmpsPeak, dashboard_rightAmpsPeak,
@@ -47,8 +61,6 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private double leftFPS, rightFPS, leftPeakFPS, rightPeakFPS;
     private double leftAmps, rightAmps, leftPeakAmps, rightPeakAmps;
     private double totalAmps, totalPeakAmps;
-
-    private final Object m_lock = new Object();
 
     private double[] drivePIDF = Constants.DRIVE_PIDF;
 
@@ -139,6 +151,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
         diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 5676);
 
+        driveOdometry = new DifferentialDriveOdometry(driveKinematics, startingPose);
+
         // yawController.setContinuous();
 //        yawController.
 //        yawController.setInputRange(-180.0, 180.0);
@@ -168,7 +182,6 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         dashboard_leftPos = DashboardManager.addTabItem(this, "Left Drive Pos", 0.0);
         dashboard_rightPos = DashboardManager.addTabItem(this, "Right Drive Pos", 0.0);
 
-
         RunEndCommand driveCommand = new RunEndCommand(this::drive, this::stop, this);
         driveCommand.setName("TeleDriveCommand");
 
@@ -180,55 +193,19 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         return success;
     }
 
-    public void preparePathFollower(Trajectory leftTraj, Trajectory rightTraj) {
-        leftPathFollower = new EncoderFollower(rightTraj);
-        rightPathFollower = new EncoderFollower(leftTraj);
-
-        leftPathFollower.configureEncoder((int)leftMaster.getSensorPosition(), Constants.DRIVE_POWERTRAIN.getWheelTicksPerRev(42), Constants.WHEEL_RADIUS_METERS);
-        leftPathFollower.configurePIDVA(Constants.DRIVE_PATH_PIDVA[0], Constants.DRIVE_PATH_PIDVA[1], Constants.DRIVE_PATH_PIDVA[2], Constants.DRIVE_PATH_PIDVA[3], Constants.DRIVE_PATH_PIDVA[4]);
-
-        rightPathFollower.configureEncoder((int)rightMaster.getSensorPosition(), Constants.DRIVE_POWERTRAIN.getWheelTicksPerRev(42), Constants.WHEEL_RADIUS_METERS);
-        rightPathFollower.configurePIDVA(Constants.DRIVE_PATH_PIDVA[0], Constants.DRIVE_PATH_PIDVA[1], Constants.DRIVE_PATH_PIDVA[2], Constants.DRIVE_PATH_PIDVA[3], Constants.DRIVE_PATH_PIDVA[4]);
-
-        pathNotifier = new Notifier(this::followPath);
-        pathNotifier.startPeriodic(leftTraj.get(0).dt);
-        System.out.printf("Starting Path Follower with dt %f\n", leftTraj.get(0).dt);
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        double leftMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(leftMaster.getSensorVelocity());
+        double rightMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
+        return new DifferentialDriveWheelSpeeds(leftMetersPerSec, rightMetersPerSec);
     }
 
-    private int pathIndex = 0;
-
-    private void followPath() {
-        if (leftPathFollower.isFinished() || rightPathFollower.isFinished()) {
-            System.out.println("Stopping path follow");
-            pathNotifier.stop();
-        } else {
-            var seg = leftPathFollower.getSegment();
-            System.out.printf("Running path index %d, V: %.2f A: %.2f P: %.2f H: %.2f,", pathIndex, seg.velocity, seg.acceleration, seg.position, seg.heading);
-            pathIndex++;
-            double left_speed = leftPathFollower.calculate((int) leftMaster.getSensorPosition());
-            double right_speed = rightPathFollower.calculate((int) rightMaster.getSensorPosition());
-            double heading = -getMeasurement();
-            double desired_heading = Pathfinder.r2d(leftPathFollower.getHeading());
-            double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
-            double turn =  0.8 * (-1.0/80.0) * heading_difference;
-            double leftPow = left_speed + turn;
-            double rightPow = right_speed - turn;
-            leftMaster.set(leftPow);
-            rightMaster.set(rightPow);
-            System.out.printf(" LeftPow: %f, RightPow: %f, Turn: %.2f\n", left_speed, right_speed, turn);
-        }
+    public void consumeWheelSpeeds(Double leftWheelSpeedMeters, Double rightWheelSpeedMeters) {
+        
     }
 
-
-    public boolean isPathing() {
-        return !leftPathFollower.isFinished() && !rightPathFollower.isFinished();
-    }
-
-    public void stopPathing() {
-        pathNotifier.stop();
-        leftMaster.set(0);
-        rightMaster.set(0);
-        pathIndex = 0;
+    public Pose2d getLatestPose2d() {
+        var newRotation2d = new Rotation2d(OscarMath.degreesToRadians(getMeasurement()));
+        return driveOdometry.update(newRotation2d, getWheelSpeeds());
     }
 
     private void handleDecelLimiting() {
@@ -277,14 +254,12 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
     @Override
     public void useOutput(double output) {
-        synchronized (m_lock) {
-            output = OscarMath.round(output, 2);
-            if (!yawController.atSetpoint() && yawController.getPositionError() > 15) {
-                output += 0.1;
-            }
-            // failsafe, if navx goes RIP
-            yawCorrection = navx.isConnected() ? output : 0.0;
+        output = OscarMath.round(output, 2);
+        if (!yawController.atSetpoint() && yawController.getPositionError() > 15) {
+            output += 0.1;
         }
+        // failsafe, if navx goes RIP
+        yawCorrection = navx.isConnected() ? output : 0.0;
     }
 
     @Override
@@ -294,9 +269,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
     @Override
     public double getMeasurement() {
-        synchronized (m_lock) {
-            return OscarMath.round(navx.getYaw(), 2);
-        }
+        return OscarMath.round(navx.getYaw(), 2);
     }
 
     public boolean isRightDecel() {
