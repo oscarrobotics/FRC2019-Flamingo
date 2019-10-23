@@ -21,6 +21,9 @@ public class Constants {
     public static final Gearbox DRIVE_GEARBOX = new Gearbox(DT_REDUCTIONS[0], DT_REDUCTIONS[1]);
     public static final DTPowerTrain DRIVE_POWERTRAIN = new DTPowerTrain(DRIVE_GEARBOX, Motors.NEO, 2, WHEEL_RADIUS_METERS);
 
+    public static final double DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC = 3.3528; 
+    public static final double DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ = 10.83;
+
     public static final double[] YAW_PID = {0.0085, 0, 0}; // PID
 
     //Fourbar

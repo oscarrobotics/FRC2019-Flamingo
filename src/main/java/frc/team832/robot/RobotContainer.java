@@ -1,14 +1,9 @@
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
-import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.*;
-import jaci.pathfinder.PathfinderFRC;
-import jaci.pathfinder.Trajectory;
-
-import java.io.IOException;
 
 public class RobotContainer {
 
@@ -35,6 +30,8 @@ public class RobotContainer {
         } else {
             System.out.println("Drivetrain INIT - OK");
         }
+
+        Paths.initializePaths(drivetrain.driveKinematics, Constants.DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC, Constants.DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ);
 
         if (!intake.initialize()) {
             successful = false;
@@ -85,8 +82,9 @@ public class RobotContainer {
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
 
-        CommandBase ramseteCommand = new RamseteCommand(trajectory, drivetrain::getLatestPose2d, follower, drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain);
+        CommandBase ramseteCommand = new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain);
 
+        drivePad.aButton.whenPressed(ramseteCommand);
 
         return successful;
     }
