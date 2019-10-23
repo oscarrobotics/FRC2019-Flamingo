@@ -28,7 +28,8 @@ public class Paths {
 
     private static final List<Translation2d> TEST_THREE_METERS_FORWARD = Arrays.asList(
         RIGHT_HAB_START_POSE.getTranslation(),
-        RIGHT_HAB_START_POSE.getTranslation().plus(new Translation2d(3, 0))
+        RIGHT_HAB_START_POSE.getTranslation().plus(new Translation2d(3
+                , 0))
     );
 
     private static PathHelper pathHelper;

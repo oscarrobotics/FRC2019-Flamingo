@@ -82,7 +82,7 @@ public class RobotContainer {
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
 
-        CommandBase ramseteCommand = new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain);
+        var ramseteCommand = new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain);
 
         drivePad.aButton.whenPressed(ramseteCommand);
 

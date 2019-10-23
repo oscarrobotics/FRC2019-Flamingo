@@ -200,7 +200,11 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     }
 
     public void consumeWheelSpeeds(Double leftWheelSpeedMeters, Double rightWheelSpeedMeters) {
-        
+        var leftVelocity = Constants.DRIVE_POWERTRAIN.calculateMotorSpeed(leftWheelSpeedMeters);
+        var rightVelocity = Constants.DRIVE_POWERTRAIN.calculateMotorSpeed(rightWheelSpeedMeters);
+
+        leftMaster.setVelocity(leftVelocity);
+        rightMaster.setVelocity(rightVelocity);
     }
 
     public Pose2d getLatestPose2d() {

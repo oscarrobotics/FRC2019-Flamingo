@@ -16,13 +16,13 @@ public class Constants {
     public static final double[] DRIVE_PATH_PIDVA = {0.8, 0, 0, 1/3.3528, 1/10.83};
     public static final double DRIVE_ACCEL_RAMP = 0.25;
     public static final double DRIVE_DECEL_RAMP = 0.5;
-    public static final double WHEEL_RADIUS_METERS = 0.074;
+    public static final double WHEEL_DIAMETER_METERS = 0.14986;
     public static final float[] DT_REDUCTIONS = {(1f/(12f/64f)), (1f/(36f/76f))};
     public static final Gearbox DRIVE_GEARBOX = new Gearbox(DT_REDUCTIONS[0], DT_REDUCTIONS[1]);
-    public static final DTPowerTrain DRIVE_POWERTRAIN = new DTPowerTrain(DRIVE_GEARBOX, Motors.NEO, 2, WHEEL_RADIUS_METERS);
+    public static final DTPowerTrain DRIVE_POWERTRAIN = new DTPowerTrain(DRIVE_GEARBOX, Motors.NEO, 2, WHEEL_DIAMETER_METERS);
 
-    public static final double DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC = 3.3528; 
-    public static final double DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ = 10.83;
+    public static final double DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC = 3.3528/2;
+    public static final double DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ = 10.83/2 ;
 
     public static final double[] YAW_PID = {0.0085, 0, 0}; // PID
 
@@ -55,6 +55,8 @@ public class Constants {
 
     public static final int ELEVATOR_VELOCITY = 80;
     public static final int ELEVATOR_ACCELERATION = 160;
+
+    public static final double ELEVATOR_ARBFF = 0.3;
 
     //Jackstand
     public static final double[] FRONT_JACKSTAND_PIDF = {0,0,0,0};
