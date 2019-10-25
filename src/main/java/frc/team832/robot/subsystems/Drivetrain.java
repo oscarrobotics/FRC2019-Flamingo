@@ -2,7 +2,9 @@ package frc.team832.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Notifier;
@@ -52,7 +54,12 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
                               dashboard_totalAmps, dashboard_totalAmpsPeak, dashboard_desiredVelocity,
                               dashboard_leftVelocity, dashboard_rightVelocity, dashboard_leftVelocityError, dashboard_rightVelocityError,
                               dashboard_navxYaw, dashboard_yawOutput, dashboard_isRightDecel, dashboard_isLeftDecel,
-                              dashboard_leftPos, dashboard_rightPos;
+                              dashboard_leftPos, dashboard_rightPos, dashboard_poseX, dashboard_poseY, dashboard_poseHeading;
+
+    private NetworkTable falconTable = NetworkTableInstance.getDefault().getTable("Live_Dashboard");
+    private NetworkTableEntry falconPoseXEntry = falconTable.getEntry("robotX");
+    private NetworkTableEntry falconPoseYEntry = falconTable.getEntry("robotY");
+    private NetworkTableEntry falconPoseHeadingEntry = falconTable.getEntry("heading");
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
@@ -159,28 +166,30 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 //        yawController.setOutputRange(-0.7, 0.7);
 //        yawController.setAbsoluteTolerance(1.5);
 
-        dashboard_leftFPS = DashboardManager.addTabItem(this, "Left FPS", 0.0);
-        dashboard_rightFPS = DashboardManager.addTabItem(this, "Right FPS", 0.0);
-        dashboard_leftFPSPeak = DashboardManager.addTabItem(this, "Left FPS Peak", 0.0);
-        dashboard_rightFPSPeak = DashboardManager.addTabItem(this, "Right FPS Peak", 0.0);
-        dashboard_leftAmps = DashboardManager.addTabItem(this, "Left Amps", 0.0);
-        dashboard_rightAmps = DashboardManager.addTabItem(this, "Right Amps", 0.0);
-        dashboard_leftAmpsPeak = DashboardManager.addTabItem(this, "Left Amps Peak", 0.0);
-        dashboard_rightAmpsPeak = DashboardManager.addTabItem(this, "Right Amps Peak", 0.0);
-        dashboard_totalAmps = DashboardManager.addTabItem(this, "Total Amps", 0.0);
-        dashboard_totalAmpsPeak = DashboardManager.addTabItem(this, "Total Peak Amps", 0.0);
-        dashboard_desiredVelocity = DashboardManager.addTabItem(this, "Desired Velocity", 0.0);
-        dashboard_leftVelocity = DashboardManager.addTabItem(this, "Left Drive Velocity", 0.0);
-        dashboard_rightVelocity = DashboardManager.addTabItem(this, "Right Drive Velocity", 0.0);
-        dashboard_leftVelocityError = DashboardManager.addTabItem(this, "Left Velocity Error", 0.0);
-        dashboard_rightVelocityError = DashboardManager.addTabItem(this, "Right Velocity Error", 0.0);
-        dashboard_navxYaw = DashboardManager.addTabItem(this, "NavX Yaw", 0.0);
-        dashboard_yawOutput = DashboardManager.addTabItem(this, "Yaw Output", 0.0);
-        dashboard_isRightDecel = DashboardManager.addTabItem(this, "Is Right Decel", false, DashboardWidget.BooleanBox);
-        dashboard_isLeftDecel = DashboardManager.addTabItem(this, "Is Left Decel", false, DashboardWidget.BooleanBox);
-
-        dashboard_leftPos = DashboardManager.addTabItem(this, "Left Drive Pos", 0.0);
-        dashboard_rightPos = DashboardManager.addTabItem(this, "Right Drive Pos", 0.0);
+        dashboard_leftFPS = DashboardManager.addTabItem(this, "LeftFPS", 0.0);
+        dashboard_rightFPS = DashboardManager.addTabItem(this, "RightFPS", 0.0);
+        dashboard_leftFPSPeak = DashboardManager.addTabItem(this, "LeftFPSPeak", 0.0);
+        dashboard_rightFPSPeak = DashboardManager.addTabItem(this, "RightFPSPeak", 0.0);
+        dashboard_leftAmps = DashboardManager.addTabItem(this, "LeftAmps", 0.0);
+        dashboard_rightAmps = DashboardManager.addTabItem(this, "RightAmps", 0.0);
+        dashboard_leftAmpsPeak = DashboardManager.addTabItem(this, "LeftAmpsPeak", 0.0);
+        dashboard_rightAmpsPeak = DashboardManager.addTabItem(this, "RightAmpsPeak", 0.0);
+        dashboard_totalAmps = DashboardManager.addTabItem(this, "TotalAmps", 0.0);
+        dashboard_totalAmpsPeak = DashboardManager.addTabItem(this, "TotalPeakAmps", 0.0);
+        dashboard_desiredVelocity = DashboardManager.addTabItem(this, "DesiredVel", 0.0);
+        dashboard_leftVelocity = DashboardManager.addTabItem(this, "LeftDriveVel", 0.0);
+        dashboard_rightVelocity = DashboardManager.addTabItem(this, "RightDriveVel", 0.0);
+        dashboard_leftVelocityError = DashboardManager.addTabItem(this, "LeftVelErr", 0.0);
+        dashboard_rightVelocityError = DashboardManager.addTabItem(this, "RightVelErr", 0.0);
+        dashboard_navxYaw = DashboardManager.addTabItem(this, "NavXYaw", 0.0);
+        dashboard_yawOutput = DashboardManager.addTabItem(this, "YawOutput", 0.0);
+        dashboard_isRightDecel = DashboardManager.addTabItem(this, "RightDecel", false, DashboardWidget.BooleanBox);
+        dashboard_isLeftDecel = DashboardManager.addTabItem(this, "LeftDecel", false, DashboardWidget.BooleanBox);
+        dashboard_leftPos = DashboardManager.addTabItem(this, "LeftPos", 0.0);
+        dashboard_rightPos = DashboardManager.addTabItem(this, "RightPos", 0.0);
+        dashboard_poseX = DashboardManager.addTabItem(this, "PoseX", 0.0);
+        dashboard_poseY = DashboardManager.addTabItem(this, "PoseY", 0.0);
+        dashboard_poseHeading = DashboardManager.addTabItem(this, "PoseHeading", 0.0);
 
         RunEndCommand driveCommand = new RunEndCommand(this::drive, this::stop, this);
         driveCommand.setName("TeleDriveCommand");
@@ -319,6 +328,19 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         dashboard_rightVelocityError.setDouble(desiredRPM - rightMaster.getSensorVelocity());
         dashboard_rightPos.setDouble(rightMaster.getSensorPosition());
 
+        var latestPose = getLatestPose2d();
+        var poseTranslation = latestPose.getTranslation();
+        var poseX = poseTranslation.getX();
+        var poseY = poseTranslation.getY();
+        var poseHeading = latestPose.getRotation().getRadians();
+
+        falconPoseXEntry.setDouble(poseX);
+        falconPoseYEntry.setDouble(poseY);
+        falconPoseXEntry.setDouble(poseHeading);
+
+        dashboard_poseX.setDouble(poseX);
+        dashboard_poseY.setDouble(poseY);
+        dashboard_poseHeading.setDouble(poseHeading);
     }
 
     public void setIdleMode(NeutralMode neutralMode) {
