@@ -44,7 +44,7 @@ public class Constants {
 
 
     //Elevator
-    public static final double[] elevatorPIDF = {8, 0, 0, 0};
+    public static final double[] elevatorPIDF = {10, 0, 0, 0};
 
     public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 5;
     public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 5;

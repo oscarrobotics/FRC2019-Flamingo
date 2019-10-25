@@ -15,7 +15,6 @@ import frc.team832.robot.subsystems.Fourbar.FourbarPosition;
 public class SuperStructure extends SubsystemBase implements DashboardUpdatable {
 
 	private static final double CHEESY_NUMBER = 800/Math.PI;
-	private static final int intersectionOffset = 200;
 
 	private final Intake intake;
 	private final Fourbar fourbar;
@@ -72,13 +71,22 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		return (int) OscarMath.map(slider, -1.0, 1.0, ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value);
 	}
 
+	public int getIntersectionOffset() {
+		int baseOffset = 100;
+		double offsetMultiplier = -2;
+		if (fourbar.getTarget() <= 200)
+			return baseOffset;
+		else
+			return (int) (safety_minSafeAngle * offsetMultiplier) + baseOffset;
+	}
+
 	public void moveManual() {
 		moveManual(fourbarSliderTarget(), elevatorSliderTarget());
 	}
 
 	private void moveManual(int fourbarPosition, int elevatorPosition) {
 		if (!safety_isSafe) {
-			fourbarPosition = safety_minSafePos + intersectionOffset;
+			fourbarPosition = safety_minSafePos + getIntersectionOffset();
 		}
 		fourbar.moveManual(fourbarPosition);
 		elevator.moveManual(elevatorPosition);
