@@ -59,6 +59,14 @@ public class Jackstand extends SubsystemBase {
 		backJack.setPosition(position.backValue);
 	}
 
+	public void setFrontJack(FrontJackPosition position) {
+		frontJack.setPosition(position.frontValue);
+	}
+
+	public void setBackJack(BackJackPosition position) {
+		backJack.setPosition(position.backValue);
+	}
+
 	public boolean frontAtTarget(int range) {
 		return Math.abs(frontJack.getClosedLoopTarget() - frontJack.getSensorPosition()) < range;
 	}
@@ -67,13 +75,16 @@ public class Jackstand extends SubsystemBase {
 		return Math.abs(backJack.getClosedLoopTarget() - backJack.getSensorPosition()) < range;
 	}
 
+	public enum JackstandType {
+		FRONT,
+		BACK
+	}
+
 	public enum JackstandPosition {
 		STARTING(0),
 		RETRACTED(-1000),
 		LVL2_UP(-30000),
-		LVL3_UP(-60000),
-		LVL2_FRONT_ON(RETRACTED.frontValue, LVL2_UP.backValue),
-		LVL3_FRONT_ON(RETRACTED.frontValue, LVL3_UP.backValue);
+		LVL3_UP(-60000);
 
 		public final int frontValue, backValue;
 
@@ -81,10 +92,29 @@ public class Jackstand extends SubsystemBase {
 			this.frontValue = value;
 			this.backValue = value;
 		}
+	}
 
-		JackstandPosition(int frontValue, int backValue) {
-			this.frontValue = frontValue;
-			this.backValue = backValue;
+	public enum FrontJackPosition {
+		RETRACTED(JackstandPosition.RETRACTED.frontValue),
+		LVL2_UP(JackstandPosition.LVL2_UP.frontValue),
+		LVL3_UP(JackstandPosition.LVL3_UP.frontValue);
+
+		public final int frontValue;
+
+		FrontJackPosition(int value) {
+			this.frontValue = value;
+		}
+	}
+
+	public enum BackJackPosition {
+		RETRACTED(JackstandPosition.RETRACTED.backValue),
+		LVL2_UP(JackstandPosition.LVL2_UP.backValue),
+		LVL3_UP(JackstandPosition.LVL3_UP.backValue);
+
+		public final int backValue;
+
+		BackJackPosition(int value) {
+			this.backValue = value;
 		}
 	}
 }

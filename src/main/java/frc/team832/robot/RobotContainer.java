@@ -3,6 +3,9 @@ package frc.team832.robot;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
+import frc.team832.robot.commands.MoveJackstands;
+import frc.team832.robot.commands.MoveSingleJackstand;
+import frc.team832.robot.commands.Storage;
 import frc.team832.robot.subsystems.*;
 
 public class RobotContainer {
@@ -65,9 +68,12 @@ public class RobotContainer {
         }
 
         //Commands: drivePad
-//        drivePad.yButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.RETRACTED));
-//        drivePad.bButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL3_UP));
-//        drivePad.startButton.whenPressed(new MoveJackstands(jackstand, Jackstand.JackstandPosition.LVL2_UP));
+        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
+        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
+        drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
+        drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
+
+
 
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(Intake.CargoDirection.UP), intake::stopCargo, intake));
@@ -75,7 +81,8 @@ public class RobotContainer {
         stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.IN), intake::stopHatch, intake));
         stratComInterface.getArcadeWhiteRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake));
 
-//        stratComInterface.getSC1().whenPressed(new ConditionalCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator), new Storage(getThreeSwitch(), superStructure, fourbar, elevator), egg));
+        stratComInterface.getDoubleToggleUp().whileHeld(new Storage(ThreeSwitchPos.UP, superStructure, fourbar, elevator));
+        stratComInterface.getDoubleToggleDown().whileHeld(new Storage(ThreeSwitchPos.DOWN, superStructure, fourbar, elevator));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
