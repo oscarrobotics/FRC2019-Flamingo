@@ -3,6 +3,7 @@ package frc.team832.robot;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
+import frc.team832.robot.commands.AutomaticScoring.AutomaticHatchScoring;
 import frc.team832.robot.commands.MoveJackstands;
 import frc.team832.robot.commands.MoveSingleJackstand;
 import frc.team832.robot.commands.Storage;
@@ -68,10 +69,10 @@ public class RobotContainer {
         }
 
         //Commands: drivePad
-        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
-        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
-        drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
-        drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
+//        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
+//        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
+//        drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
+//        drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
 
 
 
@@ -88,10 +89,8 @@ public class RobotContainer {
 
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
-
-        var ramseteCommand = new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain);
-
-        drivePad.aButton.whenPressed(ramseteCommand);
+        drivePad.aButton.whenPressed(new AutomaticHatchScoring(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
+//        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
 
         return successful;
     }

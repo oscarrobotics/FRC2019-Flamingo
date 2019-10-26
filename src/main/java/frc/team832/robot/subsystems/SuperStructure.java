@@ -61,6 +61,10 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		fourbar.setPosition(position.fourbarPosition);
 	}
 
+	public boolean atTarget() {
+		return elevator.atTarget() && fourbar.atTarget();
+	}
+
 	private int fourbarSliderTarget() {
 		double slider = RobotContainer.stratComInterface.getLeftSlider();
 		return (int) OscarMath.map(slider, -1.0, 1.0, FourbarPosition.MANUAL_BOTTOM.value, FourbarPosition.TOP.value);

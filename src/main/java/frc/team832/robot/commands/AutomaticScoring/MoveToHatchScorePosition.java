@@ -11,13 +11,14 @@ public class MoveToHatchScorePosition extends CommandBase {
 
 	private final Elevator elevator;
 	private final Fourbar fourbar;
-	private final ScorePosition position;
-	private FourbarPosition fourbarPos;
-	private ElevatorPosition elevatorPos;
+	private final SuperStructure superStructure;
+	private final SuperStructure.SuperStructurePosition position;
 
-	public MoveToHatchScorePosition(Elevator elevator_, Fourbar fourbar_, ScorePosition position){
-		elevator = elevator_;
-		fourbar = fourbar_;
+
+	public MoveToHatchScorePosition(SuperStructure.SuperStructurePosition position, SuperStructure superStructure_, Elevator elevator_, Fourbar fourbar_) {
+		this.elevator = elevator_;
+		this.fourbar = fourbar_;
+		this.superStructure = superStructure_;
 		this.position = position;
 		addRequirements(elevator);
 		addRequirements(fourbar);
@@ -25,23 +26,7 @@ public class MoveToHatchScorePosition extends CommandBase {
 
 	@Override
 	public void initialize () {
-		switch (position) {
-			case High:
-				elevatorPos = ElevatorPosition.ROCKETHATCH_HIGH;
-				fourbarPos = FourbarPosition.ROCKETHATCH_HIGH;
-				break;
-			case Middle:
-				elevatorPos = ElevatorPosition.ROCKETHATCH_MID;
-				fourbarPos = FourbarPosition.ROCKETHATCH_MID;
-				break;
-			case Low:
-				elevatorPos = ElevatorPosition.ROCKETHATCH_LOW;
-				fourbarPos = FourbarPosition.ROCKETHATCH_LOW;
-				break;
-		}
-
-		fourbar.setPosition(fourbarPos);
-		elevator.setPosition(elevatorPos);
+		superStructure.setPosition(position);
 	}
 
 	@Override
@@ -51,7 +36,7 @@ public class MoveToHatchScorePosition extends CommandBase {
 
 	@Override
 	public boolean isFinished () {
-		return elevator.atTarget() && fourbar.atTarget();
+		return superStructure.atTarget();
 	}
 
 	@Override
