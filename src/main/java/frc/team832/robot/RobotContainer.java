@@ -2,7 +2,7 @@ package frc.team832.robot;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
-import frc.team832.robot.commands.AutomaticScoring.AutonomousHatchScore;
+import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.commands.Storage;
 import frc.team832.robot.subsystems.*;
 

@@ -1,6 +1,5 @@
-package frc.team832.robot.commands.AutomaticDriving;
+package frc.team832.robot.commands.automaticDriving;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DriveToTarget extends CommandBase {

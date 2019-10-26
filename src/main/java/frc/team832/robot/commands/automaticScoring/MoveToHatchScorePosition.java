@@ -1,10 +1,7 @@
-package frc.team832.robot.commands.AutomaticScoring;
+package frc.team832.robot.commands.automaticScoring;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.team832.robot.ScorePosition;
 import frc.team832.robot.subsystems.*;
-import frc.team832.robot.subsystems.Fourbar.*;
-import frc.team832.robot.subsystems.Elevator.*;
 
 
 public class MoveToHatchScorePosition extends CommandBase {

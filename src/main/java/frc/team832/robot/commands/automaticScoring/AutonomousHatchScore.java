@@ -1,4 +1,4 @@
-package frc.team832.robot.commands.AutomaticScoring;
+package frc.team832.robot.commands.automaticScoring;
 
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
