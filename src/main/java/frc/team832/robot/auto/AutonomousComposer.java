@@ -24,7 +24,7 @@ public class AutonomousComposer {
 
 	public SequentialCommandGroup composeCommandGroup() {
 		Pose2d startPose;
-		switch(startPosition) {
+		switch (startPosition) {
 			case LEFT_HAB:
 				startPose = Paths.LEFT_HAB_START_POSE;
 				break;
@@ -35,7 +35,6 @@ public class AutonomousComposer {
 				startPose = Paths.RIGHT_HAB_START_POSE;
 				break;
 		}
-
 		return null;
 	}
 

@@ -2,13 +2,21 @@ package frc.team832.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motorcontrol.vendor.CANVictor;
+import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 
-public class Intake extends SubsystemBase {
+import static frc.team832.robot.RobotContainer.pdp;
+
+public class Intake extends SubsystemBase implements DashboardUpdatable {
 
 	private CANVictor hatchIntake, cargoIntake;
+	private int stallCounter = 0;
+	private StallState hatchStallState = StallState.NOT_STALLED;
+	private boolean hasStalled;
+	private boolean hasHatch;
 
 	public Intake() {
 		super();
@@ -16,7 +24,10 @@ public class Intake extends SubsystemBase {
 	}
 
 	@Override
-	public void periodic() {}
+	public void periodic() {
+		hatchStallState = isMotorStall(11, 12.0, 0.5);
+		hasHatch = hatchStallState == StallState.STALLED || hatchStallState == StallState.LEAVING_STALL;
+	}
 
 	public boolean initialize() {
 		boolean successful = true;
@@ -51,6 +62,16 @@ public class Intake extends SubsystemBase {
 		hatchIntake.set(0.0);
 	}
 
+	@Override
+	public String getDashboardTabName () {
+		return m_name;
+	}
+
+	@Override
+	public void updateDashboardData () {
+
+	}
+
 	public enum CargoDirection {
 		UP(0.7),
 		DOWN(-0.5);
@@ -71,5 +92,44 @@ public class Intake extends SubsystemBase {
 		HatchDirection(double power) {
 			this.power = power;
 		}
+	}
+
+	public enum StallState {
+		STALLED,
+		LEAVING_STALL,
+		NOT_STALLED
+	}
+
+	public void resetStall(){
+		stallCounter = 0;
+		hatchStallState = StallState.NOT_STALLED;
+	}
+
+	public StallState isMotorStall (int PDPSlot, double stallCurrent, double stallSec) {
+		int slowdownMultiplier = 8;
+		int  stallLoops = (int)(stallSec * 20);
+		stallLoops *= slowdownMultiplier;
+		double motorCurrent = pdp.getChannelCurrent(PDPSlot);
+
+		SmartDashboard.putNumber("Stall Count", stallCounter);
+		SmartDashboard.putNumber("Stall Loops", stallLoops);
+		if (motorCurrent >= stallCurrent) {
+			stallCounter += slowdownMultiplier;
+		} else if (motorCurrent < stallCurrent) {
+			stallCounter--;
+		}
+		stallCounter = OscarMath.clip(stallCounter, 0, stallLoops + 1);
+		if (stallCounter >= stallLoops) {
+			hasStalled = true;
+			return StallState.STALLED;
+		}
+		else if (stallCounter == 0) {
+			hasStalled = false;
+			return StallState.NOT_STALLED;
+		}
+		else if (hasStalled & stallCounter < stallLoops / 4) {
+			return StallState.LEAVING_STALL;
+		}
+		return hatchStallState;
 	}
 }

@@ -1,6 +1,7 @@
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj2.command.*;
+import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.commands.Storage;
@@ -21,6 +22,7 @@ public class RobotContainer {
     public static final Elevator elevator = new Elevator();
     public static final Jackstand jackstand = new Jackstand();
     public static final SuperStructure superStructure = new SuperStructure(fourbar, elevator, intake);
+    public static final PDP pdp = new PDP(0);
 
     public static boolean init() {
         boolean successful = true;
