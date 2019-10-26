@@ -26,6 +26,7 @@ import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 
+import static frc.team832.robot.Constants.METERS_TO_FEET;
 import static frc.team832.robot.Paths.CENTER_HAB_START_POSE;
 
 public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
@@ -35,12 +36,12 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private static PIDController yawController = new PIDController(Constants.YAW_PID[0], Constants.YAW_PID[1], Constants.YAW_PID[2]);
     private SmartDifferentialDrive diffDrive;
 
-    public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(0.711); //track width in meters
+    public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(Constants.DRIVE_TRACK_WIDTH); //track width in meters
     private DifferentialDriveOdometry driveOdometry;
 
     private Pose2d startingPose = CENTER_HAB_START_POSE; // TODO: Set from Dashboard
 
-    private NetworkTableEntry dashboard_leftFPS, dashboard_rightFPS, dashboard_leftFPSPeak, dashboard_rightFPSPeak,
+    private NetworkTableEntry dashboard_leftFPS, dashboard_rightFPS, dashboard_leftFPSPeak, dashboard_rightFPSPeak, dashboard_leftMPS, dashboard_rightMPS,
                               dashboard_leftAmps, dashboard_rightAmps, dashboard_leftAmpsPeak, dashboard_rightAmpsPeak,
                               dashboard_totalAmps, dashboard_totalAmpsPeak, dashboard_desiredVelocity,
                               dashboard_leftVelocity, dashboard_rightVelocity, dashboard_leftVelocityError, dashboard_rightVelocityError,
@@ -50,13 +51,17 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private NetworkTable falconTable = NetworkTableInstance.getDefault().getTable("Live_Dashboard");
     private NetworkTableEntry falconPoseXEntry = falconTable.getEntry("robotX");
     private NetworkTableEntry falconPoseYEntry = falconTable.getEntry("robotY");
-    private NetworkTableEntry falconPoseHeadingEntry = falconTable.getEntry("heading");
+    private NetworkTableEntry falconPoseHeadingEntry = falconTable.getEntry("robotHeading");
+    private NetworkTableEntry falconIsPathingEntry = falconTable.getEntry("isFollowingPath");
+    private NetworkTableEntry falconPathXEntry = falconTable.getEntry("pathX");
+    private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
+    private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
     private double desiredRPM;
 
-    private double leftFPS, rightFPS, leftPeakFPS, rightPeakFPS;
+    private double leftFPS, rightFPS, leftPeakFPS, rightPeakFPS, leftMPS, rightMPS;
     private double leftAmps, rightAmps, leftPeakAmps, rightPeakAmps;
     private double totalAmps, totalPeakAmps;
 
@@ -74,6 +79,9 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         leftFPS = Constants.DRIVE_POWERTRAIN.calculateFeetPerSec(leftMaster.getSensorVelocity());
         rightFPS = Constants.DRIVE_POWERTRAIN.calculateFeetPerSec(rightMaster.getSensorVelocity());
 
+        leftMPS = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(leftMaster.getSensorVelocity());
+        rightMPS = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
+
         leftAmps = leftMaster.getOutputCurrent() + leftSlave.getOutputCurrent();
         rightAmps = rightMaster.getOutputCurrent() + rightSlave.getOutputCurrent();
 
@@ -89,7 +97,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
         desiredRPM = RobotContainer.drivePad.getY(Hand.kLeft) * Motors.NEO.freeSpeed;
 
-        handleDecelLimiting();
+//        handleDecelLimiting();
     }
 
     public boolean initialize() {
@@ -159,6 +167,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
         dashboard_leftFPS = DashboardManager.addTabItem(this, "LeftFPS", 0.0);
         dashboard_rightFPS = DashboardManager.addTabItem(this, "RightFPS", 0.0);
+        dashboard_leftMPS = DashboardManager.addTabItem(this, "LeftFPS", 0.0);
+        dashboard_rightMPS = DashboardManager.addTabItem(this, "RightFPS", 0.0);
         dashboard_leftFPSPeak = DashboardManager.addTabItem(this, "LeftFPSPeak", 0.0);
         dashboard_rightFPSPeak = DashboardManager.addTabItem(this, "RightFPSPeak", 0.0);
         dashboard_leftAmps = DashboardManager.addTabItem(this, "LeftAmps", 0.0);
@@ -229,7 +239,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
-        double rotStickMultiplier = 0.6;
+        double rotStickMultiplier = 0.7;
         boolean rotHold = RobotContainer.drivePad.rightStickPress.get();
 
         if (rotHold) {
@@ -245,7 +255,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         rotStick *= rotStickMultiplier;
 
         moveStick = OscarMath.signumPow(moveStick, 2);
-        rotStick = OscarMath.signumPow(rotStick, 2);
+        rotStick = OscarMath.signumPow(rotStick, 3);
 
         double rotPow = holdYaw ? yawCorrection : rotStick;
 
@@ -306,6 +316,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         dashboard_leftAmps.setDouble(leftAmps);
         dashboard_leftAmpsPeak.setDouble(leftPeakAmps);
         dashboard_leftFPS.setDouble(leftFPS);
+        dashboard_leftMPS.setDouble(leftMPS);
         dashboard_leftFPSPeak.setDouble(leftPeakFPS);
         dashboard_leftVelocity.setDouble(leftMaster.getSensorVelocity());
         dashboard_leftVelocityError.setDouble(desiredRPM - leftMaster.getSensorVelocity());
@@ -314,6 +325,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         dashboard_rightAmps.setDouble(rightAmps);
         dashboard_rightAmpsPeak.setDouble(rightPeakAmps);
         dashboard_rightFPS.setDouble(rightFPS);
+        dashboard_rightMPS.setDouble(rightMPS);
         dashboard_rightFPSPeak.setDouble(rightPeakFPS);
         dashboard_rightVelocity.setDouble(rightMaster.getSensorVelocity());
         dashboard_rightVelocityError.setDouble(desiredRPM - rightMaster.getSensorVelocity());
@@ -325,9 +337,9 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         var poseY = poseTranslation.getY();
         var poseHeading = latestPose.getRotation().getRadians();
 
-        falconPoseXEntry.setDouble(poseX);
-        falconPoseYEntry.setDouble(poseY);
-        falconPoseXEntry.setDouble(poseHeading);
+        falconPoseXEntry.setDouble(poseX * METERS_TO_FEET);
+        falconPoseYEntry.setDouble(poseY * METERS_TO_FEET);
+        falconPoseHeadingEntry.setDouble(poseHeading);
 
         dashboard_poseX.setDouble(poseX);
         dashboard_poseY.setDouble(poseY);

@@ -7,6 +7,13 @@ import frc.team832.robot.subsystems.*;
 
 public class Constants {
 
+    public static final double METERS_TO_FEET = 3.281;
+    public static final double FEET_TO_METERS = 0.3048;
+    public static final double INCHES_TO_METERS = .0254;
+
+    public static final double DRIVE_TRACK_WIDTH = 22.75 * INCHES_TO_METERS;
+    public static final double WHEEL_DIAMETER_METERS = 5.9 * INCHES_TO_METERS;
+
     /**
      * order leftMaster, leftSlave, rightMaster, rightSlave
      */
@@ -14,9 +21,8 @@ public class Constants {
 
     public static final double[] DRIVE_PIDF = {0.06/1000, 0, 0, 0.0003}; // PIDF
     public static final double[] DRIVE_PATH_PIDVA = {0.8, 0, 0, 1/3.3528, 1/10.83};
-    public static final double DRIVE_ACCEL_RAMP = 0.25;
+    public static final double DRIVE_ACCEL_RAMP = 0.325;
     public static final double DRIVE_DECEL_RAMP = 0.5;
-    public static final double WHEEL_DIAMETER_METERS = 0.14986;
     public static final float[] DT_REDUCTIONS = {(1f/(12f/64f)), (1f/(36f/76f))};
     public static final Gearbox DRIVE_GEARBOX = new Gearbox(DT_REDUCTIONS[0], DT_REDUCTIONS[1]);
     public static final DTPowerTrain DRIVE_POWERTRAIN = new DTPowerTrain(DRIVE_GEARBOX, Motors.NEO, 2, WHEEL_DIAMETER_METERS);
