@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.robot.subsystems.*;
 
-public class AutomaticHatchScoring extends SequentialCommandGroup {
+public class AutonomousHatchScore extends SequentialCommandGroup {
 
 	private final Drivetrain drivetrain;
 	private final Elevator elevator;
@@ -15,7 +15,7 @@ public class AutomaticHatchScoring extends SequentialCommandGroup {
 	private final SuperStructure.SuperStructurePosition position;
 	private final Trajectory trajectory;
 
-	public AutomaticHatchScoring(Trajectory trajectory, SuperStructure.SuperStructurePosition superStructurePosition, Drivetrain drivetrain, SuperStructure superStructure, Elevator elevator, Fourbar fourbar, Intake intake) {
+	public AutonomousHatchScore (Trajectory trajectory, SuperStructure.SuperStructurePosition superStructurePosition, Drivetrain drivetrain, SuperStructure superStructure, Elevator elevator, Fourbar fourbar, Intake intake) {
 		this.drivetrain = drivetrain;
 		this.elevator = elevator;
 		this.fourbar = fourbar;

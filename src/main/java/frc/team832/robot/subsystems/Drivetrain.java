@@ -7,18 +7,14 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.RunEndCommand;
-import edu.wpi.first.wpiutil.math.MathUtils;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.lib.drive.SmartDifferentialDrive;
@@ -29,9 +25,8 @@ import frc.team832.lib.motors.Motors;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
-import jaci.pathfinder.Pathfinder;
-import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.followers.EncoderFollower;
+
+import static frc.team832.robot.Paths.CENTER_HAB_START_POSE;
 
 public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
@@ -42,10 +37,6 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
     public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(0.711); //track width in meters
     private DifferentialDriveOdometry driveOdometry;
-
-    private static final Pose2d CENTER_HAB_START_POSE = new Pose2d(new Translation2d(1.775, 4.125), new Rotation2d(0));
-    private static final Pose2d RIGHT_HAB_START_POSE = new Pose2d(new Translation2d(1.775, 5.2), new Rotation2d(0));
-    private static final Pose2d LEFT_HAB_START_POSE = new Pose2d(new Translation2d(1.775, 3.0), new Rotation2d(0));
 
     private Pose2d startingPose = CENTER_HAB_START_POSE; // TODO: Set from Dashboard
 
@@ -217,7 +208,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     }
 
     public Pose2d getLatestPose2d() {
-        var newRotation2d = new Rotation2d(OscarMath.degreesToRadians(getMeasurement()));
+        var newRotation2d = new Rotation2d(OscarMath.degreesToRadians(-getMeasurement()));
         return driveOdometry.update(newRotation2d, getWheelSpeeds());
     }
 

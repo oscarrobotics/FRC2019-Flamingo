@@ -8,12 +8,12 @@ import frc.team832.robot.subsystems.Jackstand;
 
 public class JackstandAutoLvl2 extends CommandGroupBase {
 	public JackstandAutoLvl2() {
-		addCommands(new MoveJackstands(RobotContainer.jackstand, Jackstand.JackstandPosition.LVL2_UP),
-					//new InstantCommand(RobotContainer.jackstand.),  Placeholder for driving with jackstand
-					new MoveJackstands(RobotContainer.jackstand, Jackstand.JackstandPosition.LVL2_FRONT_ON),
-					//new InstantCommand(RobotContainer.jackstand.),  Placeholder for driving with jackstand
-					new MoveJackstands(RobotContainer.jackstand, Jackstand.JackstandPosition.RETRACTED)
-				);
+//		addCommands(new MoveJackstands(RobotContainer.jackstand, Jackstand.JackstandPosition.LVL2_UP),
+//					//new InstantCommand(RobotContainer.jackstand.),  Placeholder for driving with jackstand
+//					new MoveJackstands(RobotContainer.jackstand, Jackstand.JackstandPosition.LVL2_FRONT_ON),
+//					//new InstantCommand(RobotContainer.jackstand.),  Placeholder for driving with jackstand
+//					new MoveJackstands(RobotContainer.jackstand, Jackstand.JackstandPosition.RETRACTED)
+//				);
 	}
 
 	@Override
