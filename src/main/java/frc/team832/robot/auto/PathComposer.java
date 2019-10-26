@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 
 public class PathComposer {
 
-	public PathComposer(StartPosition startPos) {
+	public PathComposer(StartPosition startPos, Action action) {
 
 	}
 
