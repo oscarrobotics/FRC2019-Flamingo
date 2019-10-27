@@ -4,10 +4,8 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.POV;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
-import frc.team832.robot.commands.MoveJackstands;
-import frc.team832.robot.commands.MoveSingleJackstand;
+import frc.team832.robot.commands.*;
 import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
-import frc.team832.robot.commands.Storage;
 import frc.team832.robot.subsystems.*;
 
 public class RobotContainer {
@@ -75,8 +73,12 @@ public class RobotContainer {
         drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
         drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
         drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
-        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.7), jackstand::stopDrive, jackstand));
-        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.7), jackstand::stopDrive, jackstand));
+        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.6), jackstand::stopDrive, jackstand));
+        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.6), jackstand::stopDrive, jackstand));
+        drivePad.rightBumper.whenPressed(new ChangeTurnSensitivity(drivetrain));
+        drivePad.rightBumper.whenReleased(new ResetTurnSensitivity(drivetrain));
+        //        drivePad.rightBumper.whenPressed(new ConditionalCommand(new ChangeTurnSensitivity(drivetrain), new ResetTurnSensitivity(drivetrain), Drivetrain.sensitivityToggle));
+
 
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(Intake.CargoDirection.UP), intake::stopCargo, intake));
