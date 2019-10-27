@@ -223,17 +223,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     }
 
     private void handleDecelLimiting() {
-        if (isLeftDecel()) {
-            leftMaster.setClosedLoopRamp(Constants.DRIVE_DECEL_RAMP);
-        } else {
-            leftMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
-        }
-
-        if (isRightDecel()) {
-            rightMaster.setClosedLoopRamp(Constants.DRIVE_DECEL_RAMP);
-        } else {
-            rightMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
-        }
+        leftMaster.setClosedLoopRamp(isLeftDecel() ? Constants.DRIVE_DECEL_RAMP : Constants.DRIVE_ACCEL_RAMP);
+        rightMaster.setClosedLoopRamp(isRightDecel() ? Constants.DRIVE_DECEL_RAMP : Constants.DRIVE_ACCEL_RAMP);
     }
 
     private void drive() {

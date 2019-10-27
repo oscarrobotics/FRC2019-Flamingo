@@ -1,6 +1,5 @@
 package frc.team832.robot;
 
-import java.util.Arrays;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -24,7 +23,7 @@ public class Paths {
 
     public static final Pose2d LEFT_ROCKET_CLOSE_POSE = new Pose2d(new Translation2d(16.675, 2.19), Rotation2d.fromDegrees(LEFT_ROCKET_FRONT_ANGLE));
 
-    private static final List<Translation2d> RIGHTHAB_RIGHTFRONTROCKET_WAYPOINTS = Arrays.asList(
+    private static final List<Translation2d> RIGHTHAB_RIGHTFRONTROCKET_WAYPOINTS = List.of(
         RIGHT_HAB_START_POSE.getTranslation(),
         new Translation2d(4.521, 5.714), 
         new Translation2d(5.198, 7.633)      
@@ -33,7 +32,7 @@ public class Paths {
     private static final SimplePath LEFTHAB_LEFTROCKETCLOSE_PATH = new
             SimplePath(LEFT_HAB_START_POSE, new Pose2d(new Translation2d(16.683, 2.189), Rotation2d.fromDegrees(LEFT_ROCKET_FRONT_ANGLE)));
 
-    private static final List<Translation2d> TEST_THREE_METERS_FORWARD = Arrays.asList(
+    private static final List<Translation2d> TEST_THREE_METERS_FORWARD = List.of(
         RIGHT_HAB_START_POSE.getTranslation(),
         RIGHT_HAB_START_POSE.getTranslation().plus(new Translation2d(3, 0))
     );
@@ -42,9 +41,8 @@ public class Paths {
     public static Trajectory RightHab_RightFrontRocket;
     public static Trajectory Test_Three_Meters_Forward;
 
-    //egg in me Mr.Muropulesoesiesooiseioesoeoiseosioesioeoseis
     public static void initializePaths(DifferentialDriveKinematics kinematics, double maxVelocityMetersPerSecond, double maxAccelerationMetersPerSecondSq) {
-        pathHelper = new PathHelper(kinematics, maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSq, false);
+        pathHelper = new PathHelper(kinematics, maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSq);
         RightHab_RightFrontRocket = pathHelper.generatePath(0, RIGHTHAB_RIGHTFRONTROCKET_WAYPOINTS, RIGHT_ROCKET_FRONT_ANGLE);
         Test_Three_Meters_Forward = pathHelper.generatePath(0, TEST_THREE_METERS_FORWARD, 0);
     }
