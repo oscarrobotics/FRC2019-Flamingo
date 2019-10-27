@@ -3,6 +3,8 @@ package frc.team832.robot;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
+import frc.team832.robot.commands.MoveJackstands;
+import frc.team832.robot.commands.MoveSingleJackstand;
 import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.commands.Storage;
 import frc.team832.robot.subsystems.*;
@@ -68,10 +70,10 @@ public class RobotContainer {
         }
 
         //Commands: drivePad
-//        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
-//        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
-//        drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
-//        drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
+        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
+        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
+        drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
+        drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
 
 
 

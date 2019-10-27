@@ -84,13 +84,18 @@ public class Jackstand extends SubsystemBase {
 		STARTING(0),
 		RETRACTED(-1000),
 		LVL2_UP(-30000),
-		LVL3_UP(-60000);
+		LVL3_UP(-75000, -70000);
 
 		public final int frontValue, backValue;
 
 		JackstandPosition(int value) {
 			this.frontValue = value;
 			this.backValue = value;
+		}
+
+		JackstandPosition(int frontValue, int backValue) {
+			this.frontValue = frontValue;
+			this.backValue = backValue;
 		}
 	}
 
