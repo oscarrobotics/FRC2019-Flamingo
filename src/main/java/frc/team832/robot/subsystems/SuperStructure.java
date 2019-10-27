@@ -76,9 +76,9 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	}
 
 	public int getIntersectionOffset() {
-		int baseOffset = 100;
+		int baseOffset = 0;
 		double offsetMultiplier = -2;
-		if (fourbar.getTarget() <= 200)
+		if (fourbar.getTarget() <= 300)
 			return baseOffset;
 		else
 			return (int) (safety_minSafeAngle * offsetMultiplier) + baseOffset;

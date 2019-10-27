@@ -1,5 +1,6 @@
 package frc.team832.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
@@ -29,6 +30,8 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		elevatorMotor = new CANTalon(Constants.ELEVATOR_CAN_ID);
 
 		if (!(elevatorMotor.getInputVoltage() > 0)) successful = false;
+
+		elevatorMotor.setSensorType(FeedbackDevice.Analog);
 
 		NeutralMode allIdleMode = NeutralMode.kBrake;
 		elevatorMotor.setNeutralMode(allIdleMode);

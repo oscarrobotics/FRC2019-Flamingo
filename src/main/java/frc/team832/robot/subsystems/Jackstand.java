@@ -1,14 +1,17 @@
 package frc.team832.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motorcontrol.vendor.CANTalon;
+import frc.team832.lib.motorcontrol.vendor.CANVictor;
 import frc.team832.robot.Constants;
 
 public class Jackstand extends SubsystemBase {
 
 	private CANTalon frontJack, backJack;
+	private CANVictor driveMotor;
 
 	public Jackstand() {
 		super();
@@ -24,13 +27,31 @@ public class Jackstand extends SubsystemBase {
 		boolean successful = true;
 		frontJack = new CANTalon(Constants.FRONTJACK_CAN_ID);
 		backJack = new CANTalon(Constants.BACKJACK_CAN_ID);
+		driveMotor = new CANVictor(Constants.JACK_DRIVE_CAN_ID);
 
 		if (!(frontJack.getInputVoltage() > 0)) successful = false;
 		if (!(backJack.getInputVoltage() > 0)) successful = false;
+		if (!(driveMotor.getInputVoltage() > 0)) successful = false;
+
+		frontJack.resetSettings();
+		backJack.resetSettings();
+
+		frontJack.rezeroSensor();
+		backJack.rezeroSensor();
+
+		frontJack.setInverted(false);
+		frontJack.setSensorPhase(true);
+
+		backJack.setInverted(false);
+		backJack.setSensorPhase(false);
+
+		frontJack.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+		backJack.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
 
 		NeutralMode allIdleMode = NeutralMode.kBrake;
 		frontJack.setNeutralMode(allIdleMode);
 		backJack.setNeutralMode(allIdleMode);
+		driveMotor.setNeutralMode(NeutralMode.kCoast);
 
 		frontJack.setkP(Constants.FRONT_JACKSTAND_PIDF[0]);
 		frontJack.setkI(Constants.FRONT_JACKSTAND_PIDF[1]);
@@ -42,11 +63,11 @@ public class Jackstand extends SubsystemBase {
 		backJack.setkD(Constants.BACK_JACKSTAND_PIDF[2]);
 		backJack.setkF(Constants.BACK_JACKSTAND_PIDF[3]);
 
-		frontJack.setForwardSoftLimit((int)Constants.FRONTJACK_SOFT_MIN);
-		frontJack.setReverseSoftLimit((int)Constants.FRONTJACK_SOFT_MAX);
+		frontJack.setForwardSoftLimit((int)Constants.FRONTJACK_SOFT_FORWARD);
+		frontJack.setReverseSoftLimit((int)Constants.FRONTJACK_SOFT_REVERSE);
 
-		backJack.setForwardSoftLimit((int)Constants.BACKJACK_SOFT_MIN);
-		backJack.setReverseSoftLimit((int)Constants.BACKJACK_SOFT_MAX);
+		backJack.setForwardSoftLimit((int)Constants.BACKJACK_SOFT_FORWARD);
+		backJack.setReverseSoftLimit((int)Constants.BACKJACK_SOFT_REVERSE);
 
 		frontJack.configMotionMagic(Constants.FRONT_JACKSTAND_VELOCITY, Constants.FRONT_JACKSTAND_ACCELERATION);
 		backJack.configMotionMagic(Constants.BACK_JACKSTAND_VELOCITY, Constants.BACK_JACKSTAND_ACCELERATION);
@@ -55,16 +76,24 @@ public class Jackstand extends SubsystemBase {
 	}
 
 	public void setPosition (JackstandPosition position) {
-		frontJack.setPosition(position.frontValue);
-		backJack.setPosition(position.backValue);
+		frontJack.setMotionMagic(position.frontValue);
+		backJack.setMotionMagic(position.backValue);
+	}
+
+	public void setDrivePower(double power) {
+		driveMotor.set(power);
+	}
+
+	public void stopDrive() {
+		driveMotor.set(0.0);
 	}
 
 	public void setFrontJack(FrontJackPosition position) {
-		frontJack.setPosition(position.frontValue);
+		frontJack.setMotionMagic(position.frontValue);
 	}
 
 	public void setBackJack(BackJackPosition position) {
-		backJack.setPosition(position.backValue);
+		backJack.setMotionMagic(position.backValue);
 	}
 
 	public boolean frontAtTarget(int range) {
@@ -82,9 +111,10 @@ public class Jackstand extends SubsystemBase {
 
 	public enum JackstandPosition {
 		STARTING(0),
-		RETRACTED(-1000),
-		LVL2_UP(-30000),
-		LVL3_UP(-75000, -70000);
+		RETRACTED(-500, -500),
+		LVL2_UP(-30000, -29000),
+		LVL3_UP(-77000, -76000),
+		EXTENDED(-79000, -78500);
 
 		public final int frontValue, backValue;
 

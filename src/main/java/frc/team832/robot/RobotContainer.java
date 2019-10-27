@@ -2,6 +2,7 @@ package frc.team832.robot;
 
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
+import frc.team832.lib.driverstation.controllers.POV;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.MoveJackstands;
 import frc.team832.robot.commands.MoveSingleJackstand;
@@ -70,12 +71,12 @@ public class RobotContainer {
         }
 
         //Commands: drivePad
-        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
-        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
+        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
+        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
         drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
         drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
-
-
+        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.7), jackstand::stopDrive, jackstand));
+        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.7), jackstand::stopDrive, jackstand));
 
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(Intake.CargoDirection.UP), intake::stopCargo, intake));

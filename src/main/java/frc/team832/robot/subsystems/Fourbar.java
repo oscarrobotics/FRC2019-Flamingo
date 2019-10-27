@@ -1,5 +1,6 @@
 package frc.team832.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
@@ -42,13 +43,16 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		if (!(fourbarTop.getInputVoltage() > 0)) successful = false;
 		if (!(fourbarBottom.getInputVoltage() > 0)) successful = false;
 
+		fourbarTop.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+		fourbarBottom.setSensorType(FeedbackDevice.CTRE_MagEncoder_Relative);
+
 		fourbarTop.resetSettings();
 		fourbarBottom.resetSettings();
 
 		fourbarTop.setInverted(false);
 		fourbarTop.setSensorPhase(true);
 
-		fourbarTop.resetSensor();
+		fourbarTop.rezeroSensor();
 
 		fourbarTop.setkP(Constants.ARM_PIDF[0]);
 		fourbarTop.setkF(Constants.ARM_PIDF[3]);
@@ -58,7 +62,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		fourbarBottom.setNeutralMode(allIdleMode);
 
 		fourbarBottom.follow(fourbarTop);
-		fourbarBottom.setInverted(true);//does one need to be inverted?
+		fourbarBottom.setInverted(true);
 
 		dashboard_AppliedPower = DashboardManager.addTabItem(this, "Applied Power", 0.0);
 		dashboard_DesiredPos = DashboardManager.addTabItem(this, "Desired Pos", 0.0);
@@ -151,7 +155,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public void zeroEncoder() {
-		fourbarTop.resetSensor();
+		fourbarTop.rezeroSensor();
 	}
 
 	public enum FourbarPosition {

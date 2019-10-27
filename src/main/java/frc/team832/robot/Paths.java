@@ -42,9 +42,8 @@ public class Paths {
     public static Trajectory RightHab_RightFrontRocket;
     public static Trajectory Test_Three_Meters_Forward;
 
-    //egg in me Mr.Muropulesoesiesooiseioesoeoiseosioesioeoseis
     public static void initializePaths(DifferentialDriveKinematics kinematics, double maxVelocityMetersPerSecond, double maxAccelerationMetersPerSecondSq) {
-        pathHelper = new PathHelper(kinematics, maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSq, false);
+        pathHelper = new PathHelper(kinematics, maxVelocityMetersPerSecond, maxAccelerationMetersPerSecondSq);
         RightHab_RightFrontRocket = pathHelper.generatePath(0, RIGHTHAB_RIGHTFRONTROCKET_WAYPOINTS, RIGHT_ROCKET_FRONT_ANGLE);
         Test_Three_Meters_Forward = pathHelper.generatePath(0, TEST_THREE_METERS_FORWARD, 0);
     }

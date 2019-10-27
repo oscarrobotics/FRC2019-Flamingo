@@ -65,20 +65,20 @@ public class Constants {
     public static final double ELEVATOR_ARBFF = 0.3;
 
     //Jackstand
-    public static final double[] FRONT_JACKSTAND_PIDF = {0,0,0,0};
-    public static final double[] BACK_JACKSTAND_PIDF = {0,0,0,0};
+    public static final double[] FRONT_JACKSTAND_PIDF = {0.1,0,0,0};
+    public static final double[] BACK_JACKSTAND_PIDF = {0.1,0,0,0};
 
-    public static final double FRONTJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.frontValue - 1000;
-    public static final double FRONTJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.frontValue + 1000;
+    public static final double FRONTJACK_SOFT_FORWARD = 0;
+    public static final double FRONTJACK_SOFT_REVERSE = -79000;
 
-    public static final double BACKJACK_SOFT_MAX = Jackstand.JackstandPosition.LVL3_UP.backValue - 1000;
-    public static final double BACKJACK_SOFT_MIN = Jackstand.JackstandPosition.RETRACTED.backValue + 1000;
+    public static final double BACKJACK_SOFT_FORWARD = 0;
+    public static final double BACKJACK_SOFT_REVERSE = -79000;
 
-    public static final int FRONT_JACKSTAND_VELOCITY = 6000; //1 sec for full range
-    public static final int FRONT_JACKSTAND_ACCELERATION = 9000;
+    public static final int FRONT_JACKSTAND_VELOCITY = 22000;
+    public static final int FRONT_JACKSTAND_ACCELERATION = 20000;
 
-    public static final int BACK_JACKSTAND_VELOCITY = 6000; //1 sec for full range
-    public static final int BACK_JACKSTAND_ACCELERATION = 9000;
+    public static final int BACK_JACKSTAND_VELOCITY = 16000;
+    public static final int BACK_JACKSTAND_ACCELERATION = 20000;
 
     //CAN ID's
     public static final int ELEVATOR_CAN_ID = 6;
@@ -86,6 +86,7 @@ public class Constants {
     public static final int FOURBARBOTTOM_CAN_ID = 8;
     public static final int FRONTJACK_CAN_ID = 9;
     public static final int BACKJACK_CAN_ID = 10;
+    public static final int JACK_DRIVE_CAN_ID = 11;
     public static final int CARGOINTAKE_CAN_ID = 12;
     public static final int HATCHINTAKE_CAN_ID = 13;
 

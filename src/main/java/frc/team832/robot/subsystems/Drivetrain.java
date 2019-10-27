@@ -165,32 +165,32 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 //        yawController.setOutputRange(-0.7, 0.7);
 //        yawController.setAbsoluteTolerance(1.5);
 
-        dashboard_leftFPS = DashboardManager.addTabItem(this, "LeftFPS", 0.0);
-        dashboard_rightFPS = DashboardManager.addTabItem(this, "RightFPS", 0.0);
-        dashboard_leftMPS = DashboardManager.addTabItem(this, "LeftFPS", 0.0);
-        dashboard_rightMPS = DashboardManager.addTabItem(this, "RightFPS", 0.0);
-        dashboard_leftFPSPeak = DashboardManager.addTabItem(this, "LeftFPSPeak", 0.0);
-        dashboard_rightFPSPeak = DashboardManager.addTabItem(this, "RightFPSPeak", 0.0);
-        dashboard_leftAmps = DashboardManager.addTabItem(this, "LeftAmps", 0.0);
-        dashboard_rightAmps = DashboardManager.addTabItem(this, "RightAmps", 0.0);
-        dashboard_leftAmpsPeak = DashboardManager.addTabItem(this, "LeftAmpsPeak", 0.0);
-        dashboard_rightAmpsPeak = DashboardManager.addTabItem(this, "RightAmpsPeak", 0.0);
-        dashboard_totalAmps = DashboardManager.addTabItem(this, "TotalAmps", 0.0);
-        dashboard_totalAmpsPeak = DashboardManager.addTabItem(this, "TotalPeakAmps", 0.0);
-        dashboard_desiredVelocity = DashboardManager.addTabItem(this, "DesiredVel", 0.0);
-        dashboard_leftVelocity = DashboardManager.addTabItem(this, "LeftDriveVel", 0.0);
-        dashboard_rightVelocity = DashboardManager.addTabItem(this, "RightDriveVel", 0.0);
-        dashboard_leftVelocityError = DashboardManager.addTabItem(this, "LeftVelErr", 0.0);
-        dashboard_rightVelocityError = DashboardManager.addTabItem(this, "RightVelErr", 0.0);
+        dashboard_leftFPS = DashboardManager.addTabItem(this, "Speeds/LeftFPS", 0.0);
+        dashboard_rightFPS = DashboardManager.addTabItem(this, "Speeds/RightFPS", 0.0);
+        dashboard_leftMPS = DashboardManager.addTabItem(this, "Speeds/LeftMS", 0.0);
+        dashboard_rightMPS = DashboardManager.addTabItem(this, "Speeds/RightMS", 0.0);
+        dashboard_leftFPSPeak = DashboardManager.addTabItem(this, "FPS/LeftPeak", 0.0);
+        dashboard_rightFPSPeak = DashboardManager.addTabItem(this, "FPS/RightPeak", 0.0);
+        dashboard_totalAmps = DashboardManager.addTabItem(this, "Amps/Total", 0.0);
+        dashboard_totalAmpsPeak = DashboardManager.addTabItem(this, "Amps/TotalPeak", 0.0);
+        dashboard_leftAmps = DashboardManager.addTabItem(this, "Amps/Left", 0.0);
+        dashboard_rightAmps = DashboardManager.addTabItem(this, "Amps/Right", 0.0);
+        dashboard_leftAmpsPeak = DashboardManager.addTabItem(this, "Amps/LeftPeak", 0.0);
+        dashboard_rightAmpsPeak = DashboardManager.addTabItem(this, "Amps/RightPeak", 0.0);
+        dashboard_desiredVelocity = DashboardManager.addTabItem(this, "Velocity/Target", 0.0);
+        dashboard_leftVelocity = DashboardManager.addTabItem(this, "Velocity/Left", 0.0);
+        dashboard_rightVelocity = DashboardManager.addTabItem(this, "Velocity/Right", 0.0);
+        dashboard_leftVelocityError = DashboardManager.addTabItem(this, "Velocity/LeftError", 0.0);
+        dashboard_rightVelocityError = DashboardManager.addTabItem(this, "Velocity/RightError", 0.0);
         dashboard_navxYaw = DashboardManager.addTabItem(this, "NavXYaw", 0.0);
         dashboard_yawOutput = DashboardManager.addTabItem(this, "YawOutput", 0.0);
         dashboard_isRightDecel = DashboardManager.addTabItem(this, "RightDecel", false, DashboardWidget.BooleanBox);
         dashboard_isLeftDecel = DashboardManager.addTabItem(this, "LeftDecel", false, DashboardWidget.BooleanBox);
-        dashboard_leftPos = DashboardManager.addTabItem(this, "LeftPos", 0.0);
-        dashboard_rightPos = DashboardManager.addTabItem(this, "RightPos", 0.0);
-        dashboard_poseX = DashboardManager.addTabItem(this, "PoseX", 0.0);
-        dashboard_poseY = DashboardManager.addTabItem(this, "PoseY", 0.0);
-        dashboard_poseHeading = DashboardManager.addTabItem(this, "PoseHeading", 0.0);
+        dashboard_leftPos = DashboardManager.addTabItem(this, "Position/Left", 0.0);
+        dashboard_rightPos = DashboardManager.addTabItem(this, "Position/Right", 0.0);
+        dashboard_poseX = DashboardManager.addTabItem(this, "Pose/X", 0.0);
+        dashboard_poseY = DashboardManager.addTabItem(this, "Pose/Y", 0.0);
+        dashboard_poseHeading = DashboardManager.addTabItem(this, "Pose/Heading", 0.0);
 
         RunEndCommand driveCommand = new RunEndCommand(this::drive, this::stop, this);
         driveCommand.setName("TeleDriveCommand");
@@ -259,7 +259,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
         double rotPow = holdYaw ? yawCorrection : rotStick;
 
-        diffDrive.curvatureDrive(moveStick, rotPow);
+        diffDrive.curvatureDrive(moveStick, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
     private void stop() {
