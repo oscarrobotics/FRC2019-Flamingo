@@ -1,5 +1,6 @@
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj.util.Units;
 import frc.team832.lib.motors.DTPowerTrain;
 import frc.team832.lib.motors.Gearbox;
 import frc.team832.lib.motors.Motors;
@@ -8,12 +9,8 @@ import frc.team832.robot.subsystems.*;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Constants {
 
-    public static final double METERS_TO_FEET = 3.281;
-    public static final double FEET_TO_METERS = 0.3048;
-    public static final double INCHES_TO_METERS = .0254;
-
-    public static final double DRIVE_TRACK_WIDTH = 22.75 * INCHES_TO_METERS;
-    public static final double WHEEL_DIAMETER_METERS = 5.9 * INCHES_TO_METERS;
+    public static final double DRIVE_TRACK_WIDTH_METERS = Units.inchesToMeters(22.75);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(6);
 
     /**
      * order leftMaster, leftSlave, rightMaster, rightSlave

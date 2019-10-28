@@ -17,8 +17,8 @@ public class Paths {
     private static final double LEFT_ROCKET_FRONT_ANGLE =  27.5;
     private static final double RIGHT_ROCKET_FRONT_ANGLE = -27.5;
  
-    public static final Pose2d CENTER_HAB_START_POSE = new Pose2d(new Translation2d(1.48, 4.12), new Rotation2d(0));
-    public static final Pose2d LEFT_HAB_START_POSE = new Pose2d(new Translation2d(1.48, 3.0), new Rotation2d(0));
+    public static final Pose2d CENTER_HAB_START_POSE = new Pose2d(new Translation2d(1.7, 4.12), new Rotation2d(0));
+    public static final Pose2d LEFT_HAB_START_POSE = new Pose2d(new Translation2d(1.7, 3.0), new Rotation2d(0));
     public static final Pose2d RIGHT_HAB_START_POSE = PathHelper.mirrorPose(LEFT_HAB_START_POSE);
 
     public static final Pose2d LEFT_ROCKET_CLOSE_POSE = new Pose2d(new Translation2d(16.675, 2.19), Rotation2d.fromDegrees(LEFT_ROCKET_FRONT_ANGLE));

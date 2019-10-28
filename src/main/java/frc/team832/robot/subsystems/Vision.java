@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
@@ -13,8 +14,11 @@ import frc.team832.lib.util.RollingAverage;
 
 public class Vision extends SubsystemBase implements DashboardUpdatable {
 
+    private final Solenoid light;
+
     public Vision() {
         super();
+        light = new Solenoid(0);
         setName("Vision Subsys");
         DashboardManager.addTab(this);
     }
@@ -75,5 +79,17 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
         if (newDriverModeStatus != currentDriverModeStatus) {
             chamVis_driverModeEntry.setBoolean(newDriverModeStatus);
         }
+    }
+
+    public double getArea(){
+        return dashboard_distanceEntry.getDouble(0);
+    }
+
+    public double getYaw(){
+        return dashboard_yawEntry.getDouble(0);
+    }
+
+    public void setLight(boolean on){
+        light.set(on);
     }
 }

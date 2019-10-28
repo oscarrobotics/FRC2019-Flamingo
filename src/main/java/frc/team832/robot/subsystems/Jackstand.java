@@ -108,6 +108,10 @@ public class Jackstand extends SubsystemBase {
 		return Math.abs(backJack.getClosedLoopTarget() - backJack.getSensorPosition()) < range;
 	}
 
+	public int getFrontJackPos () {
+		return (int)frontJack.getSensorPosition();
+	}
+
 	public enum JackstandType {
 		FRONT,
 		BACK

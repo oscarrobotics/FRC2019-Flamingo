@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.RunEndCommand;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
@@ -26,7 +27,6 @@ import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
 import frc.team832.robot.RobotContainer;
 
-import static frc.team832.robot.Constants.METERS_TO_FEET;
 import static frc.team832.robot.Paths.CENTER_HAB_START_POSE;
 
 public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
@@ -35,13 +35,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
     private static PIDController yawController = new PIDController(Constants.YAW_PID[0], Constants.YAW_PID[1], Constants.YAW_PID[2]);
     private SmartDifferentialDrive diffDrive;
-    public static boolean sensitivityToggle = false;
-    public static final double DefaultRotMultiplier = 0.7;
-    public static final double PreciseRotMultiplier = 0.5;
-    public static final double PreciseDriveMultiplier = 0.5;
-    private double rotMultiplier = DefaultRotMultiplier;
 
-    public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(Constants.DRIVE_TRACK_WIDTH); //track width in meters
+    public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(Constants.DRIVE_TRACK_WIDTH_METERS); //track width in meters
     private DifferentialDriveOdometry driveOdometry;
 
     private Pose2d startingPose = CENTER_HAB_START_POSE; // TODO: Set from Dashboard
@@ -61,6 +56,12 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private NetworkTableEntry falconPathXEntry = falconTable.getEntry("pathX");
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
+
+    private static boolean sensitivityToggle = false;
+    private static final double DefaultRotMultiplier = 0.7;
+    private static final double PreciseRotMultiplier = 0.5;
+    private static final double PreciseDriveMultiplier = 0.5;
+    private double rotMultiplier = DefaultRotMultiplier;
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
@@ -208,10 +209,10 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         return success;
     }
 
-    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    private DifferentialDriveWheelSpeeds getWheelSpeeds () {
         double leftMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(leftMaster.getSensorVelocity());
         double rightMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
-        return new DifferentialDriveWheelSpeeds(leftMetersPerSec, rightMetersPerSec);
+        return new DifferentialDriveWheelSpeeds(leftMetersPerSec, -rightMetersPerSec);
     }
 
     public void consumeWheelSpeeds(Double leftWheelSpeedMeters, Double rightWheelSpeedMeters) {
@@ -255,19 +256,25 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         double rotPow = holdYaw ? yawCorrection : rotStick;
         double movePow = moveStick * getPreciseDriveMultiplier();
 
-        diffDrive.curvatureDrive(moveStick, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
+        diffDrive.curvatureDrive(movePow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
-    public double getPreciseDriveMultiplier(){
-        return RobotContainer.jackstand.getFrontTarget() < -1000 || RobotContainer.jackstand.getBackTarget() < -1000 ? 0.25 : 1.0;
+    public void visionDrive(double area, double yaw){
+        double xSpeed, zRot;
+        double yawKp = .1;
+        double speedKp = .1;
+
+        var areaError = 8000 - area;
+
+        xSpeed = speedKp * areaError;
+
+        zRot = yaw * yawKp;
+
+        diffDrive.curvatureDrive(xSpeed, zRot, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
-    public void setPreciseTurning(double multiplier) {
-        rotMultiplier = multiplier;
-    }
-
-    public void resetTurningMultiplier() {
-        rotMultiplier = DefaultRotMultiplier;
+    private double getPreciseDriveMultiplier() {
+        return RobotContainer.jackstand.getFrontTarget() < -1000 || RobotContainer.jackstand.getBackTarget() < -1000 ? PreciseDriveMultiplier  : 1.0;
     }
 
     private void stop() {
@@ -345,8 +352,8 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         var poseY = poseTranslation.getY();
         var poseHeading = latestPose.getRotation().getRadians();
 
-        falconPoseXEntry.setDouble(poseX * METERS_TO_FEET);
-        falconPoseYEntry.setDouble(poseY * METERS_TO_FEET);
+        falconPoseXEntry.setDouble(Units.metersToFeet(poseX));
+        falconPoseYEntry.setDouble(Units.metersToFeet(poseY));
         falconPoseHeadingEntry.setDouble(poseHeading);
 
         dashboard_poseX.setDouble(poseX);
