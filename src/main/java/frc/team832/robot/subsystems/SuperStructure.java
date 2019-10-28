@@ -61,6 +61,14 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		fourbar.setPosition(position.fourbarPosition);
 	}
 
+	public int getClimbHeight() {
+		return OscarMath.map((int)RobotContainer.jackstand.getFrontJackPos(), Jackstand.JackstandPosition.EXTENDED.frontValue, Jackstand.JackstandPosition.RETRACTED.frontValue, FourbarPosition.MIDDLE.value, 4000);
+	}
+
+	public void handleFourbarClimbCorrection() {
+		moveFourbarManual(getClimbHeight());
+	}
+
 	public boolean atTarget() {
 		return elevator.atTarget() && fourbar.atTarget();
 	}
@@ -93,6 +101,20 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 			fourbarPosition = safety_minSafePos + getIntersectionOffset();
 		}
 		fourbar.moveManual(fourbarPosition);
+		elevator.moveManual(elevatorPosition);
+	}
+
+	private void moveFourbarManual(int fourbarPosition) {
+		if (!safety_isSafe) {
+			fourbarPosition = safety_minSafePos + getIntersectionOffset();
+		}
+		fourbar.moveManual(fourbarPosition);
+	}
+
+	private void moveElevatorManual(int elevatorPosition) {
+		if (!safety_isSafe) {
+			fourbar.moveManual(safety_minSafePos + getIntersectionOffset());
+		}
 		elevator.moveManual(elevatorPosition);
 	}
 

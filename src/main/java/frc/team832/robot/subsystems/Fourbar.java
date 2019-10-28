@@ -84,30 +84,13 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		fourbarBottom.setNeutralMode(idleMode);
 	}
 
-//	private boolean isSafe(boolean isTelemetry) {
-//		boolean isSafe;
-//		checkMinSafePos(isTelemetry);
-//		isSafe = !(fourbarTop.getTargetPosition() < safety_minFourbarPos);
-//		return isSafe;
-//	}
-
 	public double getRawPosition() {
 		return fourbarTop.getSensorPosition();
 	}
 
 	public double getTarget() { return fourbarTop.getClosedLoopTarget(); }
 
-//	private void checkMinSafePos(boolean isTelemetry) {
-//		final double intersectionOffset = 100;
-//
-//		double elevatorTarget = isTelemetry ? elevator.getSliderTarget() : elevator.getTarget();
-//		double unadjustedAngle = Math.cos( (elevatorTarget - Elevator.ElevatorPosition.BOTTOM.value) / CHEESY_NUMBER);
 
-//		safety_minFourbarAngle = ( Math.abs(Constants.FOURBAR_MIN_ANGLE) * unadjustedAngle) + Constants.FOURBAR_MIN_ANGLE;
-
-//		safety_minFourbarPos = OscarMath.map(safety_minFourbarAngle, Constants.FOURBAR_MIN_ANGLE, 0, 0, FourbarPosition.MIDDLE.value) + intersectionOffset;
-//	}
-//
 	public void moveManual(int targetPos) {
 		targetPos = OscarMath.clip(targetPos, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value);
 		fourbarTop.setPosition(targetPos);

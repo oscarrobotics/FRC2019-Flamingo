@@ -96,6 +96,10 @@ public class Jackstand extends SubsystemBase {
 		backJack.setMotionMagic(position.value);
 	}
 
+	public double getFrontJackPos() { return frontJack.getSensorPosition(); }
+
+	public double getBackJackPos() { return backJack.getSensorPosition(); }
+
 	public boolean frontAtTarget(int range) {
 		return Math.abs(frontJack.getClosedLoopTarget() - frontJack.getSensorPosition()) < range;
 	}
