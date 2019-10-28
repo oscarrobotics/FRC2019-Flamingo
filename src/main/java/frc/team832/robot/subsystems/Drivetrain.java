@@ -35,10 +35,6 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
     private static PIDController yawController = new PIDController(Constants.YAW_PID[0], Constants.YAW_PID[1], Constants.YAW_PID[2]);
     private SmartDifferentialDrive diffDrive;
-    public static boolean sensitivityToggle = false;
-    public static final double DefaultRotMultiplier = 0.7;
-    public static final double PreciseRotMultiplier = 0.5;
-    private double rotMultiplier = DefaultRotMultiplier;
 
     public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(Constants.DRIVE_TRACK_WIDTH); //track width in meters
     private DifferentialDriveOdometry driveOdometry;
@@ -60,6 +56,11 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private NetworkTableEntry falconPathXEntry = falconTable.getEntry("pathX");
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
+
+    public static boolean sensitivityToggle = false;
+    public static final double DefaultRotMultiplier = 0.7;
+    public static final double PreciseRotMultiplier = 0.5;
+    private double rotMultiplier = DefaultRotMultiplier;
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
@@ -207,7 +208,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         return success;
     }
 
-    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    private DifferentialDriveWheelSpeeds getWheelSpeeds() {
         double leftMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(leftMaster.getSensorVelocity());
         double rightMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
         return new DifferentialDriveWheelSpeeds(leftMetersPerSec, rightMetersPerSec);
@@ -256,12 +257,18 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         diffDrive.curvatureDrive(moveStick, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
-    public void setPreciseTurning(double multiplier) {
-        rotMultiplier = multiplier;
+    public void setPreciseTurning() {
+        if (!sensitivityToggle) {
+            rotMultiplier = PreciseRotMultiplier;
+            sensitivityToggle = true;
+        }
     }
 
-    public void resetTurningMultiplier() {
-        rotMultiplier = DefaultRotMultiplier;
+    public void setDefaultTurning() {
+        if (sensitivityToggle) {
+            rotMultiplier = DefaultRotMultiplier;
+            sensitivityToggle = false;
+        }
     }
 
     private void stop() {
@@ -288,12 +295,12 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         return OscarMath.round(navx.getYaw(), 2);
     }
 
-    public boolean isRightDecel() {
+    private boolean isRightDecel() {
         if (!diffDrive.isQuickTurning()) return false;
         return Math.abs(rightMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
     }
 
-    public boolean isLeftDecel() {
+    private boolean isLeftDecel() {
         if (!diffDrive.isQuickTurning()) return false;
         return Math.abs(leftMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
     }

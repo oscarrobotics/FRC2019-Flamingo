@@ -5,6 +5,7 @@ import frc.team832.lib.motors.Gearbox;
 import frc.team832.lib.motors.Motors;
 import frc.team832.robot.subsystems.*;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Constants {
 
     public static final double METERS_TO_FEET = 3.281;

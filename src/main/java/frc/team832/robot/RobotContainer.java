@@ -3,11 +3,13 @@ package frc.team832.robot;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.POV;
+import frc.team832.lib.driverstation.controllers.StratComInterface;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.subsystems.*;
 
+@SuppressWarnings("WeakerAccess")
 public class RobotContainer {
 
     //Creates the drivePad object of XboxController class
@@ -75,10 +77,7 @@ public class RobotContainer {
         drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.6), jackstand::stopDrive, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.6), jackstand::stopDrive, jackstand));
-        drivePad.rightBumper.whenPressed(new ChangeTurnSensitivity(drivetrain));
-        drivePad.rightBumper.whenReleased(new ResetTurnSensitivity(drivetrain));
-        //        drivePad.rightBumper.whenPressed(new ConditionalCommand(new ChangeTurnSensitivity(drivetrain), new ResetTurnSensitivity(drivetrain), Drivetrain.sensitivityToggle));
-
+        drivePad.rightBumper.whileHeld(new StartEndCommand(drivetrain::setPreciseTurning, drivetrain::setDefaultTurning));
 
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(Intake.CargoDirection.UP), intake::stopCargo, intake));
@@ -86,8 +85,8 @@ public class RobotContainer {
         stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.IN), intake::stopHatch, intake));
         stratComInterface.getArcadeWhiteRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake));
 
-        stratComInterface.getDoubleToggleUp().whileHeld(new Storage(ThreeSwitchPos.UP, superStructure, fourbar, elevator));
-        stratComInterface.getDoubleToggleDown().whileHeld(new Storage(ThreeSwitchPos.DOWN, superStructure, fourbar, elevator));
+        stratComInterface.getDoubleToggleUp().whileHeld(new Storage(StratComInterface.ThreeSwitchPos.SWITCH_UP, superStructure, fourbar, elevator));
+        stratComInterface.getDoubleToggleDown().whileHeld(new Storage(StratComInterface.ThreeSwitchPos.SWITCH_DOWN, superStructure, fourbar, elevator));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
@@ -98,20 +97,4 @@ public class RobotContainer {
 
         return successful;
     }
-
-    public static ThreeSwitchPos getThreeSwitch () {
-        if (stratComInterface.getDoubleToggleUp().get())
-            return ThreeSwitchPos.UP;
-        else if (stratComInterface.getDoubleToggleDown().get())
-            return ThreeSwitchPos.DOWN;
-        else
-            return ThreeSwitchPos.OFF;
-    }
-
-    public enum ThreeSwitchPos{
-        UP,
-        DOWN,
-        OFF
-    }
-
 }
