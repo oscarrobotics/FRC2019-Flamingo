@@ -34,9 +34,14 @@ public class LEDs implements DashboardUpdatable {
         setLEDs(ledMode, null);
     }
 
+    public static LEDMode getLEDMode() {
+        return IntakeLeds._ledMode;
+    }
+
     public enum LEDMode implements CANifier.LEDMode {
         STATIC,
         RAINBOW,
+        DEFAULT,
         CUSTOM_FLASH,
         CUSTOM_BREATHE,
         PREPARE_INTAKE,
@@ -60,7 +65,7 @@ public class LEDs implements DashboardUpdatable {
 
     @SuppressWarnings({"unused", "SameParameterValue"})
     public static class IntakeLeds extends CANifier.LEDRunner {
-        private LEDMode _ledMode = LEDMode.STATIC;
+        public static LEDMode _ledMode = LEDMode.STATIC;
         private Color _color = Color.GREEN;
         private double lastMillis;
 
@@ -94,6 +99,9 @@ public class LEDs implements DashboardUpdatable {
                 case RAINBOW:
                     rainbow();
                     break;
+                case DEFAULT:
+                    staticColor(Colors.DEFAULT);
+                    break;
                 case CUSTOM_FLASH:
                     blink(_color, 0.1f);
                     break;
@@ -118,6 +126,7 @@ public class LEDs implements DashboardUpdatable {
                     break;
                 case HATCH_ACQUIRED:
                     goodBreathe(Color.BLUE, 0.03f);
+                    break;
                 case HATCH_INTAKE:
                     goodBreathe(Colors.HATCH, 0.01f);
                     break;
@@ -129,6 +138,7 @@ public class LEDs implements DashboardUpdatable {
                     break;
                 case JACKSTAND_MOVING:
                     goodBreathe(Colors.DEFAULT, 0.02f);
+                    break;
                 case ALTERNATE_ALLIANCE_GREEN:
                     break;
                 case OFF:

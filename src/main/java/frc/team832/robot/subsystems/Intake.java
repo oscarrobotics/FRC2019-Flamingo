@@ -6,8 +6,10 @@ import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motorcontrol.vendor.CANVictor;
+import frc.team832.lib.sensors.CANifier;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
+import frc.team832.robot.LEDs;
 
 import static frc.team832.robot.RobotContainer.pdp;
 
@@ -51,18 +53,38 @@ public class Intake extends SubsystemBase implements DashboardUpdatable {
 
 	public void runCargo(CargoDirection direction) {
 		cargoIntake.set(direction.power);
+		if (direction == CargoDirection.DOWN)
+			LEDs.setLEDs(LEDs.LEDMode.BALL_OUTTAKE);
+		else
+			LEDs.setLEDs(LEDs.LEDMode.BALL_INTAKE);
 	}
 
 	public void stopCargo() {
 		cargoIntake.set(0.0);
+		if (LEDs.getLEDMode() == LEDs.LEDMode.BALL_INTAKE)
+			LEDs.setLEDs(LEDs.LEDMode.BALL_HOLD);
+		else
+			LEDs.setLEDs(LEDs.LEDMode.DEFAULT);
 	}
 
 	public void runHatch(HatchDirection direction) {
 		hatchIntake.set(direction.power);
+		if (LEDs.getLEDMode() == LEDs.LEDMode.HATCH_ACQUIRED) {
+
+		} else {
+			if (direction == HatchDirection.OUT)
+				LEDs.setLEDs(LEDs.LEDMode.HATCH_RELEASE);
+			else
+				LEDs.setLEDs(LEDs.LEDMode.HATCH_INTAKE);
+		}
 	}
 
 	public void stopHatch() {
 		hatchIntake.set(0.0);
+		if (LEDs.getLEDMode() == LEDs.LEDMode.HATCH_ACQUIRED)
+			LEDs.setLEDs(LEDs.LEDMode.HATCH_HOLD);
+		else
+			LEDs.setLEDs(LEDs.LEDMode.DEFAULT);
 	}
 
 	@Override
@@ -124,6 +146,7 @@ public class Intake extends SubsystemBase implements DashboardUpdatable {
 		stallCounter = OscarMath.clip(stallCounter, 0, stallLoops + 1);
 		if (stallCounter >= stallLoops) {
 			hasStalled = true;
+			LEDs.setLEDs(LEDs.LEDMode.HATCH_ACQUIRED);
 			return StallState.STALLED;
 		}
 		else if (stallCounter == 0) {
