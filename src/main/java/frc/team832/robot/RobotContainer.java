@@ -7,9 +7,9 @@ import frc.team832.lib.driverstation.controllers.StratComInterface;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.commands.automaticDriving.DriveToTarget;
-import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.subsystems.*;
 
+@SuppressWarnings("WeakerAccess")
 public class RobotContainer {
 
     //Creates the drivePad object of XboxController class
@@ -24,7 +24,7 @@ public class RobotContainer {
     public static final Fourbar fourbar = new Fourbar();
     public static final Elevator elevator = new Elevator();
     public static final Jackstand jackstand = new Jackstand();
-    public static final SuperStructure superStructure = new SuperStructure(fourbar, elevator, intake);
+    public static final SuperStructure superStructure = new SuperStructure(fourbar, elevator);
     public static final Vision vision = new Vision();
     public static final PDP pdp = new PDP(0);
 
@@ -77,6 +77,11 @@ public class RobotContainer {
             System.out.println("Jackstand INIT - FAIL");
         }
 
+        if (!vision.init()) {
+            successful = false;
+            System.out.println("Vision INIT - FAIL");
+        }
+
         //Commands: drivePad
         drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
         drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
@@ -103,6 +108,8 @@ public class RobotContainer {
 //        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
 //        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
 
+        vision.setLight(true);
         return successful;
+
     }
 }

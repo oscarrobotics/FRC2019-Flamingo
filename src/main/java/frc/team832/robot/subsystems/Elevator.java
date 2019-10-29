@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 
 		elevatorMotor.configMotionMagic(Constants.ELEVATOR_VELOCITY, Constants.ELEVATOR_ACCELERATION);
 
-		setPosition(ElevatorPosition.STARTING_CONFIG);
+//		setPosition(ElevatorPosition.STARTING_CONFIG);
 
 		return successful;
 	}

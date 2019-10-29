@@ -57,11 +57,9 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
-    private static boolean sensitivityToggle = false;
     private static final double DefaultRotMultiplier = 0.7;
     private static final double PreciseRotMultiplier = 0.5;
     private static final double PreciseDriveMultiplier = 0.5;
-    private double rotMultiplier = DefaultRotMultiplier;
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
@@ -72,6 +70,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private double totalAmps, totalPeakAmps;
 
     private double[] drivePIDF = Constants.DRIVE_PIDF;
+
 
     public Drivetrain() {
         super(yawController);
@@ -209,7 +208,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         return success;
     }
 
-    private DifferentialDriveWheelSpeeds getWheelSpeeds () {
+    private DifferentialDriveWheelSpeeds getWheelSpeeds() {
         double leftMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(leftMaster.getSensorVelocity());
         double rightMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
         return new DifferentialDriveWheelSpeeds(leftMetersPerSec, -rightMetersPerSec);
@@ -236,25 +235,15 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private void drive() {
         double moveStick = -RobotContainer.drivePad.getY(Hand.kLeft);
         double rotStick = RobotContainer.drivePad.getX(Hand.kRight);
-        boolean rotHold = RobotContainer.drivePad.rightStickPress.get();
 
-        if (rotHold) {
-            if (!holdYaw) {
-                yawSetpoint = navx.getYaw();
-                holdYaw = true;
-                yawController.setSetpoint(yawSetpoint);
-            }
-        } else {
-            holdYaw = false;
-        }
-
-        rotStick *= rotMultiplier;
+        boolean preciseRot = RobotContainer.drivePad.rightBumper.get();
+        boolean preciseMove = RobotContainer.drivePad.leftBumper.get();
 
         moveStick = OscarMath.signumPow(moveStick, 2);
         rotStick = OscarMath.signumPow(rotStick, 3);
 
-        double rotPow = holdYaw ? yawCorrection : rotStick;
-        double movePow = moveStick * getPreciseDriveMultiplier();
+        double rotPow = preciseRot ? rotStick * PreciseRotMultiplier : rotStick * DefaultRotMultiplier;
+        double movePow = preciseMove ? moveStick * PreciseDriveMultiplier : moveStick * getPreciseDriveMultiplier();
 
         diffDrive.curvatureDrive(movePow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
@@ -301,12 +290,12 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         return OscarMath.round(navx.getYaw(), 2);
     }
 
-    public boolean isRightDecel() {
+    private boolean isRightDecel() {
         if (!diffDrive.isQuickTurning()) return false;
         return Math.abs(rightMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
     }
 
-    public boolean isLeftDecel() {
+    private boolean isLeftDecel() {
         if (!diffDrive.isQuickTurning()) return false;
         return Math.abs(leftMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
     }

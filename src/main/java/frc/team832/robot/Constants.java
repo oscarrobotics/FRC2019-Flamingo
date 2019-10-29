@@ -60,7 +60,7 @@ public class Constants {
     public static final int ELEVATOR_VELOCITY = 80;
     public static final int ELEVATOR_ACCELERATION = 160;
 
-    public static final double ELEVATOR_ARBFF = 0.3;
+    public static final double ELEVATOR_ARBFF = 0.0;
 
     //Jackstand
     public static final double[] FRONT_JACKSTAND_PIDF = {0.1,0,0,0};

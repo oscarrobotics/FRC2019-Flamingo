@@ -8,7 +8,6 @@
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
@@ -38,7 +37,7 @@ public class Robot extends TimedRobot {
 		}
 	}
 
-	public void enabledInit() {
+	private void enabledInit() {
 		RobotContainer.fourbar.zeroEncoder();
 		RobotContainer.fourbar.setIdleMode(NeutralMode.kBrake);
 		RobotContainer.elevator.setIdleMode(NeutralMode.kBrake);
@@ -89,7 +88,7 @@ public class Robot extends TimedRobot {
 		if (DriverStation.getInstance().isDSAttached()) { // human enable
 			enabledInit();
 		} else if (DriverStation.getInstance().isFMSAttached()) { // field enable
-			// do nothing
+			System.out.println("FMS ON");
 		}
 	}
 
