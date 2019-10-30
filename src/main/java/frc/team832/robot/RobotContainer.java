@@ -9,6 +9,9 @@ import frc.team832.robot.commands.*;
 import frc.team832.robot.commands.automaticDriving.DriveToTarget;
 import frc.team832.robot.subsystems.*;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 @SuppressWarnings("WeakerAccess")
 public class RobotContainer {
 
@@ -35,6 +38,7 @@ public class RobotContainer {
             System.out.println("LEDs INIT - FAIL");
         } else {
             System.out.println("LEDs INIT - OK");
+            LEDs.setLEDs(LEDs.LEDMode.OFF);
         }
 
         if (!drivetrain.initialize()) {
@@ -89,7 +93,7 @@ public class RobotContainer {
         drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.45), jackstand::stopDrive, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.45), jackstand::stopDrive, jackstand));
-        drivePad.aButton.whileHeld(new DriveToTarget(drivetrain, vision));
+//        drivePad.rightStickPress.whileHeld(new DriveToTarget(drivetrain, vision));
 
 
         //Commands: stratComInterface
@@ -101,6 +105,14 @@ public class RobotContainer {
         stratComInterface.getDoubleToggleUp().whileHeld(new Storage(StratComInterface.ThreeSwitchPos.SWITCH_UP, superStructure, fourbar, elevator));
         stratComInterface.getDoubleToggleDown().whileHeld(new Storage(StratComInterface.ThreeSwitchPos.SWITCH_DOWN, superStructure, fourbar, elevator));
 
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
+        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
+
+
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
@@ -108,7 +120,7 @@ public class RobotContainer {
 //        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
 //        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
 
-        vision.setLight(true);
+        vision.setLight(false);
         return successful;
 
     }

@@ -89,6 +89,8 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
         return dashboard_yawEntry.getDouble(0);
     }
 
+    public boolean isValid() { return dashboard_isValidEntry.getBoolean(false); }
+
     public void setLight(boolean on){
         light.set(on);
     }

@@ -57,9 +57,9 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
-    private static final double DefaultRotMultiplier = 0.7;
-    private static final double PreciseRotMultiplier = 0.5;
-    private static final double PreciseDriveMultiplier = 0.5;
+    private static final double DefaultRotMultiplier = 0.65;
+    private static final double PreciseRotMultiplier = 0.35;
+    private static final double PreciseDriveMultiplier = 0.4;
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;

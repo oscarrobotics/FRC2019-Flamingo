@@ -52,6 +52,7 @@ public class LEDs implements DashboardUpdatable {
         HATCH_ACQUIRED,
         HATCH_HOLD,
         HATCH_RELEASE,
+        ARM_MOVING,
         JACKSTAND_MOVING,
         ALTERNATE_ALLIANCE_GREEN,
         OFF
@@ -135,6 +136,9 @@ public class LEDs implements DashboardUpdatable {
                     break;
                 case HATCH_RELEASE:
                     goodBreathe(Colors.HATCH, 0.02f);
+                    break;
+                case ARM_MOVING:
+                    rainbow();
                     break;
                 case JACKSTAND_MOVING:
                     goodBreathe(Colors.DEFAULT, 0.02f);

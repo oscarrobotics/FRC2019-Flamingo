@@ -68,6 +68,14 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		return elevatorMotor.atTarget();
 	}
 
+	public double ticksToInches() {
+		return OscarMath.map(elevatorMotor.getSensorPosition(), ElevatorPosition.BOTTOM.value, ElevatorPosition.TOP.value, 0, Constants.ELEVATOR_RANGE_INCHES);
+	}
+
+	public boolean isMoving(int deadzone) {
+		return elevatorMotor.getClosedLoopError() > deadzone;
+	}
+
 	@Override
 	public String getDashboardTabName () {
 		return m_name;

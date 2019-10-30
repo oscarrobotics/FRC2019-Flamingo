@@ -8,6 +8,7 @@ import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.lib.driverstation.dashboard.DashboardWidget;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
+import frc.team832.robot.LEDs;
 import frc.team832.robot.RobotContainer;
 import frc.team832.robot.subsystems.Elevator.ElevatorPosition;
 import frc.team832.robot.subsystems.Fourbar.FourbarPosition;
@@ -19,13 +20,15 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	private final Fourbar fourbar;
 	private final Elevator elevator;
 
-	private NetworkTableEntry dashboard_minSafeAngle, dashboard_minSafePos, dashboard_isSafe;
+	private NetworkTableEntry dashboard_minSafeAngle, dashboard_minSafePos, dashboard_isSafe, dashboard_isPosSafe, dashboard_isTargetSafe;
 
 	private NetworkTableEntry dashboard_fourbarTarget, dashboard_elevatorTarget;
 
 	private double safety_minSafeAngle;
 	private int safety_minSafePos;
 	private boolean safety_isSafe;
+	private boolean safety_isPosSafe;
+	private boolean safety_isTargetSafe;
 
 	public SuperStructure(Fourbar fourbar, Elevator elevator) {
 		super();
@@ -46,6 +49,8 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 		dashboard_minSafeAngle = DashboardManager.addTabItem(this, "Min Safe Arm Angle", 0.0);
 		dashboard_minSafePos = DashboardManager.addTabItem(this, "Min Safe Arm Pos", 0.0);
+		dashboard_isPosSafe = DashboardManager.addTabItem(this, "Is Arm Pos Safe", false, DashboardWidget.BooleanBox);
+		dashboard_isTargetSafe = DashboardManager.addTabItem(this, "Is Arm Target Safe", false, DashboardWidget.BooleanBox);
 		dashboard_isSafe = DashboardManager.addTabItem(this, "Is Arm Safe", false, DashboardWidget.BooleanBox);
 
 		dashboard_fourbarTarget = DashboardManager.addTabItem(this, "Arm Target", 0.0);
@@ -63,6 +68,10 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		return OscarMath.map((int)RobotContainer.jackstand.getFrontPos(), Jackstand.JackstandPosition.EXTENDED.frontValue, Jackstand.JackstandPosition.RETRACTED.frontValue, FourbarPosition.MIDDLE.value, 4000);
 	}
 
+	public boolean isMoving() {
+		return elevator.isMoving(20) || fourbar.isMoving(100);
+	}
+
 	public void handleFourbarClimbCorrection() {
 		moveFourbarManual(getClimbHeight());
 	}
@@ -73,7 +82,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private int fourbarSliderTarget() {
 		double slider = RobotContainer.stratComInterface.getLeftSlider();
-		return (int) OscarMath.map(slider, -1.0, 1.0, FourbarPosition.MANUAL_BOTTOM.value, FourbarPosition.TOP.value);
+		return (int) OscarMath.map(slider, -1.0, 1.0, safety_minSafePos, FourbarPosition.TOP.value);
 	}
 
 	private int elevatorSliderTarget() {
@@ -83,11 +92,19 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private int getIntersectionOffset() {
 		int baseOffset = 0;
-		double offsetMultiplier = -2.5;
+		double offsetMultiplier = -3;
 		if (fourbar.getTarget() <= 300)
 			return baseOffset;
 		else
 			return (int) (safety_minSafeAngle * offsetMultiplier) + baseOffset;
+	}
+
+	public boolean getIsSafe() {
+		return safety_isSafe;
+	}
+
+	public double getMinSafePos() {
+		return safety_minSafePos;
 	}
 
 	public void moveManual() {
@@ -100,6 +117,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		}
 		fourbar.moveManual(fourbarPosition);
 		elevator.moveManual(elevatorPosition);
+		LEDs.setLEDs(LEDs.LEDMode.ARM_MOVING);
 	}
 
 	private void moveFourbarManual(int fourbarPosition) {
@@ -110,10 +128,12 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	}
 
 	private void checkFourbarSafety(double fourbarTarget, boolean isEnabled) {
-		boolean rawPos_isSafe = !isEnabled || !(fourbar.getRawPosition() + 1 < safety_minSafePos);
-		boolean targetPos_isSafe = fourbarTarget > safety_minSafePos;
-		safety_isSafe = (rawPos_isSafe && targetPos_isSafe);
+		safety_isPosSafe = !isEnabled || !(fourbar.getRawPosition() + 25 < safety_minSafePos);
+		safety_isTargetSafe = fourbarTarget > safety_minSafePos;
+		safety_isSafe = (safety_isTargetSafe);
 	}
+
+
 
 	private void checkFourbarMinSafeAngle(double elevatorTarget) {
 		double unadjustedAngle = Math.cos( (elevatorTarget - Elevator.ElevatorPosition.BOTTOM.value) / CHEESY_NUMBER);
@@ -147,6 +167,8 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 			dashboard_elevatorTarget.setDouble(elevator.getTarget());
 		}
 
+		dashboard_isPosSafe.setBoolean(safety_isPosSafe);
+		dashboard_isTargetSafe.setBoolean(safety_isTargetSafe);
 		dashboard_isSafe.setBoolean(safety_isSafe);
 		dashboard_minSafeAngle.setDouble(safety_minSafeAngle);
 		dashboard_minSafePos.setDouble(safety_minSafePos);

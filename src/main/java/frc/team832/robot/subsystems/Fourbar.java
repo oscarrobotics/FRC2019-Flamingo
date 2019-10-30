@@ -9,6 +9,7 @@ import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motorcontrol.vendor.CANTalon;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
+import frc.team832.robot.Robot;
 import frc.team832.robot.RobotContainer;
 
 public class Fourbar extends SubsystemBase implements DashboardUpdatable {
@@ -90,10 +91,15 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 
 	public double getTarget() { return fourbarTop.getClosedLoopTarget(); }
 
+	public boolean isMoving(int deadzone) {
+		return fourbarBottom.getClosedLoopError() > deadzone;
+	}
+
+
 
 	public void moveManual(int targetPos) {
 		targetPos = OscarMath.clip(targetPos, FourbarPosition.BOTTOM.value, FourbarPosition.TOP.value);
-		fourbarTop.setPosition(targetPos);
+		fourbarTop.setMotionMagic(targetPos);
 	}
 
 	public double getSlider() {
@@ -143,7 +149,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 
 	public enum FourbarPosition {
 		BOTTOM(0),
-		MANUAL_BOTTOM(BOTTOM.value + 50),
+		MANUAL_BOTTOM(BOTTOM.value + 25),
 		MIDDLE(2600),
 		TOP(4800),
 		STARTING_CONFIG(BOTTOM.value),

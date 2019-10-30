@@ -31,7 +31,7 @@ public class Constants {
     public static final double[] YAW_PID = {0.0085, 0, 0}; // PID
 
     //Fourbar
-    public static final double[] ARM_PIDF = {.75, 0.0, 0.0, 0.0};//.02 ff
+    public static final double[] ARM_PIDF = {.8, 0.0, 0.0, 0.0};//.02 ff
     public static final double ARM_GRAV_FF = 0.1;
 
     public static final double FOURBAR_SOFT_MAX = Fourbar.FourbarPosition.TOP.value + 50;
@@ -42,13 +42,13 @@ public class Constants {
     //    public static final double FOURBAR_MAX_ANGLE = 55;
     public static final double FOURBAR_MAX_ANGLE = 52;
 
-    public static final int FOURBAR_VELOCITY = 200;
-    public static final int FOURBAR_ACCELERATION = 600;
+    public static final int FOURBAR_VELOCITY = 350;
+    public static final int FOURBAR_ACCELERATION = 700;
 
 
 
     //Elevator
-    public static final double[] elevatorPIDF = {10, 0, 0, 0};
+    public static final double[] elevatorPIDF = {12, 0, 0, 0};
 
     public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 5;
     public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 5;
@@ -60,7 +60,9 @@ public class Constants {
     public static final int ELEVATOR_VELOCITY = 80;
     public static final int ELEVATOR_ACCELERATION = 160;
 
-    public static final double ELEVATOR_ARBFF = 0.0;
+    public static final double ELEVATOR_ARBFF = 0.3;
+
+    public static final double ELEVATOR_RANGE_INCHES = 28.875;
 
     //Jackstand
     public static final double[] FRONT_JACKSTAND_PIDF = {0.1,0,0,0};

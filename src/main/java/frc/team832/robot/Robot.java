@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.motorcontrol.NeutralMode;
+import frc.team832.robot.subsystems.Fourbar;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
 		RobotContainer.drivetrain.setIdleMode(NeutralMode.kBrake);
 		RobotContainer.drivetrain.resetGyro();
 		RobotContainer.drivetrain.resetEncoders();
+		LEDs.setLEDs(LEDs.LEDMode.DEFAULT);
 	}
 
 	/**
@@ -96,6 +98,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		RobotContainer.fourbar.setIdleMode(NeutralMode.kCoast);
 		RobotContainer.drivetrain.setIdleMode(NeutralMode.kCoast);
+		LEDs.setLEDs(LEDs.LEDMode.OFF);
 	}
 
 	/**
