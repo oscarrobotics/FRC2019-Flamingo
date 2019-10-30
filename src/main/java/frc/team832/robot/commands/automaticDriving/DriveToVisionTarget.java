@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.team832.robot.LEDs;
 import frc.team832.robot.subsystems.*;
 
-public class DriveToTarget extends CommandBase {
+public class DriveToVisionTarget extends CommandBase {
 
 	private final Drivetrain drivetrain;
 	private final Vision vision;
 
-	public DriveToTarget(Drivetrain drivetrain, Vision vision) {
+	public DriveToVisionTarget (Drivetrain drivetrain, Vision vision) {
 		addRequirements(drivetrain, vision);
 		this.drivetrain = drivetrain;
 		this.vision = vision;

@@ -1,13 +1,22 @@
 package frc.team832.robot;
 
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.POV;
 import frc.team832.lib.driverstation.controllers.StratComInterface;
+import frc.team832.lib.driverstation.controllers.StratComInterface.ThreeSwitchPos;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
-import frc.team832.robot.commands.*;
-import frc.team832.robot.commands.automaticDriving.DriveToTarget;
+import frc.team832.robot.commands.MoveJackstands;
+import frc.team832.robot.commands.MoveSingleJackstand;
+import frc.team832.robot.commands.Storage;
+import frc.team832.robot.commands.automaticDriving.DriveToVisionTarget;
 import frc.team832.robot.subsystems.*;
+import frc.team832.robot.subsystems.Intake.CargoDirection;
+import frc.team832.robot.subsystems.Intake.HatchDirection;
+import frc.team832.robot.subsystems.Jackstand.BackJackPosition;
+import frc.team832.robot.subsystems.Jackstand.FrontJackPosition;
+import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -87,23 +96,23 @@ public class RobotContainer {
         }
 
         //Commands: drivePad
-        drivePad.backButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL2_UP, jackstand));
-        drivePad.startButton.whenPressed(new MoveJackstands(Jackstand.JackstandPosition.LVL3_UP, jackstand));
-        drivePad.bButton.whenPressed(new MoveSingleJackstand(Jackstand.FrontJackPosition.RETRACTED, jackstand));
-        drivePad.yButton.whenPressed(new MoveSingleJackstand(Jackstand.BackJackPosition.RETRACTED, jackstand));
+        drivePad.backButton.whenPressed(new MoveJackstands(JackstandPosition.LVL2_UP, jackstand));
+        drivePad.startButton.whenPressed(new MoveJackstands(JackstandPosition.LVL3_UP, jackstand));
+        drivePad.bButton.whenPressed(new MoveSingleJackstand(FrontJackPosition.RETRACTED, jackstand));
+        drivePad.yButton.whenPressed(new MoveSingleJackstand(BackJackPosition.RETRACTED, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.45), jackstand::stopDrive, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.45), jackstand::stopDrive, jackstand));
-//        drivePad.rightStickPress.whileHeld(new DriveToTarget(drivetrain, vision));
+        drivePad.aButton.whileHeld(new DriveToVisionTarget(drivetrain, vision));
 
 
         //Commands: stratComInterface
-        stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(Intake.CargoDirection.UP), intake::stopCargo, intake));
-        stratComInterface.getArcadeWhiteLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(Intake.CargoDirection.DOWN), intake::stopCargo, intake));
-        stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.IN), intake::stopHatch, intake));
-        stratComInterface.getArcadeWhiteRight().whenHeld(new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake));
+        stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(CargoDirection.UP), intake::stopCargo, intake));
+        stratComInterface.getArcadeWhiteLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(CargoDirection.DOWN), intake::stopCargo, intake));
+        stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(HatchDirection.IN), intake::stopHatch, intake));
+        stratComInterface.getArcadeWhiteRight().whenHeld(new StartEndCommand(() -> intake.runHatch(HatchDirection.OUT), intake::stopHatch, intake));
 
-        stratComInterface.getDoubleToggleUp().whileHeld(new Storage(StratComInterface.ThreeSwitchPos.SWITCH_UP, superStructure, fourbar, elevator));
-        stratComInterface.getDoubleToggleDown().whileHeld(new Storage(StratComInterface.ThreeSwitchPos.SWITCH_DOWN, superStructure, fourbar, elevator));
+        stratComInterface.getDoubleToggleUp().whileHeld(new Storage(ThreeSwitchPos.SWITCH_UP, superStructure, fourbar, elevator));
+        stratComInterface.getDoubleToggleDown().whileHeld(new Storage(ThreeSwitchPos.SWITCH_DOWN, superStructure, fourbar, elevator));
 
         stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
         stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
