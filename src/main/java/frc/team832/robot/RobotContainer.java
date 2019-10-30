@@ -1,5 +1,7 @@
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.team832.lib.control.PDP;
@@ -7,10 +9,9 @@ import frc.team832.lib.driverstation.controllers.POV;
 import frc.team832.lib.driverstation.controllers.StratComInterface;
 import frc.team832.lib.driverstation.controllers.StratComInterface.ThreeSwitchPos;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
-import frc.team832.robot.commands.MoveJackstands;
-import frc.team832.robot.commands.MoveSingleJackstand;
-import frc.team832.robot.commands.Storage;
+import frc.team832.robot.commands.*;
 import frc.team832.robot.commands.automaticDriving.DriveToVisionTarget;
+import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.subsystems.*;
 import frc.team832.robot.subsystems.Intake.CargoDirection;
 import frc.team832.robot.subsystems.Intake.HatchDirection;
@@ -114,23 +115,47 @@ public class RobotContainer {
         stratComInterface.getDoubleToggleUp().whileHeld(new Storage(ThreeSwitchPos.SWITCH_UP, superStructure, fourbar, elevator));
         stratComInterface.getDoubleToggleDown().whileHeld(new Storage(ThreeSwitchPos.SWITCH_DOWN, superStructure, fourbar, elevator));
 
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
-        stratComInterface.getSC1().whenPressed(new ConditionalCommand (new DoNothing(), new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator), () -> stratComInterface.getKeySwitch().get()));
-
+        stratComInterface.getSC1().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC2().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC3().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC4().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC5().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC6().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
-//        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
+        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
 //        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
 
         vision.setLight(false);
         return successful;
 
+    }
+
+    private static class KeyCommand extends ConditionalCommand {
+
+        /**
+         * Creates a new ConditionalCommand.
+         *
+         * @param onAuto    the command to run if the key is set to Auto
+         * @param onManual  the command to run if the key is set to Manual
+         */
+        public KeyCommand(Command onAuto, Command onManual) {
+            super(onAuto, onManual, () -> stratComInterface.getKeySwitch().get());
+        }
+    }
+
+    private static class KeyAutoCommand extends KeyCommand {
+
+        /**
+         * Creates a new ConditionalCommand.
+         *
+         * @param onAuto    the command to run when the key is in Auto mode
+         */
+        public KeyAutoCommand(Command onAuto) {
+            super(new DoNothing(), onAuto);
+        }
     }
 }
