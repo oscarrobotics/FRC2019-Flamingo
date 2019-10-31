@@ -1,6 +1,7 @@
 package frc.team832.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.team832.robot.LEDs;
 import frc.team832.robot.subsystems.Jackstand;
 
 public class MoveSingleJackstand extends InstantCommand {
@@ -25,8 +26,10 @@ public class MoveSingleJackstand extends InstantCommand {
 	public void initialize() {
 		if (jackstandType == Jackstand.JackstandType.FRONT) {
 			subsystem.setFrontJack(frontPosition);
+			LEDs.setLEDs(LEDs.LEDMode.FRONT_JACK_MOVING);
 		} else if (jackstandType == Jackstand.JackstandType.BACK) {
 			subsystem.setBackJack(backPosition);
+			LEDs.setLEDs(LEDs.LEDMode.BACK_JACK_MOVING);
 		}
 	}
 

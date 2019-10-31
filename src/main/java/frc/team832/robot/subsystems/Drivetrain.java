@@ -57,7 +57,7 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
-    private static final double DefaultRotMultiplier = 0.6;
+    private static final double DefaultRotMultiplier = 0.5;
     private static final double PreciseRotMultiplier = 0.1;
     private static final double PreciseDriveMultiplier = 0.2;
 
@@ -151,8 +151,8 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         rightMaster.setkD(drivePIDF[2]);
         rightMaster.setkF(drivePIDF[3]);
 
-        leftMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
-        rightMaster.setClosedLoopRamp(Constants.DRIVE_ACCEL_RAMP);
+        leftMaster.setOpenLoopRamp(Constants.DRIVE_ACCEL_RAMP);
+        rightMaster.setOpenLoopRamp(Constants.DRIVE_ACCEL_RAMP);
 
         leftMaster.setPeakCurrentLimit(50);
         leftSlave.setPeakCurrentLimit(50);
@@ -246,8 +246,7 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         double rotPow = preciseRot ? rotStick * PreciseRotMultiplier : rotStick * DefaultRotMultiplier;
         double movePow = preciseMove ? moveStick * PreciseDriveMultiplier : moveStick * getPreciseDriveMultiplier();
 
-        double yawKp = .007
-                ;
+        double yawKp = .005;
 
         if (visionRot) {
             rotPow = RobotContainer.vision.getYaw() * yawKp;

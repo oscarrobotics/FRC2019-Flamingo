@@ -30,7 +30,7 @@ public class Intake extends SubsystemBase implements DashboardUpdatable {
 
 	@Override
 	public void periodic() {
-		hatchStallState = isMotorStall(11, 12.0, 0.5);
+		hatchStallState = isMotorStall(11, 10.0, 0.5);
 		hasHatch = hatchStallState == StallState.STALLED || hatchStallState == StallState.LEAVING_STALL;
 	}
 

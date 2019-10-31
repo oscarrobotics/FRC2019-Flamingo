@@ -1,6 +1,5 @@
 package frc.team832.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.team832.robot.LEDs;
 import frc.team832.robot.subsystems.Jackstand;
@@ -20,6 +19,7 @@ public class MoveJackstands extends InstantCommand {
 	@Override
 	public void initialize() {
 		subsystem.setPosition(position);
+		LEDs.setLEDs(LEDs.LEDMode.JACKSTANDS_MOVING);
 	}
 
 	@Override

@@ -9,11 +9,7 @@ import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motorcontrol.vendor.CANTalon;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
-import frc.team832.robot.Robot;
 import frc.team832.robot.RobotContainer;
-
-import static frc.team832.robot.RobotContainer.jackstand;
-import static frc.team832.robot.RobotContainer.superStructure;
 
 public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	private static final double CHEESY_NUMBER = 800/Math.PI;
@@ -90,7 +86,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		fourbarBottom.setNeutralMode(idleMode);
 	}
 
-	public double getRawPosition() {
+	public double getPosition() {
 		return fourbarTop.getSensorPosition();
 	}
 
@@ -116,7 +112,6 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public void setPosition(FourbarPosition position) {
-//		double targetPos = isSafe(false) ? position.value : safety_minFourbarPos;
 		fourbarTop.setMotionMagic(position.value);
 	}
 
@@ -140,8 +135,8 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	@Override
 	public void updateDashboardData() {
 //		dashboard_isSafe.setBoolean(isSafe(true));
-		dashboard_RawPos.setDouble(getRawPosition());
-		dashboard_currentDegrees.setDouble(positionToDegrees(getRawPosition()));
+		dashboard_RawPos.setDouble(getPosition());
+		dashboard_currentDegrees.setDouble(positionToDegrees(getPosition()));
 		dashboard_DesiredPos.setDouble(getSliderTarget(getSlider()));
 //		dashboard_minSafePos.setDouble(safety_minFourbarPos);
 //		dashboard_minSafeAngle.setDouble(safety_minFourbarAngle);

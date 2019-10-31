@@ -76,6 +76,10 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		return elevatorMotor.getClosedLoopError() > deadzone;
 	}
 
+	public boolean isMovingDown() {
+		return elevatorMotor.getClosedLoopTarget() < elevatorMotor.getSensorPosition();
+	}
+
 	@Override
 	public String getDashboardTabName () {
 		return m_name;

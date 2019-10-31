@@ -21,13 +21,11 @@ public class FourbarClimbCorrection extends CommandBase {
 
     @Override
     public void initialize() {
-        LEDs.setLEDs(LEDs.LEDMode.JACKSTAND_MOVING);
     }
 
     @Override
     public void execute() {
         superStructure.handleFourbarClimbCorrection();
-        LEDs.setLEDs(LEDs.LEDMode.JACKSTAND_MOVING);
     }
 
     @Override

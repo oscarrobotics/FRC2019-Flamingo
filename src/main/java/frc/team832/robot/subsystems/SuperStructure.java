@@ -62,6 +62,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	public void setPosition(SuperStructurePosition position) {
 		elevator.setPosition(position.elevatorPosition);
 		fourbar.setPosition(position.fourbarPosition);
+		LEDs.setLEDs(LEDs.LEDMode.ARM_MOVING);
 	}
 
 	private int getClimbHeight() {
@@ -92,7 +93,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private int getIntersectionOffset() {
 		int baseOffset = 0;
-		double offsetMultiplier = -3.25;
+		double offsetMultiplier = elevator.isMovingDown() ? -3.75 : -2.5;
 		if (fourbar.getTarget() <= 200)
 			return baseOffset;
 		else
@@ -117,7 +118,6 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		}
 		fourbar.moveManual(fourbarPosition);
 		elevator.moveManual(elevatorPosition);
-		LEDs.setLEDs(LEDs.LEDMode.ARM_MOVING);
 	}
 
 	private void moveFourbarManual(int fourbarPosition) {
@@ -128,7 +128,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	}
 
 	private void checkFourbarSafety(double fourbarTarget, boolean isEnabled) {
-		safety_isPosSafe = !isEnabled || !(fourbar.getRawPosition() + 50 < safety_minSafePos);
+		safety_isPosSafe = !isEnabled || !(fourbar.getPosition() + 50 < safety_minSafePos);
 		safety_isTargetSafe = fourbarTarget + 10 > safety_minSafePos;
 		safety_isSafe = (safety_isTargetSafe && safety_isPosSafe);
 	}

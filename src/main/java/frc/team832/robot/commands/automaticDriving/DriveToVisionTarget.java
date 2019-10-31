@@ -38,6 +38,4 @@ public class DriveToVisionTarget extends CommandBase {
 	public boolean isFinished(){
 		return false;
 	}
-
-	//uhhhhhhh vision
 }
