@@ -1,5 +1,6 @@
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.team832.lib.motors.DTPowerTrain;
 import frc.team832.lib.motors.Gearbox;
@@ -11,7 +12,7 @@ public class Constants {
 
     public static final double DRIVE_TRACK_WIDTH_METERS = Units.inchesToMeters(22.75);
     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(6);
-
+    public static final DifferentialDriveKinematics DRIVE_KINEMATICS = new DifferentialDriveKinematics(Constants.DRIVE_TRACK_WIDTH_METERS); //track width in meters
     /**
      * order leftMaster, leftSlave, rightMaster, rightSlave
      */

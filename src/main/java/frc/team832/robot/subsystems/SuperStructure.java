@@ -184,7 +184,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		ROCKETHATCH_MID(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETHATCH_MID),
 		ROCKETHATCH_HIGH(ElevatorPosition.TOP, FourbarPosition.ROCKETHATCH_HIGH),
 		ROCKETCARGO_LOW(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETCARGO_LOW),
-		ROCKETCARGO_MIDDLE(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETCARGO_MID),
+		ROCKETCARGO_MID(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETCARGO_MID),
 		ROCKETCARGO_HIGH(ElevatorPosition.TOP, FourbarPosition.ROCKETCARGO_HIGH),
 		STORAGE_DEFENCE(ElevatorPosition.TOP, FourbarPosition.BOTTOM),
 		STORAGE_OFFENSE(ElevatorPosition.BOTTOM, FourbarPosition.TOP);

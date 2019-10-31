@@ -11,23 +11,21 @@ import frc.team832.lib.driverstation.controllers.StratComInterface.ThreeSwitchPo
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.commands.automaticDriving.DriveToVisionTarget;
-import frc.team832.robot.commands.automaticScoring.AutonomousHatchScore;
 import frc.team832.robot.subsystems.*;
 import frc.team832.robot.subsystems.Intake.CargoDirection;
 import frc.team832.robot.subsystems.Intake.HatchDirection;
 import frc.team832.robot.subsystems.Jackstand.BackJackPosition;
 import frc.team832.robot.subsystems.Jackstand.FrontJackPosition;
 import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
+import frc.team832.robot.subsystems.SuperStructure.SuperStructurePosition;
 
 @SuppressWarnings("WeakerAccess")
 public class RobotContainer {
 
-    //Creates the drivePad object of XboxController class
+    //Creates the drivePad object of XboxController360 class
     public static final Xbox360Controller drivePad = new Xbox360Controller(0);
-
     //Creates the stratComInterface of the StratComInterface Class
     public static final StratComInterface stratComInterface = new StratComInterface(1);
-    //Creates the JoystickButton object
 
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Intake intake = new Intake();
@@ -36,6 +34,7 @@ public class RobotContainer {
     public static final Jackstand jackstand = new Jackstand();
     public static final SuperStructure superStructure = new SuperStructure(fourbar, elevator);
     public static final Vision vision = new Vision();
+
     public static final PDP pdp = new PDP(0);
 
     public static boolean init() {
@@ -54,8 +53,6 @@ public class RobotContainer {
         } else {
             System.out.println("Drivetrain INIT - OK");
         }
-
-        Paths.initializePaths(drivetrain.driveKinematics, Constants.DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC, Constants.DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ);
 
         if (!intake.initialize()) {
             successful = false;
@@ -125,7 +122,6 @@ public class RobotContainer {
         stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKEHATCH, superStructure, fourbar, elevator)));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
-
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
 //        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
@@ -133,13 +129,12 @@ public class RobotContainer {
 
         vision.setLight(false);
         return successful;
-
     }
 
     private static class KeyCommand extends ConditionalCommand {
 
         /**
-         * Creates a new ConditionalCommand.
+         * Creates a new KeyCommand.
          *
          * @param onAuto    the command to run if the key is set to Auto
          * @param onManual  the command to run if the key is set to Manual
@@ -152,7 +147,7 @@ public class RobotContainer {
     private static class KeyAutoCommand extends KeyCommand {
 
         /**
-         * Creates a new ConditionalCommand.
+         * Creates a new KeyAutoCommand.
          *
          * @param onAuto    the command to run when the key is in Auto mode
          */

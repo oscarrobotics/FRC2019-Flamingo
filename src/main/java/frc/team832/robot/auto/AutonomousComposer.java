@@ -1,6 +1,7 @@
 package frc.team832.robot.auto;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.team832.robot.Paths;
 
@@ -35,7 +36,9 @@ public class AutonomousComposer {
 				startPose = Paths.RIGHT_HAB_START_POSE;
 				break;
 		}
+
+		Trajectory primaryPath = primaryAction.getPath(startPosition);
+
 		return null;
 	}
-
 }

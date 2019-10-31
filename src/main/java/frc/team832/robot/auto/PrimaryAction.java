@@ -1,10 +1,11 @@
 package frc.team832.robot.auto;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 
 public class PrimaryAction extends Action {
 
-	private PAction action;
+	public final PAction action;
 
 	public PrimaryAction(PAction action) {
 		this.action = action;
@@ -12,12 +13,16 @@ public class PrimaryAction extends Action {
 
 	@Override
 	Trajectory getPath (StartPosition startPos) {
-		Trajectory path;
 
 		switch (startPos) {
 			case LEFT_HAB:
-
-				break;
+				switch (action) {
+					case ROCKET_CLOSE:
+					case ROCKET_FAR:
+					case CARGO_FRONT_LEFT:
+					default:
+						return null;
+				}
 			case CENTER_HAB:
 
 				break;

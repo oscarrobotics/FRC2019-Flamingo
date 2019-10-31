@@ -3,6 +3,7 @@ package frc.team832.robot.commands.automaticScoring;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.team832.robot.Constants;
 import frc.team832.robot.subsystems.*;
 
 public class AutonomousHatchScore extends SequentialCommandGroup {
@@ -24,8 +25,9 @@ public class AutonomousHatchScore extends SequentialCommandGroup {
 		this.position = superStructurePosition;
 		this.trajectory = trajectory;
 
-		addCommands(new MoveToHatchScorePosition(position, superStructure, elevator, fourbar),
-				new RamseteCommand(trajectory, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain),
+		addCommands(
+				new MoveToHatchScorePosition(position, superStructure, elevator, fourbar),
+				new RamseteCommand(trajectory, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), Constants.DRIVE_KINEMATICS, drivetrain::consumeWheelSpeeds, drivetrain),
 				new StartEndCommand(() -> intake.runHatch(Intake.HatchDirection.OUT), intake::stopHatch, intake),
 				new WaitCommand(1),
 				new HatchStop(intake));

@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.RunEndCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.driverstation.dashboard.DashboardUpdatable;
 import frc.team832.lib.drive.SmartDifferentialDrive;
@@ -31,14 +31,12 @@ import frc.team832.robot.RobotContainer;
 
 import static frc.team832.robot.Paths.CENTER_HAB_START_POSE;
 
-public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
+public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
 
     private AHRS navx;
     private CANSparkMax leftMaster, rightMaster, leftSlave, rightSlave;
     private static PIDController yawController = new PIDController(Constants.YAW_PID[0], Constants.YAW_PID[1], Constants.YAW_PID[2]);
     private SmartDifferentialDrive diffDrive;
-
-    public final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(Constants.DRIVE_TRACK_WIDTH_METERS); //track width in meters
     private DifferentialDriveOdometry driveOdometry;
 
     private Pose2d startingPose = CENTER_HAB_START_POSE; // TODO: Set from Dashboard
@@ -75,7 +73,6 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
 
 
     public Drivetrain() {
-        super(yawController);
         setName("Drive Subsys");
         DashboardManager.addTab(this);
         DashboardManager.addTabSubsystem(this, this);
@@ -162,9 +159,9 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         rightMaster.setPeakCurrentLimit(50);
         rightSlave.setPeakCurrentLimit(50);
 
-        diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 5676);
+        diffDrive = new SmartDifferentialDrive(leftMaster, rightMaster, 5000);
 
-        driveOdometry = new DifferentialDriveOdometry(driveKinematics, startingPose);
+        driveOdometry = new DifferentialDriveOdometry(Constants.DRIVE_KINEMATICS, startingPose);
 
         // yawController.setContinuous();
 //        yawController.
@@ -225,7 +222,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     }
 
     public Pose2d getLatestPose2d() {
-        var newRotation2d = new Rotation2d(OscarMath.degreesToRadians(-getMeasurement()));
+        var newRotation2d = new Rotation2d(OscarMath.degreesToRadians(-navx.getYaw()));
         return driveOdometry.update(newRotation2d, getWheelSpeeds());
     }
 
@@ -271,26 +268,6 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         diffDrive.stopMotor();
     }
 
-    @Override
-    public void useOutput(double output) {
-        output = OscarMath.round(output, 2);
-        if (!yawController.atSetpoint() && yawController.getPositionError() > 15) {
-            output += 0.1;
-        }
-        // failsafe, if navx goes RIP
-        yawCorrection = navx.isConnected() ? output : 0.0;
-    }
-
-    @Override
-    public double getSetpoint() {
-        return yawSetpoint;
-    }
-
-    @Override
-    public double getMeasurement() {
-        return OscarMath.round(navx.getYaw(), 2);
-    }
-
     private boolean isRightDecel() {
         if (!diffDrive.isQuickTurning()) return false;
         return Math.abs(rightMaster.getSensorVelocity()) - Math.abs(desiredRPM) > 0;
@@ -315,7 +292,7 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         dashboard_totalAmps.setDouble(totalAmps);
         dashboard_totalAmpsPeak.setDouble(totalPeakAmps);
 
-        dashboard_navxYaw.setDouble(getMeasurement());
+        dashboard_navxYaw.setDouble(navx.getYaw());
         dashboard_yawOutput.setDouble(yawCorrection);
 
         dashboard_leftAmps.setDouble(leftAmps);
