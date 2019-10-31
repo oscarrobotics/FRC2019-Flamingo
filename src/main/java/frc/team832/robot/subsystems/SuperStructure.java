@@ -92,8 +92,8 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private int getIntersectionOffset() {
 		int baseOffset = 0;
-		double offsetMultiplier = -3;
-		if (fourbar.getTarget() <= 300)
+		double offsetMultiplier = -3.25;
+		if (fourbar.getTarget() <= 200)
 			return baseOffset;
 		else
 			return (int) (safety_minSafeAngle * offsetMultiplier) + baseOffset;
@@ -128,9 +128,9 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	}
 
 	private void checkFourbarSafety(double fourbarTarget, boolean isEnabled) {
-		safety_isPosSafe = !isEnabled || !(fourbar.getRawPosition() + 25 < safety_minSafePos);
-		safety_isTargetSafe = fourbarTarget > safety_minSafePos;
-		safety_isSafe = (safety_isTargetSafe);
+		safety_isPosSafe = !isEnabled || !(fourbar.getRawPosition() + 50 < safety_minSafePos);
+		safety_isTargetSafe = fourbarTarget + 10 > safety_minSafePos;
+		safety_isSafe = (safety_isTargetSafe && safety_isPosSafe);
 	}
 
 
@@ -178,7 +178,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
     public enum SuperStructurePosition {
 		INTAKEHATCH(ElevatorPosition.INTAKEHATCH, FourbarPosition.MIDDLE),
 		INTAKECARGO(ElevatorPosition.BOTTOM, FourbarPosition.INTAKECARGO),
-		CARGOSHIP_HATCH(ElevatorPosition.TOP, FourbarPosition.CARGOSHIP_HATCH),
+		CARGOSHIP_HATCH(ElevatorPosition.CARGOSHIP_HATCH, FourbarPosition.CARGOSHIP_HATCH),
 		CARGOSHIP_CARGO(ElevatorPosition.BOTTOM, FourbarPosition.CARGOSHIP_CARGO),
 		ROCKETHATCH_LOW(ElevatorPosition.TOP, FourbarPosition.ROCKETHATCH_LOW),
 		ROCKETHATCH_MID(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETHATCH_MID),

@@ -50,8 +50,8 @@ public class Constants {
     //Elevator
     public static final double[] elevatorPIDF = {12, 0, 0, 0};
 
-    public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 5;
-    public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 5;
+    public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 2;
+    public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 2;
 
     public static final double POT_RANGE = (Elevator.ElevatorPosition.TOP.value) - (Elevator.ElevatorPosition.BOTTOM.value);
     public static final double POT_TO_INCHES = 44.0 / POT_RANGE;
@@ -74,11 +74,11 @@ public class Constants {
     public static final double BACKJACK_SOFT_FORWARD = 0;
     public static final double BACKJACK_SOFT_REVERSE = -79000;
 
-    public static final int FRONT_JACKSTAND_VELOCITY = 22000;
-    public static final int FRONT_JACKSTAND_ACCELERATION = 20000;
+    public static final int FRONT_JACKSTAND_VELOCITY = 26000;
+    public static final int FRONT_JACKSTAND_ACCELERATION = 22000;
 
     public static final int BACK_JACKSTAND_VELOCITY = 16000;
-    public static final int BACK_JACKSTAND_ACCELERATION = 20000;
+    public static final int BACK_JACKSTAND_ACCELERATION = 22000;
 
     //CAN ID's
     public static final int ELEVATOR_CAN_ID = 6;

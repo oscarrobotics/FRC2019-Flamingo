@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.RunEndCommand;
@@ -25,6 +26,7 @@ import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motors.Motors;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
+import frc.team832.robot.Robot;
 import frc.team832.robot.RobotContainer;
 
 import static frc.team832.robot.Paths.CENTER_HAB_START_POSE;
@@ -57,9 +59,9 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
-    private static final double DefaultRotMultiplier = 0.65;
-    private static final double PreciseRotMultiplier = 0.35;
-    private static final double PreciseDriveMultiplier = 0.4;
+    private static final double DefaultRotMultiplier = 0.6;
+    private static final double PreciseRotMultiplier = 0.1;
+    private static final double PreciseDriveMultiplier = 0.2;
 
     private boolean holdYaw;
     private double yawCorrection, yawSetpoint;
@@ -239,27 +241,26 @@ public class Drivetrain extends PIDSubsystem implements DashboardUpdatable {
         boolean preciseRot = RobotContainer.drivePad.rightBumper.get();
         boolean preciseMove = RobotContainer.drivePad.leftBumper.get();
 
+        boolean visionRot = RobotContainer.drivePad.rightStickPress.get();
+
         moveStick = OscarMath.signumPow(moveStick, 2);
         rotStick = OscarMath.signumPow(rotStick, 3);
 
         double rotPow = preciseRot ? rotStick * PreciseRotMultiplier : rotStick * DefaultRotMultiplier;
         double movePow = preciseMove ? moveStick * PreciseDriveMultiplier : moveStick * getPreciseDriveMultiplier();
 
+        double yawKp = .007
+                ;
+
+        if (visionRot) {
+            rotPow = RobotContainer.vision.getYaw() * yawKp;
+        }
+
         diffDrive.curvatureDrive(movePow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
     public void visionDrive(double area, double yaw){
-        double xSpeed, zRot;
-        double yawKp = .1;
-        double speedKp = .1;
 
-        var areaError = 8000 - area;
-
-        xSpeed = speedKp * areaError;
-
-        zRot = yaw * yawKp;
-
-        diffDrive.curvatureDrive(xSpeed, zRot, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
     private double getPreciseDriveMultiplier() {

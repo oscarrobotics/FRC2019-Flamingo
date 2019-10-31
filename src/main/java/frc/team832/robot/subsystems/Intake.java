@@ -69,9 +69,7 @@ public class Intake extends SubsystemBase implements DashboardUpdatable {
 
 	public void runHatch(HatchDirection direction) {
 		hatchIntake.set(direction.power);
-		if (LEDs.getLEDMode() == LEDs.LEDMode.HATCH_ACQUIRED) {
-
-		} else {
+		if (hatchStallState != StallState.STALLED) {
 			if (direction == HatchDirection.OUT)
 				LEDs.setLEDs(LEDs.LEDMode.HATCH_RELEASE);
 			else

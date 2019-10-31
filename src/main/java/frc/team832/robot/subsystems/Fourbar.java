@@ -12,6 +12,9 @@ import frc.team832.robot.Constants;
 import frc.team832.robot.Robot;
 import frc.team832.robot.RobotContainer;
 
+import static frc.team832.robot.RobotContainer.jackstand;
+import static frc.team832.robot.RobotContainer.superStructure;
+
 public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	private static final double CHEESY_NUMBER = 800/Math.PI;
 
@@ -34,6 +37,8 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 
 	@Override
 	public void periodic () {
+//		if (jackstand.isExtending())
+//			superStructure.handleFourbarClimbCorrection();
 	}
 
 	public boolean initialize() {
@@ -150,9 +155,9 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 	public enum FourbarPosition {
 		BOTTOM(0),
 		MANUAL_BOTTOM(BOTTOM.value + 25),
-		MIDDLE(2600),
+		MIDDLE(2500),
 		TOP(4800),
-		STARTING_CONFIG(BOTTOM.value),
+		STARTING_CONFIG(BOTTOM.value + 200),
 //		TOP(5000), // Before gas shocks
 		INTAKEHATCH(MIDDLE.value),
 		INTAKECARGO(3100),

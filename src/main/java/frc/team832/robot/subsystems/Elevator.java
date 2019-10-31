@@ -56,7 +56,7 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public void setPosition(ElevatorPosition position) {
-		elevatorMotor.setPosition(position.value);
+		elevatorMotor.setMotionMagicArbFF(position.value, Constants.ELEVATOR_ARBFF);
 	}
 
 	public void moveManual(int targetPos) {
@@ -91,8 +91,8 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 	}
 
 	public static enum ElevatorPosition{
-		BOTTOM(70),//30
-		TOP(470),//430
+		BOTTOM(75),//30
+		TOP(480),//430
 		MIDDLE(OscarMath.mid(BOTTOM.value, TOP.value)),
 		STARTING_CONFIG(TOP.value),
 		INTAKEHATCH(BOTTOM.value),

@@ -22,9 +22,10 @@ public class DriveToVisionTarget extends CommandBase {
 	}
 
 	@Override
-	public  void  execute(){
-		if (vision.isValid())
+	public void execute(){
+		if (vision.isValid()) {
 			drivetrain.visionDrive(vision.getArea(), vision.getYaw());
+		}
 	}
 
 	@Override

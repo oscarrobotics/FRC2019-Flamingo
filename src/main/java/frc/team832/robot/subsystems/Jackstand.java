@@ -92,6 +92,10 @@ public class Jackstand extends SubsystemBase {
 		frontJack.setMotionMagic(position.value);
 	}
 
+	public boolean isExtending() {
+		return frontJack.getClosedLoopTarget() < -25000 && backJack.getClosedLoopTarget() < -25000;
+	}
+
 	public void setBackJack(BackJackPosition position) {
 		backJack.setMotionMagic(position.value);
 	}

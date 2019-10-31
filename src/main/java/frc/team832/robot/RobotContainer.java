@@ -19,9 +19,6 @@ import frc.team832.robot.subsystems.Jackstand.BackJackPosition;
 import frc.team832.robot.subsystems.Jackstand.FrontJackPosition;
 import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 @SuppressWarnings("WeakerAccess")
 public class RobotContainer {
 
@@ -101,10 +98,8 @@ public class RobotContainer {
         drivePad.startButton.whenPressed(new MoveJackstands(JackstandPosition.LVL3_UP, jackstand));
         drivePad.bButton.whenPressed(new MoveSingleJackstand(FrontJackPosition.RETRACTED, jackstand));
         drivePad.yButton.whenPressed(new MoveSingleJackstand(BackJackPosition.RETRACTED, jackstand));
-        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.45), jackstand::stopDrive, jackstand));
-        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.45), jackstand::stopDrive, jackstand));
-        drivePad.aButton.whileHeld(new DriveToVisionTarget(drivetrain, vision));
-
+        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.3), jackstand::stopDrive, jackstand));
+        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.3), jackstand::stopDrive, jackstand));
 
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(CargoDirection.UP), intake::stopCargo, intake));
@@ -116,17 +111,24 @@ public class RobotContainer {
         stratComInterface.getDoubleToggleDown().whileHeld(new Storage(ThreeSwitchPos.SWITCH_DOWN, superStructure, fourbar, elevator));
 
         stratComInterface.getSC1().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
-        stratComInterface.getSC2().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
-        stratComInterface.getSC3().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
-        stratComInterface.getSC4().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
-        stratComInterface.getSC5().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
-        stratComInterface.getSC6().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC2().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_MID, superStructure, fourbar, elevator)));
+        stratComInterface.getSC3().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW, superStructure, fourbar, elevator)));
+        stratComInterface.getSC4().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_HIGH, superStructure, fourbar, elevator)));
+        stratComInterface.getSC5().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_MIDDLE, superStructure, fourbar, elevator)));
+        stratComInterface.getSC6().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_LOW, superStructure, fourbar, elevator)));
+
+        stratComInterface.getSCPlus().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, superStructure, fourbar, elevator)));
+        stratComInterface.getSCMinus().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.CARGOSHIP_CARGO, superStructure, fourbar, elevator)));
+
+        stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.STORAGE_OFFENSE, superStructure, fourbar, elevator)));
+        stratComInterface.getSCSideMid().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator)));
+        stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKEHATCH, superStructure, fourbar, elevator)));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
 
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
 
-        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
+//        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
 //        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
 
         vision.setLight(false);
