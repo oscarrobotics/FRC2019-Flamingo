@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		RobotContainer.fourbar.setIdleMode(NeutralMode.kCoast);
 		RobotContainer.drivetrain.setIdleMode(NeutralMode.kCoast);
+		RobotContainer.elevator.setIdleMode(NeutralMode.kCoast);
 		LEDs.setLEDs(LEDs.LEDMode.OFF);
 	}
 

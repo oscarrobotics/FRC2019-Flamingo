@@ -93,7 +93,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private int getIntersectionOffset() {
 		int baseOffset = 0;
-		double offsetMultiplier = elevator.isMovingDown() ? -3.75 : -2.5;
+		double offsetMultiplier = elevator.isMovingDown() ? -4 : -2.5;
 		if (fourbar.getTarget() <= 200)
 			return baseOffset;
 		else
@@ -130,7 +130,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	private void checkFourbarSafety(double fourbarTarget, boolean isEnabled) {
 		safety_isPosSafe = !isEnabled || !(fourbar.getPosition() + 50 < safety_minSafePos);
 		safety_isTargetSafe = fourbarTarget + 10 > safety_minSafePos;
-		safety_isSafe = (safety_isTargetSafe && safety_isPosSafe);
+		safety_isSafe = (safety_isTargetSafe);
 	}
 
 
@@ -143,7 +143,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private void manageFourbarSafety() {
 		if (DriverStation.getInstance().isEnabled()) {
-			checkFourbarMinSafeAngle(elevator.getTarget());
+			checkFourbarMinSafeAngle(elevator.getPosition());
 			checkFourbarSafety(fourbar.getTarget(), true);
 		} else {
 			checkFourbarMinSafeAngle(elevatorSliderTarget());
@@ -176,10 +176,10 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	@SuppressWarnings("unused")
     public enum SuperStructurePosition {
-		INTAKEHATCH(ElevatorPosition.INTAKEHATCH, FourbarPosition.MIDDLE),
-		INTAKECARGO(ElevatorPosition.BOTTOM, FourbarPosition.INTAKECARGO),
+		INTAKEHATCH(ElevatorPosition.INTAKEHATCH, FourbarPosition.INTAKEHATCH),
+		INTAKECARGO(ElevatorPosition.INTAKECARGO, FourbarPosition.INTAKECARGO),
 		CARGOSHIP_HATCH(ElevatorPosition.CARGOSHIP_HATCH, FourbarPosition.CARGOSHIP_HATCH),
-		CARGOSHIP_CARGO(ElevatorPosition.BOTTOM, FourbarPosition.CARGOSHIP_CARGO),
+		CARGOSHIP_CARGO(ElevatorPosition.CARGOSHIP_CARGO, FourbarPosition.CARGOSHIP_CARGO),
 		ROCKETHATCH_LOW(ElevatorPosition.TOP, FourbarPosition.ROCKETHATCH_LOW),
 		ROCKETHATCH_MID(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETHATCH_MID),
 		ROCKETHATCH_HIGH(ElevatorPosition.TOP, FourbarPosition.ROCKETHATCH_HIGH),

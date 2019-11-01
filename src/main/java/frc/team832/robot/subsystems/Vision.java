@@ -15,6 +15,8 @@ import frc.team832.lib.util.RollingAverage;
 public class Vision extends SubsystemBase implements DashboardUpdatable {
 
     private final Solenoid light;
+    private double yawKp = .005;
+    private double distanceKp = 0.01;
 
     public Vision() {
         super();
@@ -23,7 +25,7 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
         DashboardManager.addTab(this);
     }
 
-    private final String PS3EyeCamName = "USB Camera-B4.04.27.1";
+    private final String PS3EyeCamName = "USB Camera-B4.09.24.1";
     private final String defaultCameraTableName = "chameleon-vision/" + PS3EyeCamName;
     private final String defaultCameraPublisherTableName = "CameraPublisher/" + PS3EyeCamName;
     private final NetworkTable chameleonVisionTable = NetworkTableInstance.getDefault().getTable(defaultCameraTableName);
@@ -42,6 +44,8 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
     private NetworkTableEntry dashboard_isValidEntry;
     private NetworkTableEntry dashboard_driverModeEntry;
     private NetworkTableEntry dashboard_processTimeEntry;
+    private NetworkTableEntry dashboard_visionYawKp;
+    private NetworkTableEntry dashboard_visionDistanceKp;
 
     private RollingAverage processTimeAvg = new RollingAverage(50);
 
@@ -52,6 +56,8 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
         dashboard_isValidEntry = DashboardManager.addTabItem(this, "CV IsValid", false);
         dashboard_driverModeEntry = DashboardManager.addTabItem(this, "CV DriverMode", false, DashboardWidget.ToggleButton);
         dashboard_processTimeEntry = DashboardManager.addTabItem(this, "CV Process Time", "0ms");
+        dashboard_visionYawKp = DashboardManager.addTabItem(this, "Yaw Kp", 0);
+        dashboard_visionDistanceKp = DashboardManager.addTabItem(this, "Distance Kp", 0);
         return true;
     }
 
@@ -62,10 +68,19 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
 
     @Override
     public void updateDashboardData() {
+        if (yawKp != dashboard_visionYawKp.getDouble(0.005)) {
+            yawKp = dashboard_visionYawKp.getDouble(yawKp);
+        }
+        if (distanceKp != dashboard_visionDistanceKp.getDouble(0.01)) {
+            distanceKp = dashboard_visionDistanceKp.getDouble(distanceKp);
+        }
+
         dashboard_pitchEntry.setDouble(OscarMath.round(chamVis_pitchEntry.getDouble(-1.0), 2));
         dashboard_yawEntry.setDouble(OscarMath.round(chamVis_yawEntry.getDouble(-1.0), 2));
         dashboard_distanceEntry.setDouble(OscarMath.round(chamVis_distanceEntry.getDouble(-1.0), 2));
         dashboard_isValidEntry.setBoolean(chamVis_isValidEntry.getBoolean(false));
+        dashboard_visionDistanceKp.setDouble(distanceKp);
+        dashboard_visionYawKp.setDouble(yawKp);
 
         var frameTimestamp = chamVis_timestampEntry.getValue().getTime();
         var rioTimestamp = RobotController.getFPGATime();
@@ -79,6 +94,10 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
         if (newDriverModeStatus != currentDriverModeStatus) {
             chamVis_driverModeEntry.setBoolean(newDriverModeStatus);
         }
+    }
+
+    public double getYawKp() {
+        return yawKp;
     }
 
     public double getArea(){

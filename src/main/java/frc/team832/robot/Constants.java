@@ -49,7 +49,7 @@ public class Constants {
 
 
     //Elevator
-    public static final double[] elevatorPIDF = {12, 0, 0, 0};
+    public static final double[] elevatorPIDF = {10, 0, 0, 0};
 
     public static final double ELEVATOR_SOFT_MAX = Elevator.ElevatorPosition.TOP.value + 2;
     public static final double ELEVATOR_SOFT_MIN = Elevator.ElevatorPosition.BOTTOM.value - 2;
@@ -61,7 +61,7 @@ public class Constants {
     public static final int ELEVATOR_VELOCITY = 80;
     public static final int ELEVATOR_ACCELERATION = 160;
 
-    public static final double ELEVATOR_ARBFF = 0.3;
+    public static final double ELEVATOR_ARBFF = 0.0;
 
     public static final double ELEVATOR_RANGE_INCHES = 28.875;
 

@@ -46,7 +46,8 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
                               dashboard_totalAmps, dashboard_totalAmpsPeak, dashboard_desiredVelocity,
                               dashboard_leftVelocity, dashboard_rightVelocity, dashboard_leftVelocityError, dashboard_rightVelocityError,
                               dashboard_navxYaw, dashboard_yawOutput, dashboard_isRightDecel, dashboard_isLeftDecel,
-                              dashboard_leftPos, dashboard_rightPos, dashboard_poseX, dashboard_poseY, dashboard_poseHeading;
+                              dashboard_leftPos, dashboard_rightPos, dashboard_poseX, dashboard_poseY, dashboard_poseHeading,
+                              dashboard_visionYawKp, getDashboard_visionDistanceKp;
 
     private NetworkTable falconTable = NetworkTableInstance.getDefault().getTable("Live_Dashboard");
     private NetworkTableEntry falconPoseXEntry = falconTable.getEntry("robotX");
@@ -241,22 +242,16 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         boolean visionRot = RobotContainer.drivePad.rightStickPress.get();
 
         moveStick = OscarMath.signumPow(moveStick, 2);
-        rotStick = OscarMath.signumPow(rotStick, 3);
+        rotStick = OscarMath.signumPow(rotStick, 4);
 
         double rotPow = preciseRot ? rotStick * PreciseRotMultiplier : rotStick * DefaultRotMultiplier;
         double movePow = preciseMove ? moveStick * PreciseDriveMultiplier : moveStick * getPreciseDriveMultiplier();
 
-        double yawKp = .005;
-
         if (visionRot) {
-            rotPow = RobotContainer.vision.getYaw() * yawKp;
+            rotPow = RobotContainer.vision.getYaw() * RobotContainer.vision.getYawKp();
         }
 
         diffDrive.curvatureDrive(movePow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
-    }
-
-    public void visionDrive(double area, double yaw){
-
     }
 
     private double getPreciseDriveMultiplier() {

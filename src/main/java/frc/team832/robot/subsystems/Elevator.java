@@ -55,6 +55,8 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		return elevatorMotor.getClosedLoopTarget();
 	}
 
+	public double getPosition() { return elevatorMotor.getSensorPosition(); }
+
 	public void setPosition(ElevatorPosition position) {
 		elevatorMotor.setMotionMagicArbFF(position.value, Constants.ELEVATOR_ARBFF);
 	}
@@ -96,10 +98,10 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 
 	public static enum ElevatorPosition{
 		BOTTOM(75),//30
-		TOP(480),//430
+		TOP(475),//430
 		MIDDLE(OscarMath.mid(BOTTOM.value, TOP.value)),
 		STARTING_CONFIG(TOP.value),
-		INTAKEHATCH(BOTTOM.value),
+		INTAKEHATCH(TOP.value),
 		INTAKECARGO(BOTTOM.value),
 		CARGOSHIP_HATCH(TOP.value),
 		CARGOSHIP_CARGO(BOTTOM.value),

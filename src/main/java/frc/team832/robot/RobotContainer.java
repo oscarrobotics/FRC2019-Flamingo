@@ -10,14 +10,12 @@ import frc.team832.lib.driverstation.controllers.StratComInterface;
 import frc.team832.lib.driverstation.controllers.StratComInterface.ThreeSwitchPos;
 import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
-import frc.team832.robot.commands.automaticDriving.DriveToVisionTarget;
 import frc.team832.robot.subsystems.*;
 import frc.team832.robot.subsystems.Intake.CargoDirection;
 import frc.team832.robot.subsystems.Intake.HatchDirection;
 import frc.team832.robot.subsystems.Jackstand.BackJackPosition;
 import frc.team832.robot.subsystems.Jackstand.FrontJackPosition;
 import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
-import frc.team832.robot.subsystems.SuperStructure.SuperStructurePosition;
 
 @SuppressWarnings("WeakerAccess")
 public class RobotContainer {
@@ -111,7 +109,7 @@ public class RobotContainer {
         stratComInterface.getSC2().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_MID, superStructure, fourbar, elevator)));
         stratComInterface.getSC3().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETHATCH_LOW, superStructure, fourbar, elevator)));
         stratComInterface.getSC4().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_HIGH, superStructure, fourbar, elevator)));
-        stratComInterface.getSC5().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_MIDDLE, superStructure, fourbar, elevator)));
+        stratComInterface.getSC5().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_MID, superStructure, fourbar, elevator)));
         stratComInterface.getSC6().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.ROCKETCARGO_LOW, superStructure, fourbar, elevator)));
 
         stratComInterface.getSCPlus().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, superStructure, fourbar, elevator)));
@@ -119,7 +117,7 @@ public class RobotContainer {
 
         stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.STORAGE_OFFENSE, superStructure, fourbar, elevator)));
         stratComInterface.getSCSideMid().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator)));
-        stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKEHATCH, superStructure, fourbar, elevator)));
+        stratComInterface.getSCSideBot().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKEHATCH, superStructure, fourbar, elevator)));
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
