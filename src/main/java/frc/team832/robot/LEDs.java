@@ -140,7 +140,11 @@ public class LEDs implements DashboardUpdatable {
                     goodBreathe(Colors.HATCH, 0.02f);
                     break;
                 case ARM_MOVING:
-                    rainbow();
+                    if (millis - lastMillis < 1500) {
+                        rainbow();
+                    } else {
+                        staticColor(Colors.DEFAULT);
+                    }
                     break;
                 case JACKSTANDS_MOVING:
                     goodBreathe(Colors.DEFAULT, 0.02f);

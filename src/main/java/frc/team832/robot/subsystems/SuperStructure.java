@@ -41,6 +41,11 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	@Override
 	public void periodic() {
 		manageFourbarSafety();
+		if (isMoving()){
+			LEDs.setLEDs(LEDs.LEDMode.ARM_MOVING);
+		} else if (LEDs.getLEDMode() == LEDs.LEDMode.ARM_MOVING){
+			LEDs.setLEDs(LEDs.LEDMode.DEFAULT);
+		}
 	}
 
 	public boolean initialize(boolean prereqPassed) {
@@ -62,7 +67,6 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	public void setPosition(SuperStructurePosition position) {
 		elevator.setPosition(position.elevatorPosition);
 		fourbar.setPosition(position.fourbarPosition);
-		LEDs.setLEDs(LEDs.LEDMode.ARM_MOVING);
 	}
 
 	private int getClimbHeight() {
@@ -70,7 +74,7 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 	}
 
 	public boolean isMoving() {
-		return elevator.isMoving(20) || fourbar.isMoving(100);
+		return elevator.isMoving(30) || fourbar.isMoving(200);
 	}
 
 	public void handleFourbarClimbCorrection() {

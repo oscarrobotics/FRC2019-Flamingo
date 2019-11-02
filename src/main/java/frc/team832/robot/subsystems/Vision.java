@@ -12,6 +12,8 @@ import frc.team832.lib.driverstation.dashboard.DashboardWidget;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.lib.util.RollingAverage;
 
+import java.awt.geom.Area;
+
 public class Vision extends SubsystemBase implements DashboardUpdatable {
 
     private final Solenoid light;
@@ -40,19 +42,21 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
 
     private NetworkTableEntry dashboard_pitchEntry;
     private NetworkTableEntry dashboard_yawEntry;
-    private NetworkTableEntry dashboard_distanceEntry;
+    private NetworkTableEntry dashboard_areaEntry;
     private NetworkTableEntry dashboard_isValidEntry;
     private NetworkTableEntry dashboard_driverModeEntry;
     private NetworkTableEntry dashboard_processTimeEntry;
     private NetworkTableEntry dashboard_visionYawKp;
     private NetworkTableEntry dashboard_visionDistanceKp;
 
+    private final double AreaToFeet = 0;
+
     private RollingAverage processTimeAvg = new RollingAverage(50);
 
     public boolean init() {
         dashboard_pitchEntry = DashboardManager.addTabItem(this, "CV Pitch", -1.0);
         dashboard_yawEntry = DashboardManager.addTabItem(this, "CV Yaw", -1.0);
-        dashboard_distanceEntry = DashboardManager.addTabItem(this, "CV Distance", -1.0);
+        dashboard_areaEntry = DashboardManager.addTabItem(this, "CV Area", -1.0);
         dashboard_isValidEntry = DashboardManager.addTabItem(this, "CV IsValid", false);
         dashboard_driverModeEntry = DashboardManager.addTabItem(this, "CV DriverMode", false, DashboardWidget.ToggleButton);
         dashboard_processTimeEntry = DashboardManager.addTabItem(this, "CV Process Time", "0ms");
@@ -77,7 +81,7 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
 
         dashboard_pitchEntry.setDouble(OscarMath.round(chamVis_pitchEntry.getDouble(-1.0), 2));
         dashboard_yawEntry.setDouble(OscarMath.round(chamVis_yawEntry.getDouble(-1.0), 2));
-        dashboard_distanceEntry.setDouble(OscarMath.round(chamVis_distanceEntry.getDouble(-1.0), 2));
+        dashboard_areaEntry.setDouble(OscarMath.round(chamVis_distanceEntry.getDouble(-1.0), 2));
         dashboard_isValidEntry.setBoolean(chamVis_isValidEntry.getBoolean(false));
         dashboard_visionDistanceKp.setDouble(distanceKp);
         dashboard_visionYawKp.setDouble(yawKp);
@@ -100,8 +104,16 @@ public class Vision extends SubsystemBase implements DashboardUpdatable {
         return yawKp;
     }
 
+    public double getAdjustedYawKp() {
+        return yawKp * (1 / getDistanceFeet()) + 0.75;
+    }
+
+    public double getDistanceFeet() {
+        return (1 / chamVis_distanceEntry.getDouble(0)) * AreaToFeet;
+    }
+
     public double getArea(){
-        return dashboard_distanceEntry.getDouble(0);
+        return dashboard_areaEntry.getDouble(0);
     }
 
     public double getYaw(){
