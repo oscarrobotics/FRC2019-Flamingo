@@ -46,6 +46,14 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		} else if (LEDs.getLEDMode() == LEDs.LEDMode.ARM_MOVING){
 			LEDs.setLEDs(LEDs.LEDMode.DEFAULT);
 		}
+
+		if (elevator.isMovingDown()) {
+			elevator.setMotionMagicSlow();
+		} else {
+			elevator.setMotionMagicNormal();
+		}
+
+
 	}
 
 	public boolean initialize(boolean prereqPassed) {
@@ -97,7 +105,16 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 
 	private int getIntersectionOffset() {
 		int baseOffset = 0;
-		double offsetMultiplier = elevator.isMovingDown() ? -4 : -2.5;
+		double offsetMultiplier;
+		if (elevator.isMoving(10)) {
+			if (elevator.isMovingDown())
+				offsetMultiplier = -5;
+			else
+				offsetMultiplier = -2;
+		} else {
+			offsetMultiplier = -2.25;
+		}
+
 		if (fourbar.getTarget() <= 200)
 			return baseOffset;
 		else
@@ -184,12 +201,12 @@ public class SuperStructure extends SubsystemBase implements DashboardUpdatable 
 		INTAKECARGO(ElevatorPosition.INTAKECARGO, FourbarPosition.INTAKECARGO),
 		CARGOSHIP_HATCH(ElevatorPosition.CARGOSHIP_HATCH, FourbarPosition.CARGOSHIP_HATCH),
 		CARGOSHIP_CARGO(ElevatorPosition.CARGOSHIP_CARGO, FourbarPosition.CARGOSHIP_CARGO),
-		ROCKETHATCH_LOW(ElevatorPosition.TOP, FourbarPosition.ROCKETHATCH_LOW),
-		ROCKETHATCH_MID(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETHATCH_MID),
-		ROCKETHATCH_HIGH(ElevatorPosition.TOP, FourbarPosition.ROCKETHATCH_HIGH),
-		ROCKETCARGO_LOW(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETCARGO_LOW),
-		ROCKETCARGO_MID(ElevatorPosition.BOTTOM, FourbarPosition.ROCKETCARGO_MID),
-		ROCKETCARGO_HIGH(ElevatorPosition.TOP, FourbarPosition.ROCKETCARGO_HIGH),
+		ROCKETHATCH_LOW(ElevatorPosition.ROCKETHATCH_LOW, FourbarPosition.ROCKETHATCH_LOW),
+		ROCKETHATCH_MID(ElevatorPosition.ROCKETHATCH_MID, FourbarPosition.ROCKETHATCH_MID),
+		ROCKETHATCH_HIGH(ElevatorPosition.ROCKETHATCH_HIGH, FourbarPosition.ROCKETHATCH_HIGH),
+		ROCKETCARGO_LOW(ElevatorPosition.ROCKETCARGO_LOW, FourbarPosition.ROCKETCARGO_LOW),
+		ROCKETCARGO_MID(ElevatorPosition.ROCKETCARGO_MID, FourbarPosition.ROCKETCARGO_MID),
+		ROCKETCARGO_HIGH(ElevatorPosition.ROCKETCARGO_HIGH, FourbarPosition.ROCKETCARGO_HIGH),
 		STORAGE_DEFENCE(ElevatorPosition.TOP, FourbarPosition.BOTTOM),
 		STORAGE_OFFENSE(ElevatorPosition.BOTTOM, FourbarPosition.TOP);
 

@@ -141,7 +141,7 @@ public class Jackstand extends SubsystemBase {
 
 	public enum FrontJackPosition {
 		RETRACTED(-500),
-		LVL2_UP(-30000),
+		LVL2_UP(-33000),
 		LVL3_UP(-77000),
 		EXTENDED(-79000);
 
@@ -154,7 +154,7 @@ public class Jackstand extends SubsystemBase {
 
 	public enum BackJackPosition {
 		RETRACTED(-500),
-		LVL2_UP(-29000),
+		LVL2_UP(-32000),
 		LVL3_UP(-76000),
 		EXTENDED(-78500);
 

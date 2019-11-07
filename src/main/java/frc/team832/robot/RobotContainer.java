@@ -1,9 +1,6 @@
 package frc.team832.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.POV;
 import frc.team832.lib.driverstation.controllers.StratComInterface;
@@ -93,8 +90,9 @@ public class RobotContainer {
         drivePad.startButton.whenPressed(new MoveJackstands(JackstandPosition.LVL3_UP, jackstand));
         drivePad.bButton.whenPressed(new MoveSingleJackstand(FrontJackPosition.RETRACTED, jackstand));
         drivePad.yButton.whenPressed(new MoveSingleJackstand(BackJackPosition.RETRACTED, jackstand));
-        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.3), jackstand::stopDrive, jackstand));
-        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.3), jackstand::stopDrive, jackstand));
+        drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.4), jackstand::stopDrive, jackstand));
+        drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.4), jackstand::stopDrive, jackstand));
+        drivePad.rightStickPress.whenPressed(new InstantCommand(() -> vision.setDriverMode(false))).whenReleased(new InstantCommand(() -> vision.setDriverMode(true)));
 
         //Commands: stratComInterface
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(CargoDirection.UP), intake::stopCargo, intake));
@@ -115,7 +113,7 @@ public class RobotContainer {
         stratComInterface.getSCPlus().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, superStructure, fourbar, elevator)));
         stratComInterface.getSCMinus().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.CARGOSHIP_CARGO, superStructure, fourbar, elevator)));
 
-        stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.STORAGE_OFFENSE, superStructure, fourbar, elevator)));
+        stratComInterface.getSCSideTop().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.STORAGE_DEFENCE, superStructure, fourbar, elevator)));
         stratComInterface.getSCSideMid().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKECARGO, superStructure, fourbar, elevator)));
         stratComInterface.getSCSideBot().whenPressed(new KeyAutoCommand(new AutoMoveSuperStructure(SuperStructure.SuperStructurePosition.INTAKEHATCH, superStructure, fourbar, elevator)));
 

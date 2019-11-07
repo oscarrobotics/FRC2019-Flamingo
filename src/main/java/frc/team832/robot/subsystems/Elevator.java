@@ -66,6 +66,14 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		elevatorMotor.setMotionMagicArbFF(targetPos, Constants.ELEVATOR_ARBFF);
 	}
 
+	public void setMotionMagicSlow() {
+		elevatorMotor.configMotionMagic(Constants.ELEVATOR_VELOCITY / 2, Constants.ELEVATOR_ACCELERATION / 2);
+	}
+
+	public void setMotionMagicNormal() {
+		elevatorMotor.configMotionMagic(Constants.ELEVATOR_VELOCITY, Constants.ELEVATOR_ACCELERATION);
+	}
+
 	public boolean atTarget() {
 		return elevatorMotor.atTarget();
 	}
@@ -109,7 +117,7 @@ public class Elevator extends SubsystemBase implements DashboardUpdatable {
 		ROCKETHATCH_MID(BOTTOM.value),
 		ROCKETHATCH_HIGH(TOP.value),
 		ROCKETCARGO_LOW(BOTTOM.value),
-		ROCKETCARGO_MIDDLE(BOTTOM.value),
+		ROCKETCARGO_MID(BOTTOM.value),
 		ROCKETCARGO_HIGH(TOP.value);
 
 		public final int value;

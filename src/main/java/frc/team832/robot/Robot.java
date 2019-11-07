@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team832.lib.driverstation.dashboard.DashboardManager;
 import frc.team832.lib.motorcontrol.NeutralMode;
-import frc.team832.robot.subsystems.Fourbar;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,6 +26,9 @@ public class Robot extends TimedRobot {
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
+
+	public RobotState curState = RobotState.DISABLED, lastState = RobotState.DISABLED, thirdState = RobotState.DISABLED;
+
 	@Override
 	public void robotInit () {
 		System.out.println("INIT - Robot - BEGIN");
@@ -39,6 +41,8 @@ public class Robot extends TimedRobot {
 	}
 
 	private void enabledInit() {
+
+		if(!(curState == RobotState.TELEOP && lastState == RobotState.DISABLED && thirdState == RobotState.AUTONOMOUS)){
 		RobotContainer.fourbar.zeroEncoder();
 		RobotContainer.fourbar.setIdleMode(NeutralMode.kBrake);
 		RobotContainer.elevator.setIdleMode(NeutralMode.kBrake);
@@ -46,6 +50,7 @@ public class Robot extends TimedRobot {
 		RobotContainer.drivetrain.resetGyro();
 		RobotContainer.drivetrain.resetEncoders();
 		LEDs.setLEDs(LEDs.LEDMode.DEFAULT);
+		}
 	}
 
 	/**
@@ -75,6 +80,10 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit () {
+		thirdState = lastState;
+		lastState = curState;
+		curState = RobotState.AUTONOMOUS;
+
 		enabledInit();
 	}
 
@@ -87,6 +96,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit () {
+		thirdState = lastState;
+		lastState = curState;
+		curState = RobotState.AUTONOMOUS;
+
 		if (DriverStation.getInstance().isDSAttached()) { // human enable
 			enabledInit();
 		} else if (DriverStation.getInstance().isFMSAttached()) { // field enable
@@ -96,6 +109,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		thirdState = lastState;
+		lastState = curState;
+		curState = RobotState.DISABLED;
+
 		RobotContainer.fourbar.setIdleMode(NeutralMode.kCoast);
 		RobotContainer.drivetrain.setIdleMode(NeutralMode.kCoast);
 		RobotContainer.elevator.setIdleMode(NeutralMode.kCoast);

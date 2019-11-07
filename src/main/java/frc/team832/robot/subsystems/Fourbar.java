@@ -152,7 +152,7 @@ public class Fourbar extends SubsystemBase implements DashboardUpdatable {
 		MANUAL_BOTTOM(BOTTOM.value + 25),
 		MIDDLE(2500),
 		TOP(4800),
-		STARTING_CONFIG(BOTTOM.value + 300),
+		STARTING_CONFIG(BOTTOM.value + 0),
 //		TOP(5000), // Before gas shocks
 		INTAKEHATCH(300),
 		INTAKECARGO(2700),

@@ -10,10 +10,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.RunEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +24,6 @@ import frc.team832.lib.motorcontrol.NeutralMode;
 import frc.team832.lib.motors.Motors;
 import frc.team832.lib.util.OscarMath;
 import frc.team832.robot.Constants;
-import frc.team832.robot.Robot;
 import frc.team832.robot.RobotContainer;
 
 import static frc.team832.robot.Paths.CENTER_HAB_START_POSE;
@@ -58,8 +55,8 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
-    private static final double DefaultRotMultiplier = 0.5;
-    private static final double PreciseRotMultiplier = 0.1;
+    private static final double DefaultRotMultiplier = 0.35;
+    private static final double PreciseRotMultiplier = 0.15;
     private static final double PreciseDriveMultiplier = 0.2;
 
     private boolean holdYaw;
@@ -246,6 +243,8 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
 
         double rotPow = preciseRot ? rotStick * PreciseRotMultiplier : rotStick * DefaultRotMultiplier;
         double movePow = preciseMove ? moveStick * PreciseDriveMultiplier : moveStick * getPreciseDriveMultiplier();
+
+        RobotContainer.vision.setDriverMode(!visionRot);
 
         if (visionRot) {
             rotPow = RobotContainer.vision.getYaw() * RobotContainer.vision.getYawKp();

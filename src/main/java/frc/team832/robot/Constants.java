@@ -75,11 +75,11 @@ public class Constants {
     public static final double BACKJACK_SOFT_FORWARD = 0;
     public static final double BACKJACK_SOFT_REVERSE = -79000;
 
-    public static final int FRONT_JACKSTAND_VELOCITY = 26000;
-    public static final int FRONT_JACKSTAND_ACCELERATION = 22000;
+    public static final int FRONT_JACKSTAND_VELOCITY = 20000;
+    public static final int FRONT_JACKSTAND_ACCELERATION = 20000;
 
-    public static final int BACK_JACKSTAND_VELOCITY = 16000;
-    public static final int BACK_JACKSTAND_ACCELERATION = 22000;
+    public static final int BACK_JACKSTAND_VELOCITY = 5000;
+    public static final int BACK_JACKSTAND_ACCELERATION = 16000;
 
     //CAN ID's
     public static final int ELEVATOR_CAN_ID = 6;
