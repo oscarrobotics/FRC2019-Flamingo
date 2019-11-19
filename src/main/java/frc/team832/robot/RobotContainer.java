@@ -1,6 +1,11 @@
 package frc.team832.robot;
 
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.POV;
 import frc.team832.lib.driverstation.controllers.StratComInterface;
@@ -21,6 +26,11 @@ public class RobotContainer {
     public static final Xbox360Controller drivePad = new Xbox360Controller(0);
     //Creates the stratComInterface of the StratComInterface Class
     public static final StratComInterface stratComInterface = new StratComInterface(1);
+
+    public static final Joystick leftDriveStick = new Joystick(2);
+    public static final Joystick rightDriveStick = new Joystick(3);
+
+    public static final Joystick wheelBoi = new Joystick(4);
 
     public static final Drivetrain drivetrain = new Drivetrain();
     public static final Intake intake = new Intake();

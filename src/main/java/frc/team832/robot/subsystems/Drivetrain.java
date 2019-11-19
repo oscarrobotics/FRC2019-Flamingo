@@ -194,7 +194,7 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         dashboard_poseY = DashboardManager.addTabItem(this, "Pose/Y", 0.0);
         dashboard_poseHeading = DashboardManager.addTabItem(this, "Pose/Heading", 0.0);
 
-        RunEndCommand driveCommand = new RunEndCommand(this::drive, this::stop, this);
+        RunEndCommand driveCommand = new RunEndCommand(this::wheelDrive, this::stop, this);
         driveCommand.setName("TeleDriveCommand");
 
         navx.zeroYaw();
@@ -251,6 +251,45 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         }
 
         diffDrive.curvatureDrive(movePow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
+    }
+
+    private void tankDrive() {
+        double leftStick = Math.abs(RobotContainer.leftDriveStick.getY()) > 0.025 ? RobotContainer.leftDriveStick.getY() : 0;
+        double rightStick =  Math.abs(RobotContainer.rightDriveStick.getY()) > 0.025 ? RobotContainer.rightDriveStick.getY() : 0;
+        double leftPow;
+        double rightPow;
+
+        if (Math.abs(leftStick - rightStick) < 0.05) {
+           leftPow = Math.pow((leftStick + rightStick) / 2, 3);
+           rightPow = Math.pow((leftStick + rightStick) / 2, 3);
+        } else {
+            leftPow = Math.pow(leftStick, 3);
+            rightPow = Math.pow(rightStick, 3);
+        }
+
+        rightMaster.set(rightPow);
+        leftMaster.set(-leftPow);
+    }
+
+    private void wheelDrive() {
+        double wheelRot = RobotContainer.wheelBoi.getRawAxis(0);
+        double leftPaddle = -RobotContainer.wheelBoi.getRawAxis(5);
+        double rightPaddle = -RobotContainer.wheelBoi.getRawAxis(2);
+
+        double forwardPow = leftPaddle - rightPaddle;
+        double rotPow = wheelRot;
+
+        diffDrive.curvatureDrive(forwardPow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
+    }
+
+
+    private void stickDrive() {
+        double driveStick = -RobotContainer.leftDriveStick.getY();
+        double turnStick = RobotContainer.rightDriveStick.getX();
+
+        turnStick *= 0.4;
+
+        diffDrive.curvatureDrive(driveStick, turnStick, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
     private double getPreciseDriveMultiplier() {
