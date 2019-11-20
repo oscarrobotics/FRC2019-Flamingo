@@ -44,7 +44,8 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
                               dashboard_leftVelocity, dashboard_rightVelocity, dashboard_leftVelocityError, dashboard_rightVelocityError,
                               dashboard_navxYaw, dashboard_yawOutput, dashboard_isRightDecel, dashboard_isLeftDecel,
                               dashboard_leftPos, dashboard_rightPos, dashboard_poseX, dashboard_poseY, dashboard_poseHeading,
-                              dashboard_visionYawKp, getDashboard_visionDistanceKp;
+                              dashboard_visionYawKp, getDashboard_visionDistanceKp,
+                              dashboard_isTankStraight;
 
     private NetworkTable falconTable = NetworkTableInstance.getDefault().getTable("Live_Dashboard");
     private NetworkTableEntry falconPoseXEntry = falconTable.getEntry("robotX");
@@ -55,7 +56,9 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
     private NetworkTableEntry falconPathYEntry = falconTable.getEntry("pathY");
     private NetworkTableEntry falconPathHeadingEntry = falconTable.getEntry("pathHeading");
 
-    private static final double DefaultRotMultiplier = 0.35;
+    private static final double DefaultRotMultiplier = 0.4;
+    private static final double DefaultMultiplierTank = 0.7;
+    private static final double PreciseMultiplierTank = 0.3;
     private static final double PreciseRotMultiplier = 0.15;
     private static final double PreciseDriveMultiplier = 0.2;
 
@@ -193,8 +196,9 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         dashboard_poseX = DashboardManager.addTabItem(this, "Pose/X", 0.0);
         dashboard_poseY = DashboardManager.addTabItem(this, "Pose/Y", 0.0);
         dashboard_poseHeading = DashboardManager.addTabItem(this, "Pose/Heading", 0.0);
+        dashboard_isTankStraight = DashboardManager.addTabItem(this, "Is Straight", false);
 
-        RunEndCommand driveCommand = new RunEndCommand(this::wheelDrive, this::stop, this);
+        RunEndCommand driveCommand = new RunEndCommand(this::tankDrive, this::stop, this);
         driveCommand.setName("TeleDriveCommand");
 
         navx.zeroYaw();
@@ -256,16 +260,21 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
     private void tankDrive() {
         double leftStick = Math.abs(RobotContainer.leftDriveStick.getY()) > 0.025 ? RobotContainer.leftDriveStick.getY() : 0;
         double rightStick =  Math.abs(RobotContainer.rightDriveStick.getY()) > 0.025 ? RobotContainer.rightDriveStick.getY() : 0;
-        double leftPow;
-        double rightPow;
+        double leftPow, leftAdjusted;
+        double rightPow, rightAdjusted;
 
-        if (Math.abs(leftStick - rightStick) < 0.05) {
-           leftPow = Math.pow((leftStick + rightStick) / 2, 3);
-           rightPow = Math.pow((leftStick + rightStick) / 2, 3);
+        if (Math.abs(leftStick - rightStick) < 0.075 && (Math.abs(leftStick) > 0.1 && Math.abs(rightStick) > 0.1)) {
+           leftAdjusted = (leftStick + rightStick) / 2;
+           rightAdjusted = (leftStick + rightStick) / 2;
+           dashboard_isTankStraight.setBoolean(true);
         } else {
-            leftPow = Math.pow(leftStick, 3);
-            rightPow = Math.pow(rightStick, 3);
+           leftAdjusted = leftStick;
+           rightAdjusted = rightStick;
+           dashboard_isTankStraight.setBoolean(false);
         }
+
+        leftPow = Math.pow(leftAdjusted, 1) * (RobotContainer.leftDriveStick.getRawButton(1) ? PreciseMultiplierTank : DefaultMultiplierTank);
+        rightPow = Math.pow(rightAdjusted, 1) * (RobotContainer.rightDriveStick.getRawButton(1) ? PreciseMultiplierTank : DefaultMultiplierTank);
 
         rightMaster.set(rightPow);
         leftMaster.set(-leftPow);
@@ -273,17 +282,31 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
 
     private void wheelDrive() {
         double wheelRot = RobotContainer.wheelBoi.getRawAxis(0);
-        double leftPaddle = -RobotContainer.wheelBoi.getRawAxis(5);
-        double rightPaddle = -RobotContainer.wheelBoi.getRawAxis(2);
+//        double leftPaddle = -RobotContainer.wheelBoi.getRawAxis(5);
+//        double rightPaddle = -RobotContainer.wheelBoi.getRawAxis(2);
 
-        double forwardPow = leftPaddle - rightPaddle;
+        boolean rightPaddle = RobotContainer.wheelBoi.getRawButton(11);
+        boolean leftPaddle = RobotContainer.wheelBoi.getRawButton(12);
+        boolean a = RobotContainer.wheelBoi.getRawButton(1);
+        double forwardPow = 0;
+
+        if (rightPaddle){
+            if (leftPaddle & a)
+                forwardPow = -0.5;
+            else if (leftPaddle)
+                forwardPow = 0.6;
+            else if (!leftPaddle & a)
+                forwardPow = -0.2;
+            else if (!leftPaddle)
+                forwardPow = 0.2;
+        }
+
         double rotPow = wheelRot;
 
         diffDrive.curvatureDrive(forwardPow, rotPow, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
     }
 
-
-    private void stickDrive() {
+    private void stickArcadeDrive() {
         double driveStick = -RobotContainer.leftDriveStick.getY();
         double turnStick = RobotContainer.rightDriveStick.getX();
 

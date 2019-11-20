@@ -7,10 +7,8 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.team832.lib.control.PDP;
-import frc.team832.lib.driverstation.controllers.POV;
-import frc.team832.lib.driverstation.controllers.StratComInterface;
+import frc.team832.lib.driverstation.controllers.*;
 import frc.team832.lib.driverstation.controllers.StratComInterface.ThreeSwitchPos;
-import frc.team832.lib.driverstation.controllers.Xbox360Controller;
 import frc.team832.robot.commands.*;
 import frc.team832.robot.subsystems.*;
 import frc.team832.robot.subsystems.Intake.CargoDirection;
@@ -27,8 +25,8 @@ public class RobotContainer {
     //Creates the stratComInterface of the StratComInterface Class
     public static final StratComInterface stratComInterface = new StratComInterface(1);
 
-    public static final Joystick leftDriveStick = new Joystick(2);
-    public static final Joystick rightDriveStick = new Joystick(3);
+    public static final Joystick leftDriveStick = new Attack3(2);
+    public static final Joystick rightDriveStick = new Extreme3DPro(3);
 
     public static final Joystick wheelBoi = new Joystick(4);
 
@@ -102,9 +100,10 @@ public class RobotContainer {
         drivePad.yButton.whenPressed(new MoveSingleJackstand(BackJackPosition.RETRACTED, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Up).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(0.4), jackstand::stopDrive, jackstand));
         drivePad.pov.getPOVButton(POV.Position.Down).whenHeld(new StartEndCommand(() -> jackstand.setDrivePower(-0.4), jackstand::stopDrive, jackstand));
-        drivePad.rightStickPress.whenPressed(new InstantCommand(() -> vision.setDriverMode(false))).whenReleased(new InstantCommand(() -> vision.setDriverMode(true)));
+//        drivePad.rightStickPress.whenPressed(new InstantCommand(() -> vision.setDriverMode(false))).whenReleased(new InstantCommand(() -> vision.setDriverMode(true)));
 
         //Commands: stratComInterface
+
         stratComInterface.getArcadeBlackLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(CargoDirection.UP), intake::stopCargo, intake));
         stratComInterface.getArcadeWhiteLeft().whenHeld(new StartEndCommand(() -> intake.runCargo(CargoDirection.DOWN), intake::stopCargo, intake));
         stratComInterface.getArcadeBlackRight().whenHeld(new StartEndCommand(() -> intake.runHatch(HatchDirection.IN), intake::stopHatch, intake));
@@ -129,6 +128,7 @@ public class RobotContainer {
 
         var keySwitchCommand = new RunCommand(superStructure::moveManual, fourbar, elevator, superStructure);
         stratComInterface.getKeySwitch().whileActiveContinuous(keySwitchCommand);
+
 
 //        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
 //        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
