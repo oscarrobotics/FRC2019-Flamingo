@@ -273,8 +273,8 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
            dashboard_isTankStraight.setBoolean(false);
         }
 
-        leftPow = Math.pow(leftAdjusted, 1) * (RobotContainer.leftDriveStick.getRawButton(1) ? PreciseMultiplierTank : DefaultMultiplierTank);
-        rightPow = Math.pow(rightAdjusted, 1) * (RobotContainer.rightDriveStick.getRawButton(1) ? PreciseMultiplierTank : DefaultMultiplierTank);
+        leftPow = Math.pow(leftAdjusted, 1.5) * (RobotContainer.leftDriveStick.getTrigger() ? PreciseMultiplierTank : DefaultMultiplierTank);
+        rightPow = Math.pow(rightAdjusted, 1.5) * (RobotContainer.rightDriveStick.getTrigger() ? PreciseMultiplierTank : DefaultMultiplierTank);
 
         rightMaster.set(rightPow);
         leftMaster.set(-leftPow);
@@ -290,16 +290,17 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         boolean a = RobotContainer.wheelBoi.getRawButton(1);
         double forwardPow = 0;
 
-        if (rightPaddle){
-            if (leftPaddle & a)
-                forwardPow = -0.5;
-            else if (leftPaddle)
-                forwardPow = 0.6;
-            else if (!leftPaddle & a)
-                forwardPow = -0.2;
-            else if (!leftPaddle)
-                forwardPow = 0.2;
-        }
+//PLS DONT LOOK
+//        if (rightPaddle){
+//            if (leftPaddle & a)
+//                forwardPow = -0.5;
+//            else if (leftPaddle)
+//                forwardPow = 0.6;
+//            else if (!leftPaddle & a)
+//                forwardPow = -0.2;
+//            else if (!leftPaddle)
+//                forwardPow = 0.2;
+//        }
 
         double rotPow = wheelRot;
 
