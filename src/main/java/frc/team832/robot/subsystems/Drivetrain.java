@@ -262,11 +262,18 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         double rightStick =  Math.abs(RobotContainer.rightDriveStick.getY()) > 0.025 ? RobotContainer.rightDriveStick.getY() : 0;
         double leftPow, leftAdjusted;
         double rightPow, rightAdjusted;
+        boolean isTwistTurn = false;
 
         if (Math.abs(leftStick - rightStick) < 0.075 && (Math.abs(leftStick) > 0.1 && Math.abs(rightStick) > 0.1)) {
-           leftAdjusted = (leftStick + rightStick) / 2;
-           rightAdjusted = (leftStick + rightStick) / 2;
-           dashboard_isTankStraight.setBoolean(true);
+            leftAdjusted = (leftStick + rightStick) / 2;
+            rightAdjusted = (leftStick + rightStick) / 2;
+            dashboard_isTankStraight.setBoolean(true);
+        } else if (Math.abs(leftStick) < 0.1 && Math.abs(rightStick) < 0.1) {
+            leftAdjusted = 0;
+            rightAdjusted = 0;
+            isTwistTurn = true;
+            double rot = Math.pow(RobotContainer.rightDriveStick.getTwist(), 2.1);//.1 is to preserve sign
+            diffDrive.curvatureDrive(0, rot, true, SmartDifferentialDrive.LoopMode.PERCENTAGE);
         } else {
            leftAdjusted = leftStick;
            rightAdjusted = rightStick;
@@ -276,8 +283,10 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
         leftPow = Math.pow(leftAdjusted, 1.5) * (RobotContainer.leftDriveStick.getTrigger() ? PreciseMultiplierTank : DefaultMultiplierTank);
         rightPow = Math.pow(rightAdjusted, 1.5) * (RobotContainer.rightDriveStick.getTrigger() ? PreciseMultiplierTank : DefaultMultiplierTank);
 
-        rightMaster.set(rightPow);
-        leftMaster.set(-leftPow);
+        if (!isTwistTurn) {
+            rightMaster.set(rightPow);
+            leftMaster.set(-leftPow);
+        }
     }
 
     private void wheelDrive() {
