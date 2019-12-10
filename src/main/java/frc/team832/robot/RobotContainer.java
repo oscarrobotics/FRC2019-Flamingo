@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.*;
 import frc.team832.lib.driverstation.controllers.StratComInterface.ThreeSwitchPos;
@@ -16,6 +19,8 @@ import frc.team832.robot.subsystems.Intake.HatchDirection;
 import frc.team832.robot.subsystems.Jackstand.BackJackPosition;
 import frc.team832.robot.subsystems.Jackstand.FrontJackPosition;
 import frc.team832.robot.subsystems.Jackstand.JackstandPosition;
+
+import static frc.team832.robot.Constants.DRIVE_KINEMATICS;
 
 @SuppressWarnings("WeakerAccess")
 public class RobotContainer {
@@ -131,7 +136,7 @@ public class RobotContainer {
 
 
 //        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
-//        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), drivetrain.driveKinematics, drivetrain::consumeWheelSpeeds, drivetrain));
+        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), DRIVE_KINEMATICS, drivetrain::consumeWheelSpeeds, drivetrain));
 
         vision.setLight(false);
         return successful;
