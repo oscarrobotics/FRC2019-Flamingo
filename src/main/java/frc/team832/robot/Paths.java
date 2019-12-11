@@ -29,12 +29,18 @@ public class Paths {
     public static final Pose2d LEFT_CARGOSHIP_FRONT_POSE = new Pose2d(5.4, 3.845, Rotation2d.fromDegrees(0));
     public static final Pose2d RIGHT_CARGOSHIP_FRONT_POSE = PathHelper.mirrorPose2d(LEFT_CARGOSHIP_FRONT_POSE);
 
+    private static final List<Translation2d> TEST_THREE_METERS_FORWARD = List.of(
+            RIGHT_HAB_START_POSE.getTranslation(),
+            RIGHT_HAB_START_POSE.getTranslation().plus(new Translation2d(3, 0))
+    );
+
     public static final PathHelper kPathHelper = new PathHelper(Constants.DRIVE_KINEMATICS, Constants.DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC, Constants.DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ);
 
     public static final Trajectory LEFT_HAB_LEFT_CARGOSHIP_FRONT_PATH = kPathHelper.generatePath(LEFT_HAB_START_POSE, LEFT_CARGOSHIP_FRONT_POSE);
     public static final Trajectory RIGHT_HAB_RIGHT_CARGOSHIP_FRONT_PATH = kPathHelper.generatePath(RIGHT_HAB_START_POSE, RIGHT_CARGOSHIP_FRONT_POSE);
     public static final Trajectory CENTER_HAB_LEFT_CARGOSHIP_FRONT_PATH = kPathHelper.generatePath(CENTER_HAB_START_POSE, LEFT_CARGOSHIP_FRONT_POSE);
     public static final Trajectory CENTER_HAB_RIGHT_CARGOSHIP_FRONT_PATH = kPathHelper.generatePath(CENTER_HAB_START_POSE, RIGHT_CARGOSHIP_FRONT_POSE);
+    public static final Trajectory TEST_THREE_METERS_FORWARD_PATH = kPathHelper.generatePath(new Pose2d(TEST_THREE_METERS_FORWARD.get(0), Rotation2d.fromDegrees(0)), new Pose2d(TEST_THREE_METERS_FORWARD.get(1), Rotation2d.fromDegrees(0)));
 
     private static final List<Translation2d> LEFT_HAB_LEFT_ROCKET_WAYPOINTS = List.of(
             new Translation2d(3.786, 2.555),
