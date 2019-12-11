@@ -1,11 +1,14 @@
 package frc.team832.robot;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.team832.lib.motors.DTPowerTrain;
 import frc.team832.lib.motors.Gearbox;
 import frc.team832.lib.motors.Motors;
 import frc.team832.robot.subsystems.*;
+
+import java.util.function.DoubleSupplier;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class Constants {
@@ -30,6 +33,9 @@ public class Constants {
     public static final double DRIVE_PATH_MAX_ACCELERATION_METERS_PER_SEC_SQ = 10.83/2 ;
 
     public static final double[] YAW_PID = {0.0085, 0, 0}; // PID
+
+    public static final DoubleSupplier DRIVETRAIN_METERS_PER_SEC_SUP = () -> DRIVE_PATH_MAX_VELOCITY_METERS_PER_SEC;
+    public static final PIDController RAMSETE_DRIVE_PID_CONTROLLER = new PIDController(0.0387, 0.0, 0.0);
 
     //Fourbar
     public static final double[] ARM_PIDF = {.8, 0.0, 0.0, 0.0};//.02 ff

@@ -211,8 +211,7 @@ public class Drivetrain extends SubsystemBase implements DashboardUpdatable {
 
     private DifferentialDriveWheelSpeeds getWheelSpeeds() {
         double leftMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(leftMaster.getSensorVelocity());
-        double rightMetersPerSec = Constants.
-                DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
+        double rightMetersPerSec = Constants.DRIVE_POWERTRAIN.calculateMetersPerSec(rightMaster.getSensorVelocity());
         return new DifferentialDriveWheelSpeeds(leftMetersPerSec, -rightMetersPerSec);
     }
 

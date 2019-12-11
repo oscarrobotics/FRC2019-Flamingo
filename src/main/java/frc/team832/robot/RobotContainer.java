@@ -1,13 +1,11 @@
 package frc.team832.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.team832.lib.control.PDP;
 import frc.team832.lib.driverstation.controllers.*;
@@ -136,7 +134,7 @@ public class RobotContainer {
 
 
 //        drivePad.aButton.whenPressed(new AutonomousHatchScore(Paths.RightHab_RightFrontRocket, SuperStructure.SuperStructurePosition.CARGOSHIP_HATCH, drivetrain, superStructure, elevator, fourbar, intake));
-        drivePad.aButton.whenPressed(new RamseteCommand(Paths.Test_Three_Meters_Forward, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), DRIVE_KINEMATICS, drivetrain::consumeWheelSpeeds, drivetrain));
+        drivePad.aButton.whenPressed(new RamseteCommand(Paths.TEST_THREE_METERS_FORWARD_PATH, drivetrain::getLatestPose2d, new RamseteController(2, 0.7), .13, .024, .00476,  DRIVE_KINEMATICS, Constants.DRIVETRAIN_METERS_PER_SEC_SUP, Constants.DRIVETRAIN_METERS_PER_SEC_SUP, Constants.RAMSETE_DRIVE_PID_CONTROLLER, Constants.RAMSETE_DRIVE_PID_CONTROLLER, drivetrain::consumeWheelSpeeds, drivetrain));
 
         vision.setLight(false);
         return successful;
